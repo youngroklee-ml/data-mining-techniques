@@ -2,3 +2,6 @@
 .Rhistory
 .RData
 .Ruserdata
+
+# customer attribute of local folder
+.DS_Store

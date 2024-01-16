@@ -1,0 +1,6 @@
+﻿id,age_group,gender,smoke,weight,hyper_y
+1,yes,M,yes,72,yes
+2,yes,F,no,73,no
+3,no,M,no,70,no
+4,no,M,no,75,yes
+5,yes,F,yes,58,no

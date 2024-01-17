@@ -23,8 +23,8 @@ renv::init(repos = https://packagemanager.posit.co/cran/2024-01-12)
 1. Copy R script file from *original* to *revised*
 2. Run `styler::style_file()` with the file in *revised* folder. Use default `tidyverse_style`.
 3. Remove code that creates side-effect, including but not limited to followings:
-  + `setwd()` to set work directory; all paths will be relative path starting from project directory as a root
-  + `install.packages()` to install packages; we will assume that required packages have been installed
+  1. `setwd()` to set work directory; all paths will be relative path starting from project directory as a root
+  1. `install.packages()` to install packages; we will assume that required packages have been installed
 4. Ensure that each R code does not miss any dependencies to include (e.g. file, library)
 5. If it is possible and makes sense, remove dependency on `{tidyverse}`.
-  + If it makes sense to keep using `{tidyverse}`, minimize the use of `{tidyverse}` and provide a specific comment per each use if possible.
+  1. If it makes sense to keep using `{tidyverse}`, minimize the use of `{tidyverse}` and provide a specific comment per each use if possible.

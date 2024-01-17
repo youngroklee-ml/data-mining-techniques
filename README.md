@@ -25,4 +25,6 @@ renv::init(repos = https://packagemanager.posit.co/cran/2024-01-12)
 3. Remove code that creates side-effect, including but not limited to followings:
   + `setwd()` to set work directory; all paths will be relative path starting from project directory as a root
   + `install.packages()` to install packages; we will assume that required packages have been installed
-
+4. Ensure that each R code does not miss any dependencies to include (e.g. file, library)
+5. If it is possible and makes sense, remove dependency on `{tidyverse}`.
+  + If it makes sense to keep using `{tidyverse}`, minimize the use of `{tidyverse}` and provide a specific comment per each use if possible.

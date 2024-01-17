@@ -1,0 +1,50 @@
+# 11장 군집분석 개요
+
+## (예 11.1)
+
+유클리디안 거리
+
+```{r}
+dat1 <- read.csv("data/ch11_dat1.csv")
+
+dat2 <- dat1[, -1]
+
+D1 <- dist(dat2)
+D1 <- round(D1, 2)
+D1
+```
+
+각 변수의 평균
+
+```{r}
+mean_vector <- colMeans(dat2)
+mean_vector
+```
+
+
+각 변수의 표준편차
+
+```{r}
+cov_matrix <- cov(dat2)
+sqrt(cov_matrix)
+```
+
+
+## (예 11.3)
+
+상관계수
+
+```{r}
+row_cor <- cor(t(dat2), use = "pairwise.complete.obs", method = "pearson")
+row_cor
+```
+
+
+표준화한 후 상관계수
+
+```{r}
+s_dat2 <- scale(dat2)
+row_cor_s <- cor(t(s_dat2), use = "pairwise.complete.obs", method = "pearson")
+row_cor_s
+```
+

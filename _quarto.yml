@@ -7,6 +7,7 @@ book:
   date: today
   chapters:
     - index.qmd
+    - chapters/ch11_cluster.qmd
   repo-url: https://github.com/youngroklee-ml/data-mining-techniques
 
 number-sections: false

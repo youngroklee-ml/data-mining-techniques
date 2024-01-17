@@ -1,5 +1,6 @@
 project:
   type: book
+  execute-dir: project
 
 book:
   title: "데이터마이닝 기법과 응용: R 예제"

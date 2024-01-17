@@ -12,7 +12,7 @@ anova(lm_fit)
 
 # predicted value for age=40, height=170
 predict(lm_fit,
-  newdata = tibble(age = 40, height = 170),
+  newdata = data.frame(age = 40, height = 170),
   interval = "confidence", level = 0.95
 )
 

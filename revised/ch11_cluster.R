@@ -6,7 +6,6 @@
 # read csv file
 dat1 <- read.csv("data/ch11_dat1.csv")
 
-dat1 <- na.omit(dat1)
 dat2 <- dat1[, -1]
 
 # 1. Euclidean distance

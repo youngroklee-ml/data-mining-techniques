@@ -1,13 +1,10 @@
 # ch2_reg.r
 # multiple regression
 
-# set working directory
-setwd("D:/tempstore/2024_Chjun")
-
 # ch2_dat1  ##########
 
 # read csv file
-dat1 <- read.csv("ch2_reg.csv")
+dat1 <- read.csv("data/ch2_reg.csv")
 
 lm_fit <- lm(weight ~ age + height, data = dat1)
 summary(lm_fit)
@@ -49,10 +46,9 @@ vcov(lm_fit)
 
 # ch.2.4 variable selection
 # read csv file
-install.packages(MASS)
 library(MASS)
 
-dat_ba <- read.csv("Player.csv")
+dat_ba <- read.csv("data/Player.csv")
 
 lm_model <- lm(Salary ~ Hits + Walks + CRuns + CAtBat + RBI + AtBat + HmRun, data = dat_ba)
 step_model <- step(lm_model)

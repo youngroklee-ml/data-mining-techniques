@@ -2,10 +2,10 @@
 
 ## Folders
 
-- `data`: locate data files (e.g. .csv)
-- `original`: original R scripts written by each author
-- `revised`: revised R scripts with reformatting and refactoring
-- `chapters`: add quarto documents to render html files that contains R code results
+- *data*: locate data files (e.g. .csv)
+- *original*: original R scripts written by each author
+- *revised*: revised R scripts with reformatting and refactoring
+- *chapters*: add quarto documents to render html files that contains R code results
 
 ## Environment
 
@@ -17,3 +17,12 @@
 ```
 renv::init(repos = https://packagemanager.posit.co/cran/2024-01-12)
 ```
+
+## Reformatting process
+
+1. Copy R script file from *original* to *revised*
+2. Run `styler::style_file()` with the file in *revised* folder. Use default `tidyverse_style`.
+3. Remove code that creates side-effect, including but not limited to followings:
+  + `setwd()` to set work directory; all paths will be relative path starting from project directory as a root
+  + `install.packages()` to install packages; we will assume that required packages have been installed
+

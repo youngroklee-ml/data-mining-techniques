@@ -1,0 +1,16 @@
+project:
+  type: book
+
+book:
+  title: "데이터마이닝 기법과 응용: R 예제"
+  author: "전치혁, 이혜선, 이종석, 이영록"
+  date: today
+  chapters:
+    - index.qmd
+  repo-url: https://github.com/youngroklee-ml/data-mining-techniques
+
+number-sections: false
+
+format:
+  html:
+    theme: cosmo

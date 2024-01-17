@@ -5,3 +5,7 @@
 
 # customer attribute of local folder
 .DS_Store
+
+# quarto book
+_book/
+/.quarto/

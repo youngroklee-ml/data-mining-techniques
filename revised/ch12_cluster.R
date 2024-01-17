@@ -3,20 +3,14 @@
 # Diana, optimal k
 
 # library for plotting
-install.packages(ggplots)
 library(ggplot2)
-
-# set working directory
-setwd("D:/tempstore/2024_Chjun/data")
 
 # ch12.1 Distance measures
 # ch12.2 Average linkage method
 
 # read csv file
-dat1 <- read.csv("ch12_dat1.csv")
-attach(dat1)
+dat1 <- read.csv("data/ch12_dat1.csv")
 
-dat1 <- na.omit(dat1)
 dat2 <- dat1[, -1]
 
 # 1. Euclidean distance
@@ -28,8 +22,6 @@ D1
 # D2<- dist(m1, method="minkowski", p=3)
 # D2
 
-help("dist")
-
 # Average linkage method
 # check how different from linkage method
 hc_c <- hclust(D1, method = "average")
@@ -40,10 +32,8 @@ plot(hc_c,
 
 # ch12.3 Ward's method
 # read csv file
-dat1 <- read.csv("ch12_dat2.csv")
-attach(dat1)
+dat1 <- read.csv("data/ch12_dat2.csv")
 
-dat1 <- na.omit(dat1)
 dat2 <- dat1[, -1]
 
 # Euclidean distance
@@ -64,10 +54,8 @@ plot(hc_c,
 library(cluster)
 
 # read csv file
-dat1 <- read.csv("ch12_dat3.csv")
-attach(dat1)
+dat1 <- read.csv("data/ch12_dat3.csv")
 
-dat1 <- na.omit(dat1)
 dat2 <- dat1[, -1]
 
 # DIANA clustering
@@ -80,10 +68,8 @@ plot(clus_diana, which.plot = 2, main = "Dendrogram of Diana")
 # Non-hierachical clustering ###
 
 # read csv file
-dat1 <- read.csv("ch12_dat2.csv")
-attach(dat1)
+dat1 <- read.csv("data/ch12_dat2.csv")
 
-dat1 <- na.omit(dat1)
 dat2 <- dat1[, -1]
 
 # 1. Euclidean distance
@@ -92,7 +78,6 @@ D1 <- round(D1, 2)
 D1
 
 # step1: to choose the optimal k
-install.packages("factoextra")
 library(factoextra)
 fviz_nbclust(dat1, kmeans, method = "wss")
 

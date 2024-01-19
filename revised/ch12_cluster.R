@@ -2,9 +2,6 @@
 # Clustering : Distance measures, linkage method
 # Diana, optimal k
 
-# library for plotting
-library(ggplot2)
-
 # ch12.1 Distance measures
 # ch12.2 Average linkage method
 

@@ -2,16 +2,10 @@
 # Non-Hierarchical Clustering
 # k-means, DBSCAN
 
-# set working directory
-setwd("D:/tempstore/2024_Chjun/data")
-
 ## ch12_dat1 (ex 12_1)
 
 # read csv file
-dat1 <- read.csv("ch12_dat1.csv")
-attach(dat1)
-
-dat1 <- na.omit(dat1)
+dat1 <- read.csv("data/ch12_dat1.csv")
 dat2 <- dat1[, -1]
 
 # 1. Euclidean distance
@@ -27,14 +21,13 @@ D1
 # ch13.1 k-means : Non-hierachical clustering
 
 # step1: to choose the optimal k
-install.packages("factoextra")
 library(factoextra)
 
 # may use scale data or raw data for the optimal k
 s_dat2 <- scale(dat2)
 
-fviz_nbclust(s_dat2, kmeans, method = "wss", k.max = 5)
-geom_vline(xintercept = 3, linetype = 2)
+fviz_nbclust(s_dat2, kmeans, method = "wss", k.max = 5) + 
+  geom_vline(xintercept = 3, linetype = 2)
 
 fviz_nbclust(s_dat2, kmeans, method = "gap_stat", k.max = 5)
 fviz_nbclust(s_dat2, kmeans, method = "silhouette", k.max = 5)
@@ -71,8 +64,6 @@ fviz_cluster(pam_out,
 )
 
 # ch13.5 DBSCAN
-
-install.packages("fpc")
 library(fpc)
 
 db <- dbscan(dat2, eps = 3, MinPts = 3)

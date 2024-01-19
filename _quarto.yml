@@ -10,6 +10,7 @@ book:
     - index.qmd
     - chapters/ch11_cluster.qmd
     - chapters/ch12_cluster.qmd
+    - chapters/ch13_cluster_dbscan.qmd
   repo-url: https://github.com/youngroklee-ml/data-mining-techniques
 
 number-sections: false

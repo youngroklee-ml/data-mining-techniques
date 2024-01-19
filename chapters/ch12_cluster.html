@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>데이터마이닝 기법과 응용: R 예제 - 11장 군집분석 개요</title>
+<title>데이터마이닝 기법과 응용: R 예제 - 12장 계층적 군집방법</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -64,8 +64,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../chapters/ch12_cluster.html" rel="next">
-<link href="../index.html" rel="prev">
+<link href="../chapters/ch11_cluster.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -108,7 +107,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/ch11_cluster.html"><span class="chapter-title">11장 군집분석 개요</span></a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/ch12_cluster.html"><span class="chapter-title">12장 계층적 군집방법</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -144,12 +143,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../chapters/ch11_cluster.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">11장 군집분석 개요</span></a>
+  <a href="../chapters/ch11_cluster.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">11장 군집분석 개요</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../chapters/ch12_cluster.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">12장 계층적 군집방법</span></a>
+  <a href="../chapters/ch12_cluster.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">12장 계층적 군집방법</span></a>
   </div>
 </li>
     </ul>
@@ -162,8 +161,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#예-11.1" id="toc-예-11.1" class="nav-link active" data-scroll-target="#예-11.1">(예 11.1)</a></li>
-  <li><a href="#예-11.3" id="toc-예-11.3" class="nav-link" data-scroll-target="#예-11.3">(예 11.3)</a></li>
+  <li><a href="#예-12.1" id="toc-예-12.1" class="nav-link active" data-scroll-target="#예-12.1">(예 12.1)</a></li>
+  <li><a href="#예-12.2" id="toc-예-12.2" class="nav-link" data-scroll-target="#예-12.2">(예 12.2)</a></li>
+  <li><a href="#예-12.3" id="toc-예-12.3" class="nav-link" data-scroll-target="#예-12.3">(예 12.3)</a></li>
+  <li><a href="#예-12.4" id="toc-예-12.4" class="nav-link" data-scroll-target="#예-12.4">(예 12.4)</a></li>
   </ul>
 </nav>
     </div>
@@ -172,7 +173,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-title">11장 군집분석 개요</span></h1>
+<h1 class="title"><span class="chapter-title">12장 계층적 군집방법</span></h1>
 </div>
 
 
@@ -187,11 +188,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </header>
 
-<section id="예-11.1" class="level2">
-<h2 class="anchored" data-anchor-id="예-11.1">(예 11.1)</h2>
+<section id="예-12.1" class="level2">
+<h2 class="anchored" data-anchor-id="예-12.1">(예 12.1)</h2>
 <p>데이터 읽기</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>dat1 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/ch11_dat1.csv"</span>)</span>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>dat1 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/ch12_dat1.csv"</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>dat2 <span class="ot">&lt;-</span> dat1[, <span class="sc">-</span><span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -202,100 +203,124 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>D1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       1     2     3     4     5     6     7     8     9
-2   8.31                                                
-3  24.74 16.76                                          
-4  16.91  9.11  7.87                                    
-5  15.17  9.43 12.08  6.48                              
-6  10.10  3.00 16.55  9.49 11.31                        
-7  27.17 19.05  3.16 10.39 15.17 18.49                  
-8  27.87 20.35 10.05 13.15 19.10 19.52  8.31            
-9  33.03 25.57 14.53 18.57 24.52 24.52 12.04  5.48      
-10 24.37 17.75 11.75 11.66 17.03 17.49 11.49  5.74 10.05</code></pre>
+2   2.24                                                
+3  11.31  9.22                                          
+4   7.81  5.83  3.61                                    
+5  11.40  9.22  1.41  4.12                              
+6   1.41  2.24 11.40  8.06 11.31                        
+7  10.63  8.60  1.00  2.83  2.24 10.82                  
+8  10.05  9.49  9.22  7.21 10.44 11.18  8.25            
+9  11.40 11.18 11.40  9.43 12.65 12.65 10.44  2.24      
+10 12.37 12.08 11.70 10.00 13.00 13.60 10.77  2.83  1.00</code></pre>
 </div>
 </div>
-<p>각 변수의 평균</p>
+<p>평균연결법</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>mean_vector <span class="ot">&lt;-</span> <span class="fu">colMeans</span>(dat2)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>mean_vector</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>  X1   X2   X3 
-36.8  8.5  7.8 </code></pre>
-</div>
-</div>
-<p>각 변수의 표준편차</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>cov_matrix <span class="ot">&lt;-</span> <span class="fu">cov</span>(dat2)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sqrt</span>(cov_matrix)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in sqrt(cov_matrix): NaNs produced</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>         X1       X2       X3
-X1 9.738811      NaN      NaN
-X2      NaN 4.478343 1.490712
-X3      NaN 1.490712 4.661902</code></pre>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>hc_c <span class="ot">&lt;-</span> <span class="fu">hclust</span>(D1, <span class="at">method =</span> <span class="st">"average"</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(hc_c,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">hang =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">cex =</span> <span class="fl">0.7</span>, <span class="at">main =</span> <span class="st">"Average linkage with Euclidean distance"</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">"Distance"</span>, <span class="at">xlab =</span> <span class="st">"observation"</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="ch12_cluster_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
-<section id="예-11.3" class="level2">
-<h2 class="anchored" data-anchor-id="예-11.3">(예 11.3)</h2>
-<p>상관계수</p>
+<section id="예-12.2" class="level2">
+<h2 class="anchored" data-anchor-id="예-12.2">(예 12.2)</h2>
+<p>데이터 읽기</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>row_cor <span class="ot">&lt;-</span> <span class="fu">cor</span>(<span class="fu">t</span>(dat2), <span class="at">use =</span> <span class="st">"pairwise.complete.obs"</span>, <span class="at">method =</span> <span class="st">"pearson"</span>)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>row_cor</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>dat1 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/ch12_dat2.csv"</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>dat2 <span class="ot">&lt;-</span> dat1[, <span class="sc">-</span><span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>유클리디안 거리</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>D1 <span class="ot">&lt;-</span> <span class="fu">dist</span>(dat2)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>D1 <span class="ot">&lt;-</span> <span class="fu">round</span>(D1, <span class="dv">2</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>D1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>           [,1]      [,2]      [,3]      [,4]      [,5]      [,6]      [,7]
- [1,] 1.0000000 0.9347195 0.6828741 0.7600371 0.5771595 0.9673518 0.7144034
- [2,] 0.9347195 1.0000000 0.8979182 0.9413798 0.8297018 0.9942708 0.9164427
- [3,] 0.6828741 0.8979182 1.0000000 0.9937702 0.9907060 0.8457246 0.9990286
- [4,] 0.7600371 0.9413798 0.9937702 1.0000000 0.9693748 0.8999271 0.9977160
- [5,] 0.5771595 0.8297018 0.9907060 0.9693748 1.0000000 0.7652812 0.9837496
- [6,] 0.9673518 0.9942708 0.8457246 0.8999271 0.7652812 1.0000000 0.8684181
- [7,] 0.7144034 0.9164427 0.9990286 0.9977160 0.9837496 0.8684181 1.0000000
- [8,] 0.8099343 0.9655028 0.9815576 0.9967479 0.9464324 0.9321377 0.9890283
- [9,] 0.8219949 0.9707253 0.9773556 0.9948498 0.9394895 0.9394895 0.9857309
-[10,] 0.8089800 0.9650783 0.9818670 0.9968776 0.9469560 0.9315479 0.9892671
-           [,8]      [,9]     [,10]
- [1,] 0.8099343 0.8219949 0.8089800
- [2,] 0.9655028 0.9707253 0.9650783
- [3,] 0.9815576 0.9773556 0.9818670
- [4,] 0.9967479 0.9948498 0.9968776
- [5,] 0.9464324 0.9394895 0.9469560
- [6,] 0.9321377 0.9394895 0.9315479
- [7,] 0.9890283 0.9857309 0.9892671
- [8,] 1.0000000 0.9997823 0.9999987
- [9,] 0.9997823 1.0000000 0.9997471
-[10,] 0.9999987 0.9997471 1.0000000</code></pre>
+<pre><code>      1     2     3     4     5     6     7
+2 16.12                                    
+3  2.24 17.00                              
+4 18.60  9.06 18.36                        
+5 13.15  5.00 14.56 13.15                  
+6  5.66 12.17  5.39 13.04 10.82            
+7 15.30  1.41 16.03  8.00  5.39 11.05      
+8 16.64  7.28 16.55  2.24 11.05 11.18  6.08</code></pre>
 </div>
 </div>
-<p>표준화한 후 상관계수</p>
+<p>워드 방법</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>s_dat2 <span class="ot">&lt;-</span> <span class="fu">scale</span>(dat2)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>row_cor_s <span class="ot">&lt;-</span> <span class="fu">cor</span>(<span class="fu">t</span>(s_dat2), <span class="at">use =</span> <span class="st">"pairwise.complete.obs"</span>, <span class="at">method =</span> <span class="st">"pearson"</span>)</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>row_cor_s</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>            [,1]       [,2]        [,3]        [,4]       [,5]        [,6]
- [1,]  1.0000000  0.9999315 -0.67406561  0.16745765  0.1015587  0.97213475
- [2,]  0.9999315  1.0000000 -0.66537519  0.17898338  0.1131937  0.96932487
- [3,] -0.6740656 -0.6653752  1.00000000  0.61536345  0.6663950 -0.82844400
- [4,]  0.1674577  0.1789834  0.61536345  1.00000000  0.9977886 -0.06832112
- [5,]  0.1015587  0.1131937  0.66639497  0.99778861  1.0000000 -0.13448190
- [6,]  0.9721348  0.9693249 -0.82844400 -0.06832112 -0.1344819  1.00000000
- [7,] -0.8797846 -0.8741613  0.94417672  0.32133338  0.3835649 -0.96670729
- [8,] -0.8006556 -0.8076120  0.09713788 -0.72474074 -0.6773407 -0.63789659
- [9,] -0.7482030 -0.7559160  0.01425163 -0.77939352 -0.7360260 -0.57182171
-[10,] -0.7956097 -0.8026447  0.08879897 -0.73048596 -0.6834783 -0.63142435
-            [,7]        [,8]        [,9]       [,10]
- [1,] -0.8797846 -0.80065556 -0.74820299 -0.79560974
- [2,] -0.8741613 -0.80761196 -0.75591598 -0.80264471
- [3,]  0.9441767  0.09713788  0.01425163  0.08879897
- [4,]  0.3213334 -0.72474074 -0.77939352 -0.73048596
- [5,]  0.3835649 -0.67734074 -0.73602598 -0.68347830
- [6,] -0.9667073 -0.63789659 -0.57182171 -0.63142435
- [7,]  1.0000000  0.41959679  0.34286201  0.41197990
- [8,]  0.4195968  1.00000000  0.99655423  0.99996493
- [9,]  0.3428620  0.99655423  1.00000000  0.99721394
-[10,]  0.4119799  0.99996493  0.99721394  1.00000000</code></pre>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>hc_c <span class="ot">&lt;-</span> <span class="fu">hclust</span>(D1, <span class="at">method =</span> <span class="st">"ward.D2"</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(hc_c,</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">hang =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">cex =</span> <span class="dv">1</span>, <span class="at">main =</span> <span class="st">"Ward's linkage with Euclidean distance"</span>,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">"Distance"</span>, <span class="at">xlab =</span> <span class="st">"observation"</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="ch12_cluster_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="예-12.3" class="level2">
+<h2 class="anchored" data-anchor-id="예-12.3">(예 12.3)</h2>
+<p>패키지 로드</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cluster)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>데이터 읽기</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>dat1 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/ch12_dat3.csv"</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>dat2 <span class="ot">&lt;-</span> dat1[, <span class="sc">-</span><span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>다이아나 방법</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>clus_diana <span class="ot">&lt;-</span> <span class="fu">diana</span>(dat2)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(clus_diana, <span class="at">which.plot =</span> <span class="dv">2</span>, <span class="at">main =</span> <span class="st">"Dendrogram of Diana"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="ch12_cluster_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="예-12.4" class="level2">
+<h2 class="anchored" data-anchor-id="예-12.4">(예 12.4)</h2>
+<p>데이터 로드</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>dat1 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/ch12_dat2.csv"</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>dat2 <span class="ot">&lt;-</span> dat1[, <span class="sc">-</span><span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>패키지 로드</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(factoextra)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: ggplot2</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Welcome! Want to learn more? See two factoextra-related books at https://goo.gl/ve3WBa</code></pre>
+</div>
+</div>
+<p>군집수 결정 - total within sum of square</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_nbclust</span>(dat2, kmeans, <span class="at">method =</span> <span class="st">"wss"</span>, <span class="at">k.max =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="ch12_cluster_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>군집수 결정 - gap statistics</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_nbclust</span>(dat2, kmeans, <span class="at">method =</span> <span class="st">"gap_stat"</span>, <span class="at">k.max =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="ch12_cluster_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>군집수 결정 - average silhouette width</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_nbclust</span>(dat2, kmeans, <span class="at">method =</span> <span class="st">"silhouette"</span>, <span class="at">k.max =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="ch12_cluster_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 
@@ -538,14 +563,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../index.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">소개</span>
+      <a href="../chapters/ch11_cluster.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">11장 군집분석 개요</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../chapters/ch12_cluster.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-title">12장 계층적 군집방법</span></span> <i class="bi bi-arrow-right-short"></i>
-      </a>
   </div>
 </nav>
 </div> <!-- /content -->

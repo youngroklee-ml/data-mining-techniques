@@ -9,3 +9,8 @@
 # quarto book
 _book/
 /.quarto/
+
+# reprex
+*_reprex_files/
+*_reprex.md
+*_reprex.R

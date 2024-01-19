@@ -1,77 +1,125 @@
-# ch12_cluster.r
-# Clustering : Distance measures, linkage method
-# Diana, optimal k
+# 12장 계층적 군집방법
 
-# ch12.1 Distance measures
-# ch12.2 Average linkage method
 
-# read csv file
+## (예 12.1)
+
+데이터 읽기
+
+```{r}
 dat1 <- read.csv("data/ch12_dat1.csv")
 
 dat2 <- dat1[, -1]
+```
 
-# 1. Euclidean distance
+
+유클리디안 거리
+
+```{r}
 D1 <- dist(dat2)
 D1 <- round(D1, 2)
 D1
+```
 
-# 2. Minkowski distance
-# D2<- dist(m1, method="minkowski", p=3)
-# D2
 
-# Average linkage method
-# check how different from linkage method
+평균연결법
+
+```{r}
 hc_c <- hclust(D1, method = "average")
 plot(hc_c,
   hang = -1, cex = 0.7, main = "Average linkage with Euclidean distance",
   ylab = "Distance", xlab = "observation"
 )
+```
 
-# ch12.3 Ward's method
-# read csv file
+
+## (예 12.2)
+
+데이터 읽기
+
+```{r}
 dat1 <- read.csv("data/ch12_dat2.csv")
 
 dat2 <- dat1[, -1]
+```
 
-# Euclidean distance
+유클리디안 거리
+
+```{r}
 D1 <- dist(dat2)
 D1 <- round(D1, 2)
 D1
+```
 
-# Ward's linkage method
-# check how different from linkage method
+워드 방법
+
+```{r}
 hc_c <- hclust(D1, method = "ward.D2")
 plot(hc_c,
   hang = -1, cex = 1, main = "Ward's linkage with Euclidean distance",
   ylab = "Distance", xlab = "observation"
 )
+```
 
-# ch12.4 Diana
-# install.packages("cluster")
+
+## (예 12.3)
+
+패키지 로드
+
+```{r}
 library(cluster)
+```
 
-# read csv file
+
+데이터 읽기
+
+```{r}
 dat1 <- read.csv("data/ch12_dat3.csv")
 
 dat2 <- dat1[, -1]
+```
 
-# DIANA clustering
+
+다이아나 방법
+
+```{r}
 clus_diana <- diana(dat2)
 
-# Plot dendrogram
 plot(clus_diana, which.plot = 2, main = "Dendrogram of Diana")
+```
 
-# Ch12.5 How to choose k
-# Non-hierarchical clustering ###
 
-# read csv file
+## (예 12.4)
+
+데이터 로드
+
+```{r}
 dat1 <- read.csv("data/ch12_dat2.csv")
 
 dat2 <- dat1[, -1]
+```
 
-# step1: to choose the optimal k
+패키지 로드
+
+```{r}
 library(factoextra)
+```
+
+군집수 결정 - total within sum of square
+
+```{r}
 fviz_nbclust(dat2, kmeans, method = "wss", k.max = 5)
+```
+
+군집수 결정 - gap statistics
+
+```{r}
 fviz_nbclust(dat2, kmeans, method = "gap_stat", k.max = 5)
+```
+
+군집수 결정 - average silhouette width
+
+```{r}
 fviz_nbclust(dat2, kmeans, method = "silhouette", k.max = 5)
+```
+
 

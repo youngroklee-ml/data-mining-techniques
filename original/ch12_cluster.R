@@ -73,7 +73,7 @@ clus_diana <- diana(dat2)
 plot(clus_diana , which.plot = 2, main='Dendrogram of Diana')
 
 # Ch12.5 How to choose k 
-# Non-hierachical clustering ###
+# Non-hierarchical clustering ###
 
 # read csv file
 dat1<-read.csv("ch12_dat2.csv")
@@ -82,35 +82,13 @@ attach(dat1)
 dat1<-na.omit(dat1)
 dat2<-dat1[,-1]
 
-# 1. Euclidean distance
-D1 <- dist(dat2)
-D1<-round(D1, 2)
-D1
-
 # step1: to choose the optimal k
 install.packages("factoextra")
 library(factoextra)
-fviz_nbclust(dat1, kmeans, method = "wss")
+fviz_nbclust(dat2, kmeans, method = "wss", k=5)
+fviz_nbclust(dat2, kmeans, method = "gap_stat", k=5)
+fviz_nbclust(dat2, kmeans, method = "silhouette", k=5)
 
-fviz_nbclust(dat1, kmeans, method = "gap_stat")
-fviz_nbclust(dat1, kmeans, method = "silhouette")
 
-#visualization
-fviz_cluster(db, data = dat2, 
-             ellipse.type="convex", 
-             repel = TRUE)
 
-# calculate silhouette
-library(cluster) 
-sil_pam<- silhouette(pam_out$clustering, dist(dat1))
-sil_pam
-mean(sil_pam[,3])
-
-sil_db<- silhouette(db$cluster, dist(dat1))
-mean(sil_db[,3])
-
-# plot silhouette
-library(factoextra)
-fviz_silhouette(sil_pam)
-fviz_silhouette(sil_db)
 

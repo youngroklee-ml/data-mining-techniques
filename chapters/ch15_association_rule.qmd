@@ -1,6 +1,6 @@
 # 15장 연관규칙
 
-## (예 15.3 - 15.4)
+## (예 15.1 - 15.4)
 
 #### 패키지 로드
 
@@ -24,10 +24,80 @@ print(transaction_list)
 # convert a list into an object of class "transactions"
 transactions <- as(transaction_list, "transactions")
 print(transactions)
+
+# retrieve item labels used in transactions
+labels <- transactions@itemInfo$labels
+print(labels)
 ```
 
 
-#### 빈발항목집합 생성: 최소 지지도 0.4
+#### 사용자 함수 생성
+
+item vector를 `itemMatrix` object로 변환
+
+```{r}
+# A user defined function to convert a character vector of items to itemMatrix object
+# - itemset: a vector of item labels in a itemset
+# - labels: a vector of all labels ordered to be column order of output matrix
+as_itemMatrix <- function(itemset, transactions) {
+  as(
+    matrix(labels %in% itemset, nrow = 1, dimnames = list(NULL, labels)), 
+    "itemMatrix"
+  )
+}
+```
+
+
+#### (예 15.1) 지지도
+
+X = {b, c}
+
+```{r}
+# create itemMatrix object for X = {b, c}, and compute the support
+X <- as_itemMatrix(c("b", "c"), labels)
+supp_X <- support(X, transactions)
+print(supp_X)
+```
+
+R: X -> Y
+
+```{r}
+# create itemMatrix object for Y = {g}, and compute the support
+Y <- as_itemMatrix(c("g"), labels)
+
+# create a rule R: X -> Y, and compute the support
+R <- rules(Y, X)
+supp_R <- support(R, transactions)
+print(supp_R)
+```
+
+
+#### (예 15.2) 신뢰도 및 개선도
+
+신뢰도
+
+```{r}
+# confidence
+conf_R <- supp_R / supp_X
+print(conf_R)
+# when using a function instead:
+interestMeasure(R, "confidence", transactions)
+```
+
+
+개선도
+
+```{r}
+supp_Y <- support(Y, transactions)
+lift_R <- conf_R / supp_Y
+print(lift_R)
+# when using a function instead:
+interestMeasure(R, "lift", transactions)
+```
+
+
+
+#### (예 15.3) 빈발항목집합 생성: 최소 지지도 0.4
 
 ```{r}
 itemsets <- apriori(
@@ -42,7 +112,7 @@ itemsets <- apriori(
 inspect(itemsets)
 ```
 
-#### 규칙 탐사: 최소 신뢰도 0.7
+#### (예 15.4) 규칙 탐사: 최소 신뢰도 0.7
 
 ```{r}
 rules <- ruleInduction(

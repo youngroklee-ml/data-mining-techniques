@@ -28,7 +28,8 @@ inspect(itemsets)
 rules <- ruleInduction(
   itemsets,
   transactions,
-  confidence = 0.7
+  confidence = 0.7,
+  method = "apriori"
 )
 
 inspect(rules)

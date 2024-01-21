@@ -238,6 +238,18 @@
       ],
       "Hash": "3405a7596dc330dc0d8a90332b4d3074"
     },
+    "arulesSequences": {
+      "Package": "arulesSequences",
+      "Version": "0.2-30",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "arules",
+        "methods"
+      ],
+      "Hash": "3773cfa338d9a000b68baef1815310f8"
+    },
     "askpass": {
       "Package": "askpass",
       "Version": "1.2.0",

@@ -143,4 +143,63 @@ inspect(apriori_results)
 ```
 
 
+## (예 15.7 - 15.9)
+
+#### 패키지 로드
+
+```{r}
+library(arulesSequences)
+```
+
+#### 데이터 로드
+
+```{r}
+# read specifically formatted data into transactions with temporal information
+trans <- read_baskets(
+  con = "data/ch15_sequence.txt",
+  info = c("sequenceID", "eventID", "SIZE") # do not change the names
+)
+```
+
+#### (예 15.7) 최대 시퀀스
+
+모든 시퀀스 (최소 지지도 0.4)
+
+```{r}
+seqs <- cspade(trans, parameter = list(support = 0.4))
+inspect(seqs)
+```
+
+최대 시퀀스 (최소 지지도 0.4)
+
+```{r}
+max_seqs <- subset(seqs, is.maximal(seqs))
+inspect(max_seqs)
+```
+
+
+#### (예 15.8) 빈발항목집합
+
+```{r}
+itemsets <- cspade(trans, parameter = list(support = 0.4, maxlen = 1))
+inspect(itemsets)
+```
+
+
+#### (예 15.9) 시퀀스 탐색
+
+모든 빈발 시퀀스 (최소 신뢰도 0.5)
+
+```{r}
+rules <- ruleInduction(seqs, confidence = 0.5)
+inspect(rules)
+```
+
+최대 빈발 시퀀스 (최소 신뢰도 0.5)
+
+```{r}
+max_rules <- ruleInduction(max_seqs, trans, confidence = 0.5)
+inspect(max_rules)
+```
+
 

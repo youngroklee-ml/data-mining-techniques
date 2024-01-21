@@ -12,23 +12,39 @@ print(transaction_list)
 transactions <- as(transaction_list, "transactions")
 print(transactions)
 
-# ex15.3 - explore frequent itemsets
+# ex15.3 - generate frequent itemsets with minimal support 0.4
 itemsets <- apriori(
   transactions,
   parameter = list(
     support = 0.4,
     target = "frequent itemsets"
-  )
+  ),
+  control = list(verbose = FALSE) # do not print progress
 )
 
 inspect(itemsets)
 
 
-# ex15.4 - explore association rules
+# ex15.4 - find association rules with minimal confidence 0.7
 rules <- ruleInduction(
   itemsets,
   transactions,
-  confidence = 0.7
+  confidence = 0.7,
+  method = "apriori"
 )
 
 inspect(rules)
+
+
+# one function call to execute both ex15.3 and ex15.4
+apriori_results <- apriori(
+  transactions,
+  parameter = list(
+    support = 0.4,
+    confidence = 0.7,
+    target = "rules"
+  ),
+  control = list(verbose = FALSE) # do not print progress
+)
+
+inspect(apriori_results)

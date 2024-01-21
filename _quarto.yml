@@ -8,9 +8,14 @@ book:
   date: today
   chapters:
     - index.qmd
-    - chapters/ch11_cluster.qmd
-    - chapters/ch12_cluster.qmd
-    - chapters/ch13_cluster_dbscan.qmd
+    - part: "군집분석"
+      chapters:
+      - chapters/ch11_cluster.qmd
+      - chapters/ch12_cluster.qmd
+      - chapters/ch13_cluster_dbscan.qmd
+    - part: "연관규칙"
+      chapters: 
+      - chapters/ch15_association_rule.qmd
   repo-url: https://github.com/youngroklee-ml/data-mining-techniques
 
 number-sections: false

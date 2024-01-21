@@ -1,0 +1,76 @@
+# 15장 연관규칙
+
+## (예 15.3 - 15.4)
+
+#### 패키지 로드
+
+```{r}
+library(arules)
+```
+
+#### 데이터 로드
+
+```{r}
+df <- read.csv("data/ch15_transaction.csv")
+```
+
+#### 데이터 변환
+
+```{r}
+# convert a data frame into a list of transactions
+transaction_list <- split(df$item, df$id)
+print(transaction_list)
+
+# convert a list into an object of class "transactions"
+transactions <- as(transaction_list, "transactions")
+print(transactions)
+```
+
+
+#### 빈발항목집합 생성: 최소 지지도 0.4
+
+```{r}
+itemsets <- apriori(
+  transactions,
+  parameter = list(
+    support = 0.4,
+    target = "frequent itemsets"
+  ),
+  control = list(verbose = FALSE)  # do not print progress
+)
+
+inspect(itemsets)
+```
+
+#### 규칙 탐사: 최소 신뢰도 0.7
+
+```{r}
+rules <- ruleInduction(
+  itemsets,
+  transactions,
+  confidence = 0.7,
+  method = "apriori"
+)
+
+inspect(rules)
+```
+
+
+#### 빈발항목집합 + 규칙탐사
+
+```{r}
+apriori_results <- apriori(
+  transactions,
+  parameter = list(
+    support = 0.4,
+    confidence = 0.7,
+    target = "rules"
+  ),
+  control = list(verbose = FALSE)  # do not print progress
+)
+
+inspect(apriori_results)
+```
+
+
+

@@ -1,38 +1,30 @@
 # 13장 비계층적 군집방법
 
-데이터 읽기
+## (예 13.1)
+
+#### 패키지 로드
+
+```{r}
+library(factoextra)
+```
+
+#### 데이터 로드
 
 ```{r}
 dat1 <- read.csv("data/ch12_dat1.csv")
 dat2 <- dat1[, -1]
 ```
 
-유클리디안 거리
+#### 군집 수 결정
 
 ```{r}
-D1 <- dist(dat2)
-D1 <- round(D1, 2)
-D1
-```
-
-## (예 13.1)
-
-군집 수 결정
-
-```{r}
-library(factoextra)
-
 # may use scale data or raw data for the optimal k
 s_dat2 <- scale(dat2)
 
-fviz_nbclust(s_dat2, kmeans, method = "wss", k.max = 5) + 
-  geom_vline(xintercept = 3, linetype = 2)
-
-fviz_nbclust(s_dat2, kmeans, method = "gap_stat", k.max = 5)
 fviz_nbclust(s_dat2, kmeans, method = "silhouette", k.max = 5)
 ```
 
-K-means 알고리즘
+#### K-means
 
 ```{r}
 set.seed(123)
@@ -40,7 +32,7 @@ km <- kmeans(dat2, 3)
 km
 ```
 
-시각화
+#### 결과 시각화
 
 ```{r}
 fviz_cluster(km,
@@ -53,13 +45,22 @@ fviz_cluster(km,
 
 ## (예 13.3)
 
-패지키 로드
+#### 패키지 로드
 
 ```{r}
-library("cluster")
+library(cluster)
+library(factoextra)
 ```
 
-PAM 알고리즘
+#### 데이터 로드
+
+```{r}
+dat1 <- read.csv("data/ch12_dat1.csv")
+dat2 <- dat1[, -1]
+```
+
+
+#### PAM
 
 ```{r}
 pam_out <- pam(dat2, 3)
@@ -72,7 +73,7 @@ pam_out
 table(pam_out$clustering)
 ```
 
-시각화
+#### 결과 시각화
 
 ```{r}
 fviz_cluster(pam_out,
@@ -82,35 +83,28 @@ fviz_cluster(pam_out,
 )
 ```
 
-실루엣 계산
-
-```{r}
-sil_pam <- silhouette(pam_out$clustering, dist(dat1))
-sil_pam
-mean(sil_pam[, 3])
-```
-
-실루엣 시각화
-
-```{r}
-library(factoextra)
-fviz_silhouette(sil_pam)
-```
-
 
 
 ## (예 13.8)
 
-패키지 로드
+#### 패키지 로드
 
 ```{r}
 library(fpc)
+library(factoextra)
 ```
 
-디비스캔
+#### 데이터 로드
 
 ```{r}
-db <- dbscan(dat2, eps = 3, MinPts = 3)
+dat1 <- read.csv("data/ch12_dat1.csv")
+dat2 <- dat1[, -1]
+```
+
+#### 디비스캔
+
+```{r}
+db <- dbscan(dat2, eps = 2.5, MinPts = 3)
 db
 ```
 
@@ -120,7 +114,8 @@ db
 db$cluster
 ```
 
-시각화
+
+#### 결과 시각화
 
 ```{r}
 fviz_cluster(db,
@@ -128,20 +123,5 @@ fviz_cluster(db,
   ellipse.type = "convex",
   repel = TRUE
 )
-```
-
-실루엣 계산
-
-```{r}
-library(cluster)
-sil_db <- silhouette(db$cluster, dist(dat1))
-mean(sil_db[, 3])
-```
-
-실루엣 시각화
-
-```{r}
-library(factoextra)
-fviz_silhouette(sil_db)
 ```
 

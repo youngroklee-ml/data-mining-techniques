@@ -19,5 +19,6 @@ table(pam_out$clustering)
 fviz_cluster(pam_out,
              data = dat2,
              ellipse.type = "convex",
+             stand = FALSE,
              repel = TRUE
 )

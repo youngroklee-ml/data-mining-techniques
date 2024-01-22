@@ -23,5 +23,6 @@ km
 fviz_cluster(km,
              data = dat2,
              ellipse.type = "convex",
+             stand = FALSE,
              repel = TRUE, cex = 3
 )

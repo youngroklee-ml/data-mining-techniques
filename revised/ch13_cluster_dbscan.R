@@ -27,6 +27,7 @@ km
 fviz_cluster(km,
   data = dat2,
   ellipse.type = "convex",
+  stand = FALSE,
   repel = TRUE, cex = 3
 )
 
@@ -52,6 +53,7 @@ table(pam_out$clustering)
 fviz_cluster(pam_out,
   data = dat2,
   ellipse.type = "convex",
+  stand = FALSE,
   repel = TRUE
 )
 
@@ -77,5 +79,6 @@ db$cluster
 fviz_cluster(db,
   data = dat2,
   ellipse.type = "convex",
+  stand = FALSE,
   repel = TRUE
 )

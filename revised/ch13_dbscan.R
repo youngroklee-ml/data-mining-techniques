@@ -19,5 +19,6 @@ db$cluster
 fviz_cluster(db,
              data = dat2,
              ellipse.type = "convex",
+             stand = FALSE,
              repel = TRUE
 )

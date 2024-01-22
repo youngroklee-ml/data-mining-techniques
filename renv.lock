@@ -222,6 +222,34 @@
       ],
       "Hash": "4f57884290cc75ab22f4af9e9d4ca862"
     },
+    "arules": {
+      "Package": "arules",
+      "Version": "1.7-7",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "Matrix",
+        "R",
+        "generics",
+        "graphics",
+        "methods",
+        "stats",
+        "utils"
+      ],
+      "Hash": "3405a7596dc330dc0d8a90332b4d3074"
+    },
+    "arulesSequences": {
+      "Package": "arulesSequences",
+      "Version": "0.2-30",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "arules",
+        "methods"
+      ],
+      "Hash": "3773cfa338d9a000b68baef1815310f8"
+    },
     "askpass": {
       "Package": "askpass",
       "Version": "1.2.0",

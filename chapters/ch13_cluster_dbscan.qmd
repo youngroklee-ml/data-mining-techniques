@@ -55,7 +55,7 @@ library(factoextra)
 #### 데이터 로드
 
 ```{r}
-dat1 <- read.csv("data/ch12_dat1.csv")
+dat1 <- read.csv("data/ch13_pam.csv")
 dat2 <- dat1[, -1]
 ```
 
@@ -63,7 +63,7 @@ dat2 <- dat1[, -1]
 #### PAM
 
 ```{r}
-pam_out <- pam(dat2, 3)
+pam_out <- pam(dat2, 2)
 pam_out
 ```
 

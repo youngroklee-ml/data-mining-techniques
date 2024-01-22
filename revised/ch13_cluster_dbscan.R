@@ -38,11 +38,11 @@ library(cluster)
 library(factoextra)
 
 # read csv file
-dat1 <- read.csv("data/ch12_dat1.csv")
+dat1 <- read.csv("data/ch13_pam.csv")
 dat2 <- dat1[, -1]
 
 # PAM
-pam_out <- pam(dat2, 3)
+pam_out <- pam(dat2, 2)
 pam_out
 
 # freq of each cluster

@@ -223,17 +223,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="예-12.1" class="level2">
 <h2 class="anchored" data-anchor-id="예-12.1">(예 12.1)</h2>
-<p>데이터 읽기</p>
+<section id="데이터-로드" class="level4">
+<h4 class="anchored" data-anchor-id="데이터-로드">데이터 로드</h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>dat1 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/ch12_dat1.csv"</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>dat2 <span class="ot">&lt;-</span> dat1[, <span class="sc">-</span><span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>dat2 <span class="ot">&lt;-</span> dat1[, <span class="sc">-</span><span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>유클리디안 거리</p>
+</section>
+<section id="유클리디안-거리" class="level4">
+<h4 class="anchored" data-anchor-id="유클리디안-거리">유클리디안 거리</h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>D1 <span class="ot">&lt;-</span> <span class="fu">dist</span>(dat2)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>D1 <span class="ot">&lt;-</span> <span class="fu">round</span>(D1, <span class="dv">2</span>)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>D1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(D1, <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       1     2     3     4     5     6     7     8     9
 2   2.24                                                
@@ -247,87 +248,108 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 10 12.37 12.08 11.70 10.00 13.00 13.60 10.77  2.83  1.00</code></pre>
 </div>
 </div>
-<p>평균연결법</p>
+</section>
+<section id="평균연결법" class="level4">
+<h4 class="anchored" data-anchor-id="평균연결법">평균연결법</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>hc_c <span class="ot">&lt;-</span> <span class="fu">hclust</span>(D1, <span class="at">method =</span> <span class="st">"average"</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(hc_c,</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">hang =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">cex =</span> <span class="fl">0.7</span>, <span class="at">main =</span> <span class="st">"Average linkage with Euclidean distance"</span>,</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">"Distance"</span>, <span class="at">xlab =</span> <span class="st">"observation"</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>hc_c <span class="ot">&lt;-</span> <span class="fu">hclust</span>(D1, <span class="at">method =</span> <span class="st">"average"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="결과-시각화" class="level4">
+<h4 class="anchored" data-anchor-id="결과-시각화">결과 시각화</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(hc_c,</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">hang =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">cex =</span> <span class="fl">0.7</span>, <span class="at">main =</span> <span class="st">"Average linkage with Euclidean distance"</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">"Distance"</span>, <span class="at">xlab =</span> <span class="st">"observation"</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="ch12_cluster_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+<p><img src="ch12_cluster_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
+</section>
 </section>
 <section id="예-12.2" class="level2">
 <h2 class="anchored" data-anchor-id="예-12.2">(예 12.2)</h2>
-<p>데이터 읽기</p>
+<section id="데이터-로드-1" class="level4">
+<h4 class="anchored" data-anchor-id="데이터-로드-1">데이터 로드</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>dat1 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/ch12_dat2.csv"</span>)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>dat2 <span class="ot">&lt;-</span> dat1[, <span class="sc">-</span><span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>dat1 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/ch12_dat2.csv"</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>dat2 <span class="ot">&lt;-</span> dat1[, <span class="sc">-</span><span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>유클리디안 거리</p>
+</section>
+<section id="제곱-유클리디안-거리" class="level4">
+<h4 class="anchored" data-anchor-id="제곱-유클리디안-거리">제곱 유클리디안 거리</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>D1 <span class="ot">&lt;-</span> <span class="fu">dist</span>(dat2)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>D1 <span class="ot">&lt;-</span> <span class="fu">round</span>(D1, <span class="dv">2</span>)</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>D1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>D1 <span class="ot">&lt;-</span> <span class="fu">dist</span>(dat2)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>D1<span class="sc">^</span><span class="dv">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>      1     2     3     4     5     6     7
-2 16.12                                    
-3  2.24 17.00                              
-4 18.60  9.06 18.36                        
-5 13.15  5.00 14.56 13.15                  
-6  5.66 12.17  5.39 13.04 10.82            
-7 15.30  1.41 16.03  8.00  5.39 11.05      
-8 16.64  7.28 16.55  2.24 11.05 11.18  6.08</code></pre>
+<pre><code>    1   2   3   4   5   6   7
+2 260                        
+3   5 289                    
+4 346  82 337                
+5 173  25 212 173            
+6  32 148  29 170 117        
+7 234   2 257  64  29 122    
+8 277  53 274   5 122 125  37</code></pre>
 </div>
 </div>
-<p>워드 방법</p>
+</section>
+<section id="워드-방법" class="level4">
+<h4 class="anchored" data-anchor-id="워드-방법">워드 방법</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>hc_c <span class="ot">&lt;-</span> <span class="fu">hclust</span>(D1, <span class="at">method =</span> <span class="st">"ward.D2"</span>)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(hc_c,</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">hang =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">cex =</span> <span class="dv">1</span>, <span class="at">main =</span> <span class="st">"Ward's linkage with Euclidean distance"</span>,</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">"Distance"</span>, <span class="at">xlab =</span> <span class="st">"observation"</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>hc_c <span class="ot">&lt;-</span> <span class="fu">hclust</span>(D1, <span class="at">method =</span> <span class="st">"ward.D2"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="결과-시각화-1" class="level4">
+<h4 class="anchored" data-anchor-id="결과-시각화-1">결과 시각화</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(hc_c,</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">hang =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">cex =</span> <span class="dv">1</span>, <span class="at">main =</span> <span class="st">"Ward's linkage with Euclidean distance"</span>,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylab =</span> <span class="st">"Distance"</span>, <span class="at">xlab =</span> <span class="st">"observation"</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="ch12_cluster_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+<p><img src="ch12_cluster_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
+</section>
 </section>
 <section id="예-12.3" class="level2">
 <h2 class="anchored" data-anchor-id="예-12.3">(예 12.3)</h2>
-<p>패키지 로드</p>
+<section id="패키지-로드" class="level4">
+<h4 class="anchored" data-anchor-id="패키지-로드">패키지 로드</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cluster)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cluster)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>데이터 읽기</p>
+</section>
+<section id="데이터-로드-2" class="level4">
+<h4 class="anchored" data-anchor-id="데이터-로드-2">데이터 로드</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>dat1 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/ch12_dat3.csv"</span>)</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>dat2 <span class="ot">&lt;-</span> dat1[, <span class="sc">-</span><span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>dat1 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/ch12_dat3.csv"</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>dat2 <span class="ot">&lt;-</span> dat1[, <span class="sc">-</span><span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>다이아나 방법</p>
+</section>
+<section id="다이아나-방법" class="level4">
+<h4 class="anchored" data-anchor-id="다이아나-방법">다이아나 방법</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>clus_diana <span class="ot">&lt;-</span> <span class="fu">diana</span>(dat2)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(clus_diana, <span class="at">which.plot =</span> <span class="dv">2</span>, <span class="at">main =</span> <span class="st">"Dendrogram of Diana"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>clus_diana <span class="ot">&lt;-</span> <span class="fu">diana</span>(dat2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="결과-시각화-2" class="level4">
+<h4 class="anchored" data-anchor-id="결과-시각화-2">결과 시각화</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(clus_diana, <span class="at">which.plots =</span> <span class="dv">2</span>, <span class="at">main =</span> <span class="st">"Dendrogram of Diana"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="ch12_cluster_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+<p><img src="ch12_cluster_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
+</section>
 <section id="예-12.4" class="level2">
 <h2 class="anchored" data-anchor-id="예-12.4">(예 12.4)</h2>
-<p>데이터 로드</p>
+<section id="패키지-로드-1" class="level4">
+<h4 class="anchored" data-anchor-id="패키지-로드-1">패키지 로드</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>dat1 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/ch12_dat2.csv"</span>)</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>dat2 <span class="ot">&lt;-</span> dat1[, <span class="sc">-</span><span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>패키지 로드</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(factoextra)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(factoextra)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Loading required package: ggplot2</code></pre>
 </div>
@@ -335,29 +357,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code>Welcome! Want to learn more? See two factoextra-related books at https://goo.gl/ve3WBa</code></pre>
 </div>
 </div>
-<p>군집수 결정 - total within sum of square</p>
+</section>
+<section id="데이터-로드-3" class="level4">
+<h4 class="anchored" data-anchor-id="데이터-로드-3">데이터 로드</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_nbclust</span>(dat2, kmeans, <span class="at">method =</span> <span class="st">"wss"</span>, <span class="at">k.max =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="ch12_cluster_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>dat1 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/ch12_dat2.csv"</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>dat2 <span class="ot">&lt;-</span> dat1[, <span class="sc">-</span><span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</div>
-<p>군집수 결정 - gap statistics</p>
+</section>
+<section id="워드-방법-군집수-결정---average-silhouette-width" class="level4">
+<h4 class="anchored" data-anchor-id="워드-방법-군집수-결정---average-silhouette-width">워드 방법 군집수 결정 - average silhouette width</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_nbclust</span>(dat2, kmeans, <span class="at">method =</span> <span class="st">"gap_stat"</span>, <span class="at">k.max =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_nbclust</span>(dat2, hcut, <span class="at">method =</span> <span class="st">"silhouette"</span>, <span class="at">k.max =</span> <span class="dv">7</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="ch12_cluster_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-<p>군집수 결정 - average silhouette width</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_nbclust</span>(dat2, kmeans, <span class="at">method =</span> <span class="st">"silhouette"</span>, <span class="at">k.max =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<p><img src="ch12_cluster_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+<p><img src="ch12_cluster_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

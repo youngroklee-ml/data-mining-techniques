@@ -118,7 +118,7 @@ dat2 <- dat1[, -1]
 #### 워드 방법 군집수 결정 - average silhouette width
 
 ```{r}
-fviz_nbclust(dat2, hcut, method = "silhouette", k.max = 5)
+fviz_nbclust(dat2, hcut, method = "silhouette", k.max = 7)
 ```
 
 

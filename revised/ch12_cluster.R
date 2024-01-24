@@ -64,5 +64,5 @@ dat1 <- read.csv("data/ch12_dat2.csv")
 dat2 <- dat1[, -1]
 
 # step1: to choose the optimal k
-fviz_nbclust(dat2, hcut, method = "silhouette", k.max = 5)
+fviz_nbclust(dat2, hcut, method = "silhouette", k.max = 7)
 

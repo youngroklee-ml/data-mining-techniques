@@ -14,3 +14,6 @@ _book/
 *_reprex_files/
 *_reprex.md
 *_reprex.R
+
+# experimental
+experimental/

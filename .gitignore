@@ -17,3 +17,6 @@ _book/
 
 # experimental
 experimental/
+
+# code to generate data
+data_generation/

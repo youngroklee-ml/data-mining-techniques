@@ -162,5 +162,49 @@
       "연관규칙",
       "<span class='chapter-number'>4</span>  <span class='chapter-title'>15장 연관규칙</span>"
     ]
+  },
+  {
+    "objectID": "chapters/ch16_recommender_system.html",
+    "href": "chapters/ch16_recommender_system.html",
+    "title": "16장 추천시스템",
+    "section": "",
+    "text": "(예 16.2)",
+    "crumbs": [
+      "연관규칙",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>16장 추천시스템</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/ch16_recommender_system.html#예-16.2",
+    "href": "chapters/ch16_recommender_system.html#예-16.2",
+    "title": "16장 추천시스템",
+    "section": "",
+    "text": "데이터 로드\n\ndf &lt;- read.csv(\"data/ch16_content.csv\")\nuser_weights &lt;- as.vector(df[, 2])\ndoc_weights &lt;- as.matrix(df[, -c(1, 2)])\n\n\n\n유용도 산출\n\nnumerator &lt;- t(user_weights) %*% doc_weights\ndenominator &lt;- norm(user_weights, type = \"2\") *\n  apply(doc_weights, 2, norm, type = \"2\")\nutility &lt;- numerator / denominator\nround(utility, 4)\n\n       doc1   doc2   doc3   doc4   doc5   doc6\n[1,] 0.6595 0.8409 0.9189 0.4478 0.9717 0.3728",
+    "crumbs": [
+      "연관규칙",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>16장 추천시스템</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/ch16_recommender_system.html#예-16.3",
+    "href": "chapters/ch16_recommender_system.html#예-16.3",
+    "title": "16장 추천시스템",
+    "section": "(예 16.3)",
+    "text": "(예 16.3)\n\n패키지 로드\n\nlibrary(\"recommenderlab\")\n\nLoading required package: Matrix\n\n\nLoading required package: arules\n\n\n\nAttaching package: 'arules'\n\n\nThe following objects are masked from 'package:base':\n\n    abbreviate, write\n\n\nLoading required package: proxy\n\n\n\nAttaching package: 'proxy'\n\n\nThe following object is masked from 'package:Matrix':\n\n    as.matrix\n\n\nThe following objects are masked from 'package:stats':\n\n    as.dist, dist\n\n\nThe following object is masked from 'package:base':\n\n    as.matrix\n\n\nRegistered S3 methods overwritten by 'registry':\n  method               from \n  print.registry_field proxy\n  print.registry_entry proxy\n\n\n\n\n데이터 로드\n\ndf &lt;- read.csv(\"data/ch16_ratings.csv\")\n\n\n\n평점 행렬로 변환\n\nratings &lt;- as(df, \"realRatingMatrix\")\nprint(ratings@data)\n\n7 x 7 sparse Matrix of class \"dgCMatrix\"\n  1 2 3 4 5 6 7\n1 5 . 4 . 1 0 3\n2 4 4 4 . . . 1\n3 5 4 . 1 2 . 3\n4 1 2 1 4 3 5 2\n5 0 1 . 3 5 5 .\n6 . 2 . . 4 4 2\n7 5 . . 1 . . 2\n\n\n\n\n목표고객 설정\n\ntarget &lt;- 7\n\n\n\n목표고객과 각 고객과의 유사성 산출\n\ncentered &lt;- normalize(ratings)\nsimilarity(centered[-target], centered[target])\n\n           7\n1 0.95163875\n2 0.78234196\n3 0.98038446\n4 0.06238169\n5 0.07346149\n6 1.00000000\n\n\n\n\n협업 필터링 추천 시스템 생성\n\nrec &lt;- Recommender(ratings, method = \"UBCF\")\nrec\n\nRecommender of type 'UBCF' for 'realRatingMatrix' \nlearned using 7 users.\n\n\n\n\n평점 추정\n\npredicted &lt;- predict(rec, ratings[target], type = \"ratings\")\nprint(predicted@data)\n\n1 x 7 sparse Matrix of class \"dgCMatrix\"\n  1        2        3 4        5        6 7\n7 . 2.804412 3.680394 . 2.238142 2.110424 .\n\n\n\n\n상위-N 추천\n\nrecommended &lt;- predict(rec, ratings[target], n = 2)\nprint(recommended@items)\n\n$`0`\n[1] 3 2",
+    "crumbs": [
+      "연관규칙",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>16장 추천시스템</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/ch16_recommender_system.html#예-16.4",
+    "href": "chapters/ch16_recommender_system.html#예-16.4",
+    "title": "16장 추천시스템",
+    "section": "(예 16.4)",
+    "text": "(예 16.4)\nTO DO: {recommenderlab} 과정 이해 및 교재 내용 수정",
+    "crumbs": [
+      "연관규칙",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>16장 추천시스템</span>"
+    ]
   }
 ]

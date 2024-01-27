@@ -16,6 +16,7 @@ book:
     - part: "연관규칙"
       chapters: 
       - chapters/ch15_association_rule.qmd
+      - chapters/ch16_recommender_system.qmd
   repo-url: https://github.com/youngroklee-ml/data-mining-techniques
 
 number-sections: false

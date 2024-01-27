@@ -7,8 +7,7 @@ library("recommenderlab")
 df <- read.csv("data/ch16_ratings.csv")
 
 # convert to rating matrix
-mat <- sparseMatrix(i = df$customer, j = df$item, x = df$rating)
-ratings <- as(mat, "realRatingMatrix")
+ratings <- as(df, "realRatingMatrix")
 ratings
 
 # set target customer to generate recommendation
@@ -24,12 +23,12 @@ rec <- Recommender(ratings, method = "UBCF")
 rec
 
 # predict ratings from target user
-predicted <- predict(rec, target, type = "ratings")
+predicted <- predict(rec, ratings[target], type = "ratings")
 predicted
 print(predicted@data)
 
 # create top-N recommendations for target user
-recommended <- predict(rec, target, n = 2)
+recommended <- predict(rec, ratings[target], n = 2)
 print(recommended)
 print(recommended@items)
 print(recommended@ratings)

@@ -1,0 +1,86 @@
+# 16장 추천시스템
+
+## (예 16.2)
+
+#### 데이터 로드
+
+```{r}
+df <- read.csv("data/ch16_content.csv")
+user_weights <- as.vector(df[, 2])
+doc_weights <- as.matrix(df[, -c(1, 2)])
+```
+
+#### 유용도 산출
+
+```{r}
+numerator <- t(user_weights) %*% doc_weights
+denominator <- norm(user_weights, type = "2") *
+  apply(doc_weights, 2, norm, type = "2")
+utility <- numerator / denominator
+round(utility, 4)
+```
+
+
+## (예 16.3)
+
+#### 패키지 로드
+
+```{r}
+library("recommenderlab")
+```
+
+#### 데이터 로드
+
+```{r}
+df <- read.csv("data/ch16_ratings.csv")
+```
+
+#### 평점 행렬로 변환
+
+```{r}
+ratings <- as(df, "realRatingMatrix")
+print(ratings@data)
+```
+
+#### 목표고객 설정
+
+```{r}
+target <- 7
+```
+
+
+#### 목표고객과 각 고객과의 유사성 산출
+
+```{r}
+centered <- normalize(ratings)
+similarity(centered[-target], centered[target])
+```
+
+#### 협업 필터링 추천 시스템 생성
+
+```{r}
+rec <- Recommender(ratings, method = "UBCF")
+rec
+```
+
+#### 평점 추정
+
+```{r}
+predicted <- predict(rec, ratings[target], type = "ratings")
+print(predicted@data)
+```
+
+#### 상위-N 추천
+
+```{r}
+recommended <- predict(rec, ratings[target], n = 2)
+print(recommended@items)
+```
+
+
+
+## (예 16.4)
+
+TO DO: `{recommenderlab}` 과정 이해 및 교재 내용 수정
+
+

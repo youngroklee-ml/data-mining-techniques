@@ -49,7 +49,7 @@ target <- 7
 ```
 
 
-#### 목표고객과 각 고객과의 유사성 산출
+#### 목표고객과 각 고객간의 유사성 산출
 
 ```{r}
 centered <- normalize(ratings)
@@ -81,6 +81,57 @@ print(recommended@items)
 
 ## (예 16.4)
 
-TO DO: `{recommenderlab}` 과정 이해 및 교재 내용 수정
+#### 패키지 로드
+
+```{r}
+library("recommenderlab")
+```
+
+#### 데이터 로드
+
+```{r}
+df <- read.csv("data/ch16_purchase.csv")
+```
+
+#### 시장바구니 데이터 행렬로 변환
+
+```{r}
+purchases <- as(df, "binaryRatingMatrix")
+print(purchases@data)
+```
+
+#### 목표고객 설정
+
+```{r}
+target <- 7
+```
+
+#### 목표고객과 각 고객간의 유사성 산출
+
+```{r}
+sim <- similarity(purchases[-target], purchases[target], method = "jaccard")
+round(sim, 4)
+```
+
+#### 협업 필터링 추천 시스템 생성
+
+```{r}
+rec <- Recommender(purchases, method = "UBCF")
+rec
+```
+
+#### 평점 추정
+
+```{r}
+predicted <- predict(rec, purchases[target], type = "ratings")
+print(round(predicted@data, 4))
+```
+
+#### 상위-N 추천
+
+```{r}
+recommended <- predict(rec, purchases[target], n = 2)
+print(recommended@items)
+```
 
 

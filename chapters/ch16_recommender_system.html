@@ -408,11 +408,16 @@ learned using 7 users.</code></pre>
 <h4 class="anchored" data-anchor-id="시장바구니-데이터-행렬로-변환">시장바구니 데이터 행렬로 변환</h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>purchases <span class="ot">&lt;-</span> <span class="fu">as</span>(df, <span class="st">"binaryRatingMatrix"</span>)</span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(purchases<span class="sc">@</span>data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">as</span>(purchases<span class="sc">@</span>data, <span class="st">"matrix"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>itemMatrix in sparse format with
- 7 rows (elements/transactions) and
- 7 columns (items)</code></pre>
+<pre><code>      1     2     3     4     5     6     7
+1  TRUE FALSE  TRUE FALSE  TRUE FALSE  TRUE
+2  TRUE  TRUE  TRUE FALSE FALSE FALSE  TRUE
+3  TRUE  TRUE FALSE  TRUE  TRUE FALSE  TRUE
+4  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE
+5 FALSE  TRUE FALSE  TRUE  TRUE  TRUE FALSE
+6 FALSE  TRUE FALSE FALSE  TRUE  TRUE  TRUE
+7  TRUE FALSE FALSE  TRUE FALSE FALSE  TRUE</code></pre>
 </div>
 </div>
 </section>

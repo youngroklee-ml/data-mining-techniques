@@ -97,7 +97,7 @@ df <- read.csv("data/ch16_purchase.csv")
 
 ```{r}
 purchases <- as(df, "binaryRatingMatrix")
-print(purchases@data)
+as(purchases@data, "matrix")
 ```
 
 #### 목표고객 설정

@@ -8,7 +8,7 @@ df <- read.csv("data/ch16_purchase.csv")
 
 # convert to binary rating matrix
 purchases <- as(df, "binaryRatingMatrix")
-print(purchases@data)
+as(purchases@data, "matrix")
 
 # set target customer to generate recommendation
 target <- 7

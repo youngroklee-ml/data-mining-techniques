@@ -8,7 +8,8 @@ df <- read.csv("data/ch16_purchase.csv")
 
 # convert to binary rating matrix
 purchases <- as(df, "binaryRatingMatrix")
-as(purchases@data, "matrix")
+mat <- as(purchases@data, "matrix")
+mat
 
 # set target customer to generate recommendation
 target <- 7
@@ -17,14 +18,8 @@ target <- 7
 sim <- similarity(purchases[-target], purchases[target], method = "jaccard")
 round(sim, 4)
 
-# train recommender engine with all users
-rec <- Recommender(purchases, method = "UBCF")
-rec
-
-# predict ratings from target user
-predicted <- predict(rec, purchases[target], type = "ratings")
-print(round(predicted@data, 4))
-
-# create top-N recommendations for 7th (target) user
-recommended <- predict(rec, purchases[target], n = 2)
-print(recommended@items)
+# predicted score
+target_items <- !mat[target, ]
+predicted <- 1 / sum(sim) *
+  t(sim) %*% as(purchases[-target], "matrix")[, target_items]
+round(predicted, 4)

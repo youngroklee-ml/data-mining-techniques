@@ -97,7 +97,8 @@ df <- read.csv("data/ch16_purchase.csv")
 
 ```{r}
 purchases <- as(df, "binaryRatingMatrix")
-as(purchases@data, "matrix")
+mat <- as(purchases@data, "matrix")
+mat
 ```
 
 #### 목표고객 설정
@@ -113,25 +114,13 @@ sim <- similarity(purchases[-target], purchases[target], method = "jaccard")
 round(sim, 4)
 ```
 
-#### 협업 필터링 추천 시스템 생성
-
-```{r}
-rec <- Recommender(purchases, method = "UBCF")
-rec
-```
-
 #### 평점 추정
 
 ```{r}
-predicted <- predict(rec, purchases[target], type = "ratings")
-print(round(predicted@data, 4))
-```
-
-#### 상위-N 추천
-
-```{r}
-recommended <- predict(rec, purchases[target], n = 2)
-print(recommended@items)
+target_items <- !mat[target, ]
+predicted <- 1 / sum(sim) *
+  t(sim) %*% as(purchases[-target], "matrix")[, target_items]
+round(predicted, 4)
 ```
 
 

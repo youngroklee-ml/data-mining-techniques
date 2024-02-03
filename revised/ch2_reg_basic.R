@@ -3,10 +3,8 @@
 # read csv file
 dat1 <- read.csv("data/ch2_reg1.csv")
 
-# regression estimation
+# ex2.3 regression coefficients estimation
 lm_fit <- lm(weight ~ age + height, data = dat1)
-
-# ex2.3 regression coefficients
 coef(lm_fit)
 
 # ex2.4 MSE

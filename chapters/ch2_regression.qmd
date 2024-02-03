@@ -99,7 +99,7 @@ dat_ba <- read.csv("data/Player.csv")
 ```{r}
 lm_model <- lm(Salary ~ Hits + Walks + CRuns + HmRun + CWalks, data = dat_ba)
 summary(lm_model)
-````
+```
 
 분산팽창계수
 

@@ -8,6 +8,9 @@ book:
   date: today
   chapters:
     - index.qmd
+    - part: "예측"
+      chapters:
+      - chapters/ch2_regression.qmd
     - part: "군집분석"
       chapters:
       - chapters/ch11_cluster.qmd

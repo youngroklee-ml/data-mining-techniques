@@ -1,0 +1,201 @@
+# 2장 회귀분석
+
+## (예 2.3 - 2.5, 2.7, 2.10 - 2.11)
+
+#### 데이터 로드
+
+```{r}
+dat1 <- read.csv("data/ch2_reg1.csv")
+```
+
+
+#### (예 2.3) 회귀계수 추정
+
+```{r}
+lm_fit <- lm(weight ~ age + height, data = dat1)
+coef(lm_fit)
+```
+
+#### (예 2.4) 오차항 분산 추정
+
+```{r}
+sum(lm_fit$residuals^2) / lm_fit$df.residual
+```
+
+
+#### (예 2.5) 회귀성검정
+
+```{r}
+anova(lm_fit)
+```
+
+
+#### (예 2.7) 회귀계수검정
+
+```{r}
+summary(lm_fit)
+```
+
+
+#### (예 2.10) 평균반응치 추정
+
+추정회귀계수벡터의 분산-공분산 행렬
+
+```{r}
+vcov(lm_fit)
+```
+
+신규 데이터
+
+```{r}
+newdata <- data.frame(age = 40, height = 170)
+```
+
+신규 데이터에 대한 평균반응치 추정
+
+```{r}
+predict(lm_fit, newdata)
+```
+
+신규 데이터에 대한 평균반응치의 95% 신뢰구간
+
+```{r}
+conf_interval <- predict(lm_fit, newdata, interval = "confidence", level = 0.95)
+conf_interval[, c("lwr", "upr")]
+```
+
+
+#### (예 2.11) 미래반응치 예측
+
+신규 데이터에 대한 미래반응치의 95% 예측구간
+
+```{r}
+pred_interval <- predict(lm_fit, newdata, interval = "prediction", level = 0.95)
+pred_interval[, c("lwr", "upr")]
+```
+
+
+
+## (예 2.8 - 2.9, 2.13)
+
+#### 패키지 로드
+
+```{r}
+library("olsrr")
+library("car")
+```
+
+#### 데이터 로드
+
+```{r}
+dat_ba <- read.csv("data/Player.csv")
+```
+
+
+#### (예 2.13) 다중공선성
+
+회귀모형 추정
+
+```{r}
+lm_model <- lm(Salary ~ Hits + Walks + CRuns + HmRun + CWalks, data = dat_ba)
+summary(lm_model)
+````
+
+분산팽창계수
+
+```{r}
+vif_value1 <- vif(lm_model)
+vif_value1
+```
+
+변수간 상관계수
+
+```{r}
+vars1 <- c("Hits", "Walks", "CRuns", "HmRun", "CWalks")
+cor(dat_ba[vars1])
+```
+
+상관계수가 높은 두 변수 간의 선형관계
+
+```{r}
+plot(dat_ba[, c("CRuns", "CWalks")])
+abline(lm(CWalks ~ CRuns, data = dat_ba), col = "red", lwd = 2, lty = 1)
+```
+
+상관계수가 높은 두 변수 중 하나의 변수를 제거
+
+```{r}
+lm2_model <- lm(Salary ~ Hits + Walks + CRuns + HmRun, data = dat_ba)
+summary(lm2_model)
+
+vif_value2 <- vif(lm2_model)
+vif_value2
+```
+
+
+#### (예 2.8) 모든 가능한 조합의 회귀분석
+
+```{r}
+k <- ols_step_all_possible(lm_model)
+k
+```
+
+#### (예 2.9) 단계별방법
+
+```{r}
+ols_step_both_p(lm_model, details = TRUE, pent = 0.3, prem = 0.3)
+```
+
+
+
+## (예 2.14, 2.16)
+
+#### 패키지 로드
+
+```{r}
+library(ggplot2)
+```
+
+
+#### 데이터 로드
+
+```{r}
+dat1 <- read.csv("data/ch2_coil.csv")
+summary(dat1)
+```
+
+
+#### 지시변수 변환
+
+```{r}
+dat1$thick <- factor(dat1$thick, levels = c(6, 2))
+summary(dat1)
+```
+
+
+#### (예 2.14) 회귀모형 추정
+
+```{r}
+lm_fit <- lm(y ~ temp + thick, data = dat1)
+summary(lm_fit)
+```
+
+
+#### (예 2.16) 교호작용 추정
+
+```{r}
+lm_fit_interaction <- lm(y ~ temp + thick + temp:thick, data = dat1)
+summary(lm_fit_interaction)
+```
+
+시각화
+
+```{r}
+ggplot(dat1, aes(x = temp, y = y, shape = thick, linetype = thick)) +
+  geom_smooth(method = "lm", se = FALSE, color = "grey30") +
+  geom_point(size = 3) +
+  labs(x = "CT", y = "TS", shape = "thickness", linetype = "thickness") +
+  theme_classic() +
+  theme(legend.position = c(0.2, 0.2))
+```
+

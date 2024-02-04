@@ -1,0 +1,353 @@
+# 5장 분류분석 개요
+
+## (예 5.2)
+
+#### 패키지 로드
+
+```{r}
+library(class) # knn
+library(proxy) # dist - support cross-distance
+```
+
+
+#### 데이터 로드
+
+```{r}
+dat1 <- read.csv("data/ch7_dat1.csv")
+dat1$class <- factor(dat1$class)
+train_x <- dat1[1:7, 2:3]
+train_y <- dat1[1:7, 4]
+test_x <- dat1[8:9, 2:3]
+```
+
+#### 학습데이터간 유클리디안 거리
+
+```{r}
+dist(train_x)
+```
+
+#### 3-인접객체법
+
+```{r}
+knn.cv(train_x, train_y, k = 3)
+```
+
+#### 새로운 객체들과 학습데이터 간 유클리디안 거리
+
+```{r}
+dist(test_x, train_x)
+```
+
+#### 3-인접객체법
+
+```{r}
+knn(train_x, test_x, train_y, k = 3)
+```
+
+
+## (예 5.3 - 5.4)
+
+#### 패키지 로드
+
+```{r}
+library(e1071) # naive bayes
+library(yardstick) # measure performance
+```
+
+#### 데이터 로드
+
+```{r}
+dat3 <- read.csv("data/ch5_dat3.csv")
+dat3$gender <- factor(dat3$gender)
+dat3$age_gr <- factor(dat3$age_gr)
+dat3$class <- factor(dat3$class)
+summary(dat3)
+```
+
+#### (예 5.3) 나이브베이즈 분류분석
+
+모형 추정
+
+```{r}
+nb_fit <- naiveBayes(class ~ gender + age_gr, data = dat3)
+print(nb_fit)
+```
+
+사후확률
+
+```{r}
+nb_posterior <- predict(nb_fit, dat3, type = "raw")
+round(nb_posterior, 3)
+```
+
+추정범주
+
+```{r}
+nb_class <- predict(nb_fit, dat3, type = "class")
+nb_class
+```
+
+추정결과 정리
+
+```{r}
+results <- cbind(dat3, pred_class = nb_class, posterior = round(nb_posterior, 3))
+results
+```
+
+#### (예 5.4) 성능 평가
+
+정오분류표
+
+```{r}
+conf_mat(results, truth = "class", estimate = "pred_class")
+```
+
+민감도, 특이도 및 F1 척도
+
+```{r}
+multi_metric <- metric_set(accuracy, sens, spec, f_meas)
+multi_metric(results, truth = "class", estimate = "pred_class")
+```
+
+
+## (예 5.4)
+
+#### 패키지 로드
+
+```{r}
+library(yardstick)
+```
+
+
+#### 데이터 로드
+
+```{r}
+dat <- read.csv("data/ch5_cm.csv")
+dat$pred_y <- factor(dat$pred_y, levels = c(1, 0))
+dat$true_y <- factor(dat$true_y, levels = c(1, 0))
+summary(dat)
+table(dat)
+```
+
+#### 정오분류표
+
+```{r}
+cm <- conf_mat(dat, truth = "true_y", estimate = "pred_y")
+cm
+```
+
+
+#### 정확도, 민감도, 특이도, F1 척도
+
+```{r}
+multi_metric <- metric_set(accuracy, sens, spec, f_meas)
+multi_metric(dat, truth = "true_y", estimate = "pred_y")
+```
+
+
+#### OPTIONAL: 보다 다양한 척도들
+
+```{r}
+summary(cm)
+```
+
+
+## (예 5.5)
+
+#### 패키지 로드
+
+```{r}
+library(yardstick)
+library(ggplot2)
+```
+
+
+#### 데이터 로드
+
+```{r}
+dat5 <- read.csv("data/ch5_dat5.csv")
+dat5$class <- factor(dat5$class, levels = c(1, 0))
+```
+
+#### 범주 분류기준: `x >= 40`
+
+범주 추정
+
+```{r}
+dat5$pred40 <- factor(ifelse(dat5$x >= 40, 1, 0), levels = c(1, 0))
+```
+
+정오분류표
+
+```{r}
+cm40 <- conf_mat(dat5, truth = "class", estimate = "pred40")
+cm40
+```
+
+민감도 및 특이도
+
+```{r}
+multi_metric <- metric_set(sens, spec)
+metric40 <- multi_metric(dat5, truth = "class", estimate = "pred40")
+metric40
+```
+
+
+#### 범주 분류기준: `x >= 50`
+
+범주 추정
+
+```{r}
+dat5$pred50 <- factor(ifelse(dat5$x >= 50, 1, 0), levels = c(1, 0))
+```
+
+정오분류표
+
+```{r}
+cm50 <- conf_mat(dat5, truth = "class", estimate = "pred50")
+cm50
+```
+
+민감도 및 특이도
+
+```{r}
+metric50 <- multi_metric(dat5, truth = "class", estimate = "pred50")
+metric50
+```
+
+
+## (예 5.6)
+
+#### 패키지 로드
+
+```{r}
+library(yardstick)
+library(ggplot2)
+```
+
+
+#### 데이터 로드
+
+```{r}
+dat <- read.csv("data/ch5_roc.csv")
+dat$class <- factor(dat$class)
+dat$pred <- factor(dat$pred)
+```
+
+
+#### ROC 곡선 데이터
+
+```{r}
+roc <- roc_curve(dat, truth = "class", posterior1)
+roc
+```
+
+#### AUC
+
+```{r}
+auc <- roc_auc(dat, truth = "class", posterior1)
+auc
+```
+
+#### ROC 곡선 시각화
+
+```{r}
+autoplot(roc) +
+  labs(title = paste0("ROC Curve: AUC = ", auc[[".estimate"]]))
+```
+
+
+## (예 5.7)
+
+#### 패키지 로드
+
+```{r}
+library(yardstick)
+library(ggplot2)
+```
+
+#### 데이터 로드
+
+1000개 객체의 실제범주와 범주 1에 속할 사후확률 추정 결과
+
+```{r}
+dat <- read.csv("data/ch5_lift_2.csv")
+dat$class <- factor(dat$class)
+head(dat)
+tail(dat)
+summary(dat)
+```
+
+사후확률 내림차순으로 객체를 100개씩 묶은 10개 집단 각각의 범주 1 빈도
+
+```{r}
+grouped <- read.csv("data/ch5_lift_1.csv")
+grouped$group <- factor(grouped$group)
+grouped
+```
+
+
+#### 범주 1
+
+범주 1에 속한 전체 객체 수
+
+```{r}
+total_n1 <- sum(grouped$n1)
+print(total_n1)
+```
+
+전체 데이터에서 범주 1의 비율
+
+```{r}
+prop_n1 <- sum(grouped$n1) / sum(grouped$n)
+print(prop_n1)
+```
+
+#### 이익도표 통계량 산출
+
+```{r}
+grouped$response_pct <- grouped$n1 / grouped$n * 100
+grouped$captured_response_pct <- grouped$n1 / total_n1 * 100
+grouped$gain <- cumsum(grouped$captured_response_pct)
+grouped$lift <- (cumsum(grouped$n1) / cumsum(grouped$n)) / prop_n1
+grouped
+```
+
+#### Gain chart
+
+```{r}
+ggplot(grouped, aes(x = group, y = gain)) +
+  geom_line(group = 1) +
+  geom_point() +
+  labs(y = "% Gain", title = "Gain Chart for Class 1") +
+  theme_classic()
+```
+
+
+#### Lift chart
+
+```{r}
+ggplot(grouped, aes(x = group, y = lift)) +
+  geom_hline(yintercept = 1, color = "grey30", linetype = "dashed") +
+  geom_line(group = 1) +
+  geom_point() +
+  labs(y = "Lift", title = "Lift Chart for Class 1") +
+  scale_y_continuous(breaks = seq(1, 2.2, by = 0.2)) +
+  theme_classic()
+```
+
+
+#### OPTIONAL: 집단화하기 전 원 데이터(1000개 객체)를 이용한 이익도표
+
+Gain chart
+
+```{r}
+gain <- gain_curve(dat, truth = class, posterior1)
+autoplot(gain)
+```
+
+```{r}
+lift <- lift_curve(dat, truth = class, posterior1)
+autoplot(lift)
+```
+

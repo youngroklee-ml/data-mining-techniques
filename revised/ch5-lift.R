@@ -7,6 +7,7 @@ library(ggplot2)
 dat <- read.csv("data/ch5_lift_2.csv")
 dat$class <- factor(dat$class)
 head(dat)
+tail(dat)
 summary(dat)
 
 # load data:

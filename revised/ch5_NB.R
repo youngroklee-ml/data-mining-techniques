@@ -1,9 +1,8 @@
-# ch5.2.Naive Bayes
-
-# ex5-3
+# ex5-3: Naive Bayes classification
 
 # load packages
 library(e1071) # naive bayes
+library(yardstick) # measure performance
 
 # read csv file
 dat3 <- read.csv("data/ch5_dat3.csv")
@@ -27,6 +26,15 @@ nb_class <- predict(nb_fit, dat3, type = "class")
 nb_class
 
 # print summary results
-cbind(dat3, pred_class = nb_class, posterior = round(nb_posterior, 3))
+results <- cbind(dat3, pred_class = nb_class, posterior = round(nb_posterior, 3))
+results
 
 
+# ex5-4: measure performance for ex5-3 results
+
+# confusion matrix
+conf_mat(results, truth = "class", estimate = "pred_class")
+
+# sensitivity, specificity, F1-score
+multi_metric <- metric_set(accuracy, sens, spec, f_meas)
+multi_metric(results, truth = "class", estimate = "pred_class")

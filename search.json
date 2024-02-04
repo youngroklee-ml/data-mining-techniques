@@ -54,6 +54,83 @@
     ]
   },
   {
+    "objectID": "chapters/ch5_classification.html",
+    "href": "chapters/ch5_classification.html",
+    "title": "5장 분류분석 개요",
+    "section": "",
+    "text": "(예 5.2)",
+    "crumbs": [
+      "분류분석",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>5장 분류분석 개요</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/ch5_classification.html#예-5.2",
+    "href": "chapters/ch5_classification.html#예-5.2",
+    "title": "5장 분류분석 개요",
+    "section": "",
+    "text": "패키지 로드\n\nlibrary(class) # knn\nlibrary(proxy) # dist - support cross-distance\n\n\nAttaching package: 'proxy'\n\n\nThe following objects are masked from 'package:stats':\n\n    as.dist, dist\n\n\nThe following object is masked from 'package:base':\n\n    as.matrix\n\n\n\n\n데이터 로드\n\ndat1 &lt;- read.csv(\"data/ch7_dat1.csv\")\ndat1$class &lt;- factor(dat1$class)\ntrain_x &lt;- dat1[1:7, 2:3]\ntrain_y &lt;- dat1[1:7, 4]\ntest_x &lt;- dat1[8:9, 2:3]\n\n\n\n학습데이터간 유클리디안 거리\n\ndist(train_x)\n\n         1        2        3        4        5        6\n2 4.123106                                             \n3 2.236068 5.830952                                    \n4 3.162278 5.000000 2.236068                           \n5 2.236068 3.162278 4.472136 5.000000                  \n6 3.605551 2.828427 5.830952 6.082763 1.414214         \n7 1.414214 3.605551 2.236068 2.000000 3.000000 4.123106\n\n\n\n\n3-인접객체법\n\nknn.cv(train_x, train_y, k = 3)\n\n[1] 1 1 1 1 1 1 2\nLevels: 1 2\n\n\n\n\n새로운 객체들과 학습데이터 간 유클리디안 거리\n\ndist(test_x, train_x)\n\n         1        2        3        4        5        6        7\n8 4.123106 5.830952 2.828427 1.000000 6.000000 7.071068 3.000000\n9 3.000000 1.414214 4.472136 3.605551 2.828427 3.162278 2.236068\n\n\n\n\n3-인접객체법\n\nknn(train_x, test_x, train_y, k = 3)\n\n[1] 2 1\nLevels: 1 2",
+    "crumbs": [
+      "분류분석",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>5장 분류분석 개요</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/ch5_classification.html#예-5.3---5.4",
+    "href": "chapters/ch5_classification.html#예-5.3---5.4",
+    "title": "5장 분류분석 개요",
+    "section": "(예 5.3 - 5.4)",
+    "text": "(예 5.3 - 5.4)\n\n패키지 로드\n\nlibrary(e1071) # naive bayes\nlibrary(yardstick) # measure performance\n\n\n\n데이터 로드\n\ndat3 &lt;- read.csv(\"data/ch5_dat3.csv\")\ndat3$gender &lt;- factor(dat3$gender)\ndat3$age_gr &lt;- factor(dat3$age_gr)\ndat3$class &lt;- factor(dat3$class)\nsummary(dat3)\n\n       ID    gender age_gr class\n Min.   :1   F:5    1:1    1:5  \n 1st Qu.:3   M:4    2:4    2:4  \n Median :5          3:2         \n Mean   :5          4:2         \n 3rd Qu.:7                      \n Max.   :9                      \n\n\n\n\n(예 5.3) 나이브베이즈 분류분석\n모형 추정\n\nnb_fit &lt;- naiveBayes(class ~ gender + age_gr, data = dat3)\nprint(nb_fit)\n\n\nNaive Bayes Classifier for Discrete Predictors\n\nCall:\nnaiveBayes.default(x = X, y = Y, laplace = laplace)\n\nA-priori probabilities:\nY\n        1         2 \n0.5555556 0.4444444 \n\nConditional probabilities:\n   gender\nY      F    M\n  1 0.40 0.60\n  2 0.75 0.25\n\n   age_gr\nY      1    2    3    4\n  1 0.20 0.40 0.20 0.20\n  2 0.00 0.50 0.25 0.25\n\n\n사후확률\n\nnb_posterior &lt;- predict(nb_fit, dat3, type = \"raw\")\nround(nb_posterior, 3)\n\n          1     2\n [1,] 0.706 0.294\n [2,] 0.706 0.294\n [3,] 0.706 0.294\n [4,] 0.706 0.294\n [5,] 0.993 0.007\n [6,] 0.348 0.652\n [7,] 0.348 0.652\n [8,] 0.348 0.652\n [9,] 0.348 0.652\n\n\n추정범주\n\nnb_class &lt;- predict(nb_fit, dat3, type = \"class\")\nnb_class\n\n[1] 1 1 1 1 1 2 2 2 2\nLevels: 1 2\n\n\n추정결과 정리\n\nresults &lt;- cbind(dat3, pred_class = nb_class, posterior = round(nb_posterior, 3))\nresults\n\n  ID gender age_gr class pred_class posterior.1 posterior.2\n1  1      M      2     1          1       0.706       0.294\n2  2      M      2     2          1       0.706       0.294\n3  3      M      3     1          1       0.706       0.294\n4  4      M      4     1          1       0.706       0.294\n5  5      F      1     1          1       0.993       0.007\n6  6      F      2     2          2       0.348       0.652\n7  7      F      2     1          2       0.348       0.652\n8  8      F      3     2          2       0.348       0.652\n9  9      F      4     2          2       0.348       0.652\n\n\n\n\n(예 5.4) 성능 평가\n정오분류표\n\nconf_mat(results, truth = \"class\", estimate = \"pred_class\")\n\n          Truth\nPrediction 1 2\n         1 4 1\n         2 1 3\n\n\n민감도, 특이도 및 F1 척도\n\nmulti_metric &lt;- metric_set(accuracy, sens, spec, f_meas)\nmulti_metric(results, truth = \"class\", estimate = \"pred_class\")\n\n# A tibble: 4 × 3\n  .metric  .estimator .estimate\n  &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;\n1 accuracy binary         0.778\n2 sens     binary         0.8  \n3 spec     binary         0.75 \n4 f_meas   binary         0.8",
+    "crumbs": [
+      "분류분석",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>5장 분류분석 개요</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/ch5_classification.html#예-5.4",
+    "href": "chapters/ch5_classification.html#예-5.4",
+    "title": "5장 분류분석 개요",
+    "section": "(예 5.4)",
+    "text": "(예 5.4)\n\n패키지 로드\n\nlibrary(yardstick)\n\n\n\n데이터 로드\n\ndat &lt;- read.csv(\"data/ch5_cm.csv\")\ndat$pred_y &lt;- factor(dat$pred_y, levels = c(1, 0))\ndat$true_y &lt;- factor(dat$true_y, levels = c(1, 0))\nsummary(dat)\n\n pred_y true_y\n 1:25   1:20  \n 0:75   0:80  \n\ntable(dat)\n\n      true_y\npred_y  1  0\n     1 15 10\n     0  5 70\n\n\n\n\n정오분류표\n\ncm &lt;- conf_mat(dat, truth = \"true_y\", estimate = \"pred_y\")\ncm\n\n          Truth\nPrediction  1  0\n         1 15 10\n         0  5 70\n\n\n\n\n정확도, 민감도, 특이도, F1 척도\n\nmulti_metric &lt;- metric_set(accuracy, sens, spec, f_meas)\nmulti_metric(dat, truth = \"true_y\", estimate = \"pred_y\")\n\n# A tibble: 4 × 3\n  .metric  .estimator .estimate\n  &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;\n1 accuracy binary         0.85 \n2 sens     binary         0.75 \n3 spec     binary         0.875\n4 f_meas   binary         0.667\n\n\n\n\nOPTIONAL: 보다 다양한 척도들\n\nsummary(cm)\n\n# A tibble: 13 × 3\n   .metric              .estimator .estimate\n   &lt;chr&gt;                &lt;chr&gt;          &lt;dbl&gt;\n 1 accuracy             binary         0.85 \n 2 kap                  binary         0.571\n 3 sens                 binary         0.75 \n 4 spec                 binary         0.875\n 5 ppv                  binary         0.6  \n 6 npv                  binary         0.933\n 7 mcc                  binary         0.577\n 8 j_index              binary         0.625\n 9 bal_accuracy         binary         0.812\n10 detection_prevalence binary         0.25 \n11 precision            binary         0.6  \n12 recall               binary         0.75 \n13 f_meas               binary         0.667",
+    "crumbs": [
+      "분류분석",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>5장 분류분석 개요</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/ch5_classification.html#예-5.5",
+    "href": "chapters/ch5_classification.html#예-5.5",
+    "title": "5장 분류분석 개요",
+    "section": "(예 5.5)",
+    "text": "(예 5.5)\n\n패키지 로드\n\nlibrary(yardstick)\nlibrary(ggplot2)\n\n\n\n데이터 로드\n\ndat5 &lt;- read.csv(\"data/ch5_dat5.csv\")\ndat5$class &lt;- factor(dat5$class, levels = c(1, 0))\n\n\n\n범주 분류기준: x &gt;= 40\n범주 추정\n\ndat5$pred40 &lt;- factor(ifelse(dat5$x &gt;= 40, 1, 0), levels = c(1, 0))\n\n정오분류표\n\ncm40 &lt;- conf_mat(dat5, truth = \"class\", estimate = \"pred40\")\ncm40\n\n          Truth\nPrediction 1 0\n         1 5 2\n         0 1 2\n\n\n민감도 및 특이도\n\nmulti_metric &lt;- metric_set(sens, spec)\nmetric40 &lt;- multi_metric(dat5, truth = \"class\", estimate = \"pred40\")\nmetric40\n\n# A tibble: 2 × 3\n  .metric .estimator .estimate\n  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;\n1 sens    binary         0.833\n2 spec    binary         0.5  \n\n\n\n\n범주 분류기준: x &gt;= 50\n범주 추정\n\ndat5$pred50 &lt;- factor(ifelse(dat5$x &gt;= 50, 1, 0), levels = c(1, 0))\n\n정오분류표\n\ncm50 &lt;- conf_mat(dat5, truth = \"class\", estimate = \"pred50\")\ncm50\n\n          Truth\nPrediction 1 0\n         1 4 1\n         0 2 3\n\n\n민감도 및 특이도\n\nmetric50 &lt;- multi_metric(dat5, truth = \"class\", estimate = \"pred50\")\nmetric50\n\n# A tibble: 2 × 3\n  .metric .estimator .estimate\n  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;\n1 sens    binary         0.667\n2 spec    binary         0.75",
+    "crumbs": [
+      "분류분석",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>5장 분류분석 개요</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/ch5_classification.html#예-5.6",
+    "href": "chapters/ch5_classification.html#예-5.6",
+    "title": "5장 분류분석 개요",
+    "section": "(예 5.6)",
+    "text": "(예 5.6)\n\n패키지 로드\n\nlibrary(yardstick)\nlibrary(ggplot2)\n\n\n\n데이터 로드\n\ndat &lt;- read.csv(\"data/ch5_roc.csv\")\ndat$class &lt;- factor(dat$class)\ndat$pred &lt;- factor(dat$pred)\n\n\n\nROC 곡선 데이터\n\nroc &lt;- roc_curve(dat, truth = \"class\", posterior1)\nroc\n\n# A tibble: 11 × 3\n   .threshold specificity sensitivity\n        &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;\n 1 -Inf               0          1   \n 2    0.00596         0          1   \n 3    0.0264          0.2        1   \n 4    0.0995          0.4        1   \n 5    0.103           0.6        1   \n 6    0.356           0.8        1   \n 7    0.728           0.8        0.75\n 8    0.921           1          0.75\n 9    0.980           1          0.5 \n10    0.981           1          0.25\n11  Inf               1          0   \n\n\n\n\nAUC\n\nauc &lt;- roc_auc(dat, truth = \"class\", posterior1)\nauc\n\n# A tibble: 1 × 3\n  .metric .estimator .estimate\n  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;\n1 roc_auc binary          0.95\n\n\n\n\nROC 곡선 시각화\n\nautoplot(roc) +\n  labs(title = paste0(\"ROC Curve: AUC = \", auc[[\".estimate\"]]))",
+    "crumbs": [
+      "분류분석",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>5장 분류분석 개요</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/ch5_classification.html#예-5.7",
+    "href": "chapters/ch5_classification.html#예-5.7",
+    "title": "5장 분류분석 개요",
+    "section": "(예 5.7)",
+    "text": "(예 5.7)\n\n패키지 로드\n\nlibrary(yardstick)\nlibrary(ggplot2)\n\n\n\n데이터 로드\n1000개 객체의 실제범주와 범주 1에 속할 사후확률 추정 결과\n\ndat &lt;- read.csv(\"data/ch5_lift_2.csv\")\ndat$class &lt;- factor(dat$class)\nhead(dat)\n\n  class posterior1\n1     1     0.9995\n2     1     0.9985\n3     1     0.9975\n4     1     0.9965\n5     1     0.9955\n6     1     0.9945\n\ntail(dat)\n\n     class posterior1\n995      2     0.0055\n996      2     0.0045\n997      2     0.0035\n998      2     0.0025\n999      2     0.0015\n1000     2     0.0005\n\nsummary(dat)\n\n class     posterior1    \n 1:437   Min.   :0.0005  \n 2:563   1st Qu.:0.2502  \n         Median :0.5000  \n         Mean   :0.5000  \n         3rd Qu.:0.7498  \n         Max.   :0.9995  \n\n\n사후확률 내림차순으로 객체를 100개씩 묶은 10개 집단 각각의 범주 1 빈도\n\ngrouped &lt;- read.csv(\"data/ch5_lift_1.csv\")\ngrouped$group &lt;- factor(grouped$group)\ngrouped\n\n   group   n n1\n1      1 100 92\n2      2 100 78\n3      3 100 64\n4      4 100 57\n5      5 100 43\n6      6 100 35\n7      7 100 29\n8      8 100 22\n9      9 100  7\n10    10 100 10\n\n\n\n\n범주 1\n범주 1에 속한 전체 객체 수\n\ntotal_n1 &lt;- sum(grouped$n1)\nprint(total_n1)\n\n[1] 437\n\n\n전체 데이터에서 범주 1의 비율\n\nprop_n1 &lt;- sum(grouped$n1) / sum(grouped$n)\nprint(prop_n1)\n\n[1] 0.437\n\n\n\n\n이익도표 통계량 산출\n\ngrouped$response_pct &lt;- grouped$n1 / grouped$n * 100\ngrouped$captured_response_pct &lt;- grouped$n1 / total_n1 * 100\ngrouped$gain &lt;- cumsum(grouped$captured_response_pct)\ngrouped$lift &lt;- (cumsum(grouped$n1) / cumsum(grouped$n)) / prop_n1\ngrouped\n\n   group   n n1 response_pct captured_response_pct      gain     lift\n1      1 100 92           92             21.052632  21.05263 2.105263\n2      2 100 78           78             17.848970  38.90160 1.945080\n3      3 100 64           64             14.645309  53.54691 1.784897\n4      4 100 57           57             13.043478  66.59039 1.664760\n5      5 100 43           43              9.839817  76.43021 1.528604\n6      6 100 35           35              8.009153  84.43936 1.407323\n7      7 100 29           29              6.636156  91.07551 1.301079\n8      8 100 22           22              5.034325  96.10984 1.201373\n9      9 100  7            7              1.601831  97.71167 1.085685\n10    10 100 10           10              2.288330 100.00000 1.000000\n\n\n\n\nGain chart\n\nggplot(grouped, aes(x = group, y = gain)) +\n  geom_line(group = 1) +\n  geom_point() +\n  labs(y = \"% Gain\", title = \"Gain Chart for Class 1\") +\n  theme_classic()\n\n\n\n\n\n\n\n\n\n\nLift chart\n\nggplot(grouped, aes(x = group, y = lift)) +\n  geom_hline(yintercept = 1, color = \"grey30\", linetype = \"dashed\") +\n  geom_line(group = 1) +\n  geom_point() +\n  labs(y = \"Lift\", title = \"Lift Chart for Class 1\") +\n  scale_y_continuous(breaks = seq(1, 2.2, by = 0.2)) +\n  theme_classic()\n\n\n\n\n\n\n\n\n\n\nOPTIONAL: 집단화하기 전 원 데이터(1000개 객체)를 이용한 이익도표\nGain chart\n\ngain &lt;- gain_curve(dat, truth = class, posterior1)\nautoplot(gain)\n\n\n\n\n\n\n\n\n\nlift &lt;- lift_curve(dat, truth = class, posterior1)\nautoplot(lift)",
+    "crumbs": [
+      "분류분석",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>5장 분류분석 개요</span>"
+    ]
+  },
+  {
     "objectID": "chapters/ch11_cluster.html",
     "href": "chapters/ch11_cluster.html",
     "title": "11장 군집분석 개요",
@@ -61,7 +138,7 @@
     "text": "(예 11.1)\n데이터 읽기\ndat1 &lt;- read.csv(\"data/ch11_dat1.csv\")\n\ndat2 &lt;- dat1[, -1]\n유클리디안 거리\nD1 &lt;- dist(dat2)\nD1 &lt;- round(D1, 2)\nD1\n\n       1     2     3     4     5     6     7     8     9\n2   8.31                                                \n3  24.74 16.76                                          \n4  16.91  9.11  7.87                                    \n5  15.17  9.43 12.08  6.48                              \n6  10.10  3.00 16.55  9.49 11.31                        \n7  27.17 19.05  3.16 10.39 15.17 18.49                  \n8  27.87 20.35 10.05 13.15 19.10 19.52  8.31            \n9  33.03 25.57 14.53 18.57 24.52 24.52 12.04  5.48      \n10 24.37 17.75 11.75 11.66 17.03 17.49 11.49  5.74 10.05\n각 변수의 평균\nmean_vector &lt;- colMeans(dat2)\nmean_vector\n\n  X1   X2   X3 \n36.8  8.5  7.8\n각 변수의 표준편차\ncov_matrix &lt;- cov(dat2)\nsqrt(cov_matrix)\n\nWarning in sqrt(cov_matrix): NaNs produced\n\n\n         X1       X2       X3\nX1 9.738811      NaN      NaN\nX2      NaN 4.478343 1.490712\nX3      NaN 1.490712 4.661902",
     "crumbs": [
       "군집분석",
-      "<span class='chapter-number'>2</span>  <span class='chapter-title'>11장 군집분석 개요</span>"
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>11장 군집분석 개요</span>"
     ]
   },
   {
@@ -72,7 +149,7 @@
     "text": "(예 11.3)\n상관계수\n\nrow_cor &lt;- cor(t(dat2), use = \"pairwise.complete.obs\", method = \"pearson\")\nrow_cor\n\n           [,1]      [,2]      [,3]      [,4]      [,5]      [,6]      [,7]\n [1,] 1.0000000 0.9347195 0.6828741 0.7600371 0.5771595 0.9673518 0.7144034\n [2,] 0.9347195 1.0000000 0.8979182 0.9413798 0.8297018 0.9942708 0.9164427\n [3,] 0.6828741 0.8979182 1.0000000 0.9937702 0.9907060 0.8457246 0.9990286\n [4,] 0.7600371 0.9413798 0.9937702 1.0000000 0.9693748 0.8999271 0.9977160\n [5,] 0.5771595 0.8297018 0.9907060 0.9693748 1.0000000 0.7652812 0.9837496\n [6,] 0.9673518 0.9942708 0.8457246 0.8999271 0.7652812 1.0000000 0.8684181\n [7,] 0.7144034 0.9164427 0.9990286 0.9977160 0.9837496 0.8684181 1.0000000\n [8,] 0.8099343 0.9655028 0.9815576 0.9967479 0.9464324 0.9321377 0.9890283\n [9,] 0.8219949 0.9707253 0.9773556 0.9948498 0.9394895 0.9394895 0.9857309\n[10,] 0.8089800 0.9650783 0.9818670 0.9968776 0.9469560 0.9315479 0.9892671\n           [,8]      [,9]     [,10]\n [1,] 0.8099343 0.8219949 0.8089800\n [2,] 0.9655028 0.9707253 0.9650783\n [3,] 0.9815576 0.9773556 0.9818670\n [4,] 0.9967479 0.9948498 0.9968776\n [5,] 0.9464324 0.9394895 0.9469560\n [6,] 0.9321377 0.9394895 0.9315479\n [7,] 0.9890283 0.9857309 0.9892671\n [8,] 1.0000000 0.9997823 0.9999987\n [9,] 0.9997823 1.0000000 0.9997471\n[10,] 0.9999987 0.9997471 1.0000000\n\n\n표준화한 후 상관계수\n\ns_dat2 &lt;- scale(dat2)\nrow_cor_s &lt;- cor(t(s_dat2), use = \"pairwise.complete.obs\", method = \"pearson\")\nrow_cor_s\n\n            [,1]       [,2]        [,3]        [,4]       [,5]        [,6]\n [1,]  1.0000000  0.9999315 -0.67406561  0.16745765  0.1015587  0.97213475\n [2,]  0.9999315  1.0000000 -0.66537519  0.17898338  0.1131937  0.96932487\n [3,] -0.6740656 -0.6653752  1.00000000  0.61536345  0.6663950 -0.82844400\n [4,]  0.1674577  0.1789834  0.61536345  1.00000000  0.9977886 -0.06832112\n [5,]  0.1015587  0.1131937  0.66639497  0.99778861  1.0000000 -0.13448190\n [6,]  0.9721348  0.9693249 -0.82844400 -0.06832112 -0.1344819  1.00000000\n [7,] -0.8797846 -0.8741613  0.94417672  0.32133338  0.3835649 -0.96670729\n [8,] -0.8006556 -0.8076120  0.09713788 -0.72474074 -0.6773407 -0.63789659\n [9,] -0.7482030 -0.7559160  0.01425163 -0.77939352 -0.7360260 -0.57182171\n[10,] -0.7956097 -0.8026447  0.08879897 -0.73048596 -0.6834783 -0.63142435\n            [,7]        [,8]        [,9]       [,10]\n [1,] -0.8797846 -0.80065556 -0.74820299 -0.79560974\n [2,] -0.8741613 -0.80761196 -0.75591598 -0.80264471\n [3,]  0.9441767  0.09713788  0.01425163  0.08879897\n [4,]  0.3213334 -0.72474074 -0.77939352 -0.73048596\n [5,]  0.3835649 -0.67734074 -0.73602598 -0.68347830\n [6,] -0.9667073 -0.63789659 -0.57182171 -0.63142435\n [7,]  1.0000000  0.41959679  0.34286201  0.41197990\n [8,]  0.4195968  1.00000000  0.99655423  0.99996493\n [9,]  0.3428620  0.99655423  1.00000000  0.99721394\n[10,]  0.4119799  0.99996493  0.99721394  1.00000000",
     "crumbs": [
       "군집분석",
-      "<span class='chapter-number'>2</span>  <span class='chapter-title'>11장 군집분석 개요</span>"
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>11장 군집분석 개요</span>"
     ]
   },
   {
@@ -83,7 +160,7 @@
     "text": "(예 12.1)",
     "crumbs": [
       "군집분석",
-      "<span class='chapter-number'>3</span>  <span class='chapter-title'>12장 계층적 군집방법</span>"
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>12장 계층적 군집방법</span>"
     ]
   },
   {
@@ -94,7 +171,7 @@
     "text": "데이터 로드\n\ndat1 &lt;- read.csv(\"data/ch12_dat1.csv\")\ndat2 &lt;- dat1[, -1]\n\n\n\n유클리디안 거리\n\nD1 &lt;- dist(dat2)\nround(D1, 2)\n\n       1     2     3     4     5     6     7     8     9\n2   2.24                                                \n3  11.31  9.22                                          \n4   7.81  5.83  3.61                                    \n5  11.40  9.22  1.41  4.12                              \n6   1.41  2.24 11.40  8.06 11.31                        \n7  10.63  8.60  1.00  2.83  2.24 10.82                  \n8  10.05  9.49  9.22  7.21 10.44 11.18  8.25            \n9  11.40 11.18 11.40  9.43 12.65 12.65 10.44  2.24      \n10 12.37 12.08 11.70 10.00 13.00 13.60 10.77  2.83  1.00\n\n\n\n\n평균연결법\n\nhc_c &lt;- hclust(D1, method = \"average\")\n\n\n\n결과 시각화\n\nplot(hc_c,\n     hang = -1, cex = 0.7, main = \"Average linkage with Euclidean distance\",\n     ylab = \"Distance\", xlab = \"observation\"\n)",
     "crumbs": [
       "군집분석",
-      "<span class='chapter-number'>3</span>  <span class='chapter-title'>12장 계층적 군집방법</span>"
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>12장 계층적 군집방법</span>"
     ]
   },
   {
@@ -105,7 +182,7 @@
     "text": "(예 12.2)\n\n데이터 로드\n\ndat1 &lt;- read.csv(\"data/ch12_dat2.csv\")\ndat2 &lt;- dat1[, -1]\n\n\n\n제곱 유클리디안 거리\n\nD1 &lt;- dist(dat2)\nD1^2\n\n    1   2   3   4   5   6   7\n2 260                        \n3   5 289                    \n4 346  82 337                \n5 173  25 212 173            \n6  32 148  29 170 117        \n7 234   2 257  64  29 122    \n8 277  53 274   5 122 125  37\n\n\n\n\n워드 방법\n\nhc_c &lt;- hclust(D1, method = \"ward.D2\")\n\n\n\n결과 시각화\n\nplot(hc_c,\n     hang = -1, cex = 1, main = \"Ward's linkage with Euclidean distance\",\n     ylab = \"Distance\", xlab = \"observation\"\n)",
     "crumbs": [
       "군집분석",
-      "<span class='chapter-number'>3</span>  <span class='chapter-title'>12장 계층적 군집방법</span>"
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>12장 계층적 군집방법</span>"
     ]
   },
   {
@@ -116,7 +193,7 @@
     "text": "(예 12.3)\n\n패키지 로드\n\nlibrary(cluster)\n\n\n\n데이터 로드\n\ndat1 &lt;- read.csv(\"data/ch12_dat3.csv\")\ndat2 &lt;- dat1[, -1]\n\n\n\n다이아나 방법\n\nclus_diana &lt;- diana(dat2)\n\n\n\n결과 시각화\n\nplot(clus_diana, which.plots = 2, main = \"Dendrogram of Diana\")",
     "crumbs": [
       "군집분석",
-      "<span class='chapter-number'>3</span>  <span class='chapter-title'>12장 계층적 군집방법</span>"
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>12장 계층적 군집방법</span>"
     ]
   },
   {
@@ -127,7 +204,7 @@
     "text": "(예 12.4)\n\n패키지 로드\n\nlibrary(factoextra)\n\nLoading required package: ggplot2\n\n\nWelcome! Want to learn more? See two factoextra-related books at https://goo.gl/ve3WBa\n\n\n\n\n데이터 로드\n\ndat1 &lt;- read.csv(\"data/ch12_dat2.csv\")\ndat2 &lt;- dat1[, -1]\n\n\n\n워드 방법 군집수 결정 - average silhouette width\n\nfviz_nbclust(dat2, hcut, method = \"silhouette\", k.max = 7)",
     "crumbs": [
       "군집분석",
-      "<span class='chapter-number'>3</span>  <span class='chapter-title'>12장 계층적 군집방법</span>"
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>12장 계층적 군집방법</span>"
     ]
   },
   {
@@ -138,7 +215,7 @@
     "text": "(예 13.1)",
     "crumbs": [
       "군집분석",
-      "<span class='chapter-number'>4</span>  <span class='chapter-title'>13장 비계층적 군집방법</span>"
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>13장 비계층적 군집방법</span>"
     ]
   },
   {
@@ -149,7 +226,7 @@
     "text": "패키지 로드\n\nlibrary(factoextra)\n\nLoading required package: ggplot2\n\n\nWelcome! Want to learn more? See two factoextra-related books at https://goo.gl/ve3WBa\n\n\n\n\n데이터 로드\n\ndat1 &lt;- read.csv(\"data/ch12_dat1.csv\")\ndat2 &lt;- dat1[, -1]\n\n\n\n군집 수 결정\n\n# may use scale data or raw data for the optimal k\ns_dat2 &lt;- scale(dat2)\n\nfviz_nbclust(s_dat2, kmeans, method = \"silhouette\", k.max = 5)\n\n\n\n\n\n\n\n\n\n\nK-means\n\nset.seed(123)\nkm &lt;- kmeans(dat2, 3)\nkm\n\nK-means clustering with 3 clusters of sizes 4, 3, 3\n\nCluster means:\n         X1    X2\n1 13.250000  6.75\n2  3.666667  3.00\n3  7.000000 14.00\n\nClustering vector:\n [1] 3 3 1 1 1 3 1 2 2 2\n\nWithin cluster sum of squares by cluster:\n[1] 11.500000  4.666667  4.000000\n (between_SS / total_SS =  94.6 %)\n\nAvailable components:\n\n[1] \"cluster\"      \"centers\"      \"totss\"        \"withinss\"     \"tot.withinss\"\n[6] \"betweenss\"    \"size\"         \"iter\"         \"ifault\"      \n\n\n\n\n결과 시각화\n\nfviz_cluster(km,\n  data = dat2,\n  ellipse.type = \"convex\",\n  stand = FALSE,\n  repel = TRUE, cex = 3\n)\n\nWarning: Duplicated aesthetics after name standardisation: size",
     "crumbs": [
       "군집분석",
-      "<span class='chapter-number'>4</span>  <span class='chapter-title'>13장 비계층적 군집방법</span>"
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>13장 비계층적 군집방법</span>"
     ]
   },
   {
@@ -160,7 +237,7 @@
     "text": "(예 13.3)\n\n패키지 로드\n\nlibrary(cluster)\nlibrary(factoextra)\n\n\n\n데이터 로드\n\ndat1 &lt;- read.csv(\"data/ch13_pam.csv\")\ndat2 &lt;- dat1[, -1]\n\n\n\nPAM\n\npam_out &lt;- pam(dat2, 2)\npam_out\n\nMedoids:\n     ID experience hours\n[1,]  2          5     4\n[2,]  5         14     6\nClustering vector:\n[1] 1 1 2 2 2 2\nObjective function:\n   build     swap \n1.383427 1.375972 \n\nAvailable components:\n [1] \"medoids\"    \"id.med\"     \"clustering\" \"objective\"  \"isolation\" \n [6] \"clusinfo\"   \"silinfo\"    \"diss\"       \"call\"       \"data\"      \n\n\n각 군집에 속한 객체 수\n\ntable(pam_out$clustering)\n\n\n1 2 \n2 4 \n\n\n\n\n결과 시각화\n\nfviz_cluster(pam_out,\n  data = dat2,\n  ellipse.type = \"convex\",\n  stand = FALSE,\n  repel = TRUE\n)",
     "crumbs": [
       "군집분석",
-      "<span class='chapter-number'>4</span>  <span class='chapter-title'>13장 비계층적 군집방법</span>"
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>13장 비계층적 군집방법</span>"
     ]
   },
   {
@@ -171,7 +248,7 @@
     "text": "(예 13.8)\n\n패키지 로드\n\nlibrary(fpc)\nlibrary(factoextra)\n\n\n\n데이터 로드\n\ndat1 &lt;- read.csv(\"data/ch12_dat1.csv\")\ndat2 &lt;- dat1[, -1]\n\n\n\n디비스캔\n\ndb &lt;- dbscan(dat2, eps = 2.5, MinPts = 3)\ndb\n\ndbscan Pts=10 MinPts=3 eps=2.5\n       0 1 2 3\nborder 1 0 0 2\nseed   0 3 3 1\ntotal  1 3 3 3\n\n\n군집 결과\n\ndb$cluster\n\n [1] 1 1 2 0 2 1 2 3 3 3\n\n\n\n\n결과 시각화\n\nfviz_cluster(db,\n  data = dat2,\n  ellipse.type = \"convex\",\n  stand = FALSE,\n  repel = TRUE\n)",
     "crumbs": [
       "군집분석",
-      "<span class='chapter-number'>4</span>  <span class='chapter-title'>13장 비계층적 군집방법</span>"
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>13장 비계층적 군집방법</span>"
     ]
   },
   {
@@ -182,7 +259,7 @@
     "text": "(예 15.3 - 15.4)",
     "crumbs": [
       "연관규칙",
-      "<span class='chapter-number'>5</span>  <span class='chapter-title'>15장 연관규칙</span>"
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>15장 연관규칙</span>"
     ]
   },
   {
@@ -193,7 +270,7 @@
     "text": "패키지 로드\n\nlibrary(arules)\n\nLoading required package: Matrix\n\n\n\nAttaching package: 'arules'\n\n\nThe following objects are masked from 'package:base':\n\n    abbreviate, write\n\n\n\n\n데이터 로드\n\ndf &lt;- read.csv(\"data/ch15_transaction.csv\")\n\n\n\n데이터 변환\n\n# convert a data frame into a list of transactions\ntransaction_list &lt;- split(df$item, df$id)\nprint(transaction_list)\n\n$`1`\n[1] \"b\" \"c\" \"g\"\n\n$`2`\n[1] \"a\" \"b\" \"d\" \"e\" \"f\"\n\n$`3`\n[1] \"a\" \"b\" \"c\" \"g\"\n\n$`4`\n[1] \"b\" \"c\" \"e\" \"f\"\n\n$`5`\n[1] \"b\" \"c\" \"e\" \"f\" \"g\"\n\n# convert a list into an object of class \"transactions\"\ntransactions &lt;- as(transaction_list, \"transactions\")\nprint(transactions)\n\ntransactions in sparse format with\n 5 transactions (rows) and\n 7 items (columns)\n\n\n\n\n(예 15.3) 빈발항목집합 생성: 최소 지지도 0.4\n\nitemsets &lt;- apriori(\n  transactions,\n  parameter = list(\n    support = 0.4,\n    target = \"frequent itemsets\"\n  ),\n  control = list(verbose = FALSE)  # do not print progress\n)\n\ninspect(itemsets)\n\n     items        support count\n[1]  {a}          0.4     2    \n[2]  {g}          0.6     3    \n[3]  {e}          0.6     3    \n[4]  {f}          0.6     3    \n[5]  {c}          0.8     4    \n[6]  {b}          1.0     5    \n[7]  {a, b}       0.4     2    \n[8]  {c, g}       0.6     3    \n[9]  {b, g}       0.6     3    \n[10] {e, f}       0.6     3    \n[11] {c, e}       0.4     2    \n[12] {b, e}       0.6     3    \n[13] {c, f}       0.4     2    \n[14] {b, f}       0.6     3    \n[15] {b, c}       0.8     4    \n[16] {b, c, g}    0.6     3    \n[17] {c, e, f}    0.4     2    \n[18] {b, e, f}    0.6     3    \n[19] {b, c, e}    0.4     2    \n[20] {b, c, f}    0.4     2    \n[21] {b, c, e, f} 0.4     2    \n\n\n\n\n(예 15.4) 규칙 탐사: 최소 신뢰도 0.7\n\nrules &lt;- ruleInduction(\n  itemsets,\n  transactions,\n  confidence = 0.7,\n  method = \"apriori\"\n)\n\ninspect(rules)\n\n     lhs          rhs support confidence coverage lift     count\n[1]  {}        =&gt; {c} 0.8     0.80       1.0      1.000000 4    \n[2]  {}        =&gt; {b} 1.0     1.00       1.0      1.000000 5    \n[3]  {a}       =&gt; {b} 0.4     1.00       0.4      1.000000 2    \n[4]  {g}       =&gt; {c} 0.6     1.00       0.6      1.250000 3    \n[5]  {c}       =&gt; {g} 0.6     0.75       0.8      1.250000 3    \n[6]  {g}       =&gt; {b} 0.6     1.00       0.6      1.000000 3    \n[7]  {e}       =&gt; {f} 0.6     1.00       0.6      1.666667 3    \n[8]  {f}       =&gt; {e} 0.6     1.00       0.6      1.666667 3    \n[9]  {e}       =&gt; {b} 0.6     1.00       0.6      1.000000 3    \n[10] {f}       =&gt; {b} 0.6     1.00       0.6      1.000000 3    \n[11] {c}       =&gt; {b} 0.8     1.00       0.8      1.000000 4    \n[12] {b}       =&gt; {c} 0.8     0.80       1.0      1.000000 4    \n[13] {c, g}    =&gt; {b} 0.6     1.00       0.6      1.000000 3    \n[14] {b, g}    =&gt; {c} 0.6     1.00       0.6      1.250000 3    \n[15] {b, c}    =&gt; {g} 0.6     0.75       0.8      1.250000 3    \n[16] {c, e}    =&gt; {f} 0.4     1.00       0.4      1.666667 2    \n[17] {c, f}    =&gt; {e} 0.4     1.00       0.4      1.666667 2    \n[18] {e, f}    =&gt; {b} 0.6     1.00       0.6      1.000000 3    \n[19] {b, e}    =&gt; {f} 0.6     1.00       0.6      1.666667 3    \n[20] {b, f}    =&gt; {e} 0.6     1.00       0.6      1.666667 3    \n[21] {c, e}    =&gt; {b} 0.4     1.00       0.4      1.000000 2    \n[22] {c, f}    =&gt; {b} 0.4     1.00       0.4      1.000000 2    \n[23] {c, e, f} =&gt; {b} 0.4     1.00       0.4      1.000000 2    \n[24] {b, c, e} =&gt; {f} 0.4     1.00       0.4      1.666667 2    \n[25] {b, c, f} =&gt; {e} 0.4     1.00       0.4      1.666667 2    \n\n\n\n\n빈발항목집합 + 규칙탐사\n\napriori_results &lt;- apriori(\n  transactions,\n  parameter = list(\n    support = 0.4,\n    confidence = 0.7,\n    target = \"rules\"\n  ),\n  control = list(verbose = FALSE)  # do not print progress\n)\n\ninspect(apriori_results)\n\n     lhs          rhs support confidence coverage lift     count\n[1]  {}        =&gt; {c} 0.8     0.80       1.0      1.000000 4    \n[2]  {}        =&gt; {b} 1.0     1.00       1.0      1.000000 5    \n[3]  {a}       =&gt; {b} 0.4     1.00       0.4      1.000000 2    \n[4]  {g}       =&gt; {c} 0.6     1.00       0.6      1.250000 3    \n[5]  {c}       =&gt; {g} 0.6     0.75       0.8      1.250000 3    \n[6]  {g}       =&gt; {b} 0.6     1.00       0.6      1.000000 3    \n[7]  {e}       =&gt; {f} 0.6     1.00       0.6      1.666667 3    \n[8]  {f}       =&gt; {e} 0.6     1.00       0.6      1.666667 3    \n[9]  {e}       =&gt; {b} 0.6     1.00       0.6      1.000000 3    \n[10] {f}       =&gt; {b} 0.6     1.00       0.6      1.000000 3    \n[11] {c}       =&gt; {b} 0.8     1.00       0.8      1.000000 4    \n[12] {b}       =&gt; {c} 0.8     0.80       1.0      1.000000 4    \n[13] {c, g}    =&gt; {b} 0.6     1.00       0.6      1.000000 3    \n[14] {b, g}    =&gt; {c} 0.6     1.00       0.6      1.250000 3    \n[15] {b, c}    =&gt; {g} 0.6     0.75       0.8      1.250000 3    \n[16] {c, e}    =&gt; {f} 0.4     1.00       0.4      1.666667 2    \n[17] {c, f}    =&gt; {e} 0.4     1.00       0.4      1.666667 2    \n[18] {e, f}    =&gt; {b} 0.6     1.00       0.6      1.000000 3    \n[19] {b, e}    =&gt; {f} 0.6     1.00       0.6      1.666667 3    \n[20] {b, f}    =&gt; {e} 0.6     1.00       0.6      1.666667 3    \n[21] {c, e}    =&gt; {b} 0.4     1.00       0.4      1.000000 2    \n[22] {c, f}    =&gt; {b} 0.4     1.00       0.4      1.000000 2    \n[23] {c, e, f} =&gt; {b} 0.4     1.00       0.4      1.000000 2    \n[24] {b, c, e} =&gt; {f} 0.4     1.00       0.4      1.666667 2    \n[25] {b, c, f} =&gt; {e} 0.4     1.00       0.4      1.666667 2",
     "crumbs": [
       "연관규칙",
-      "<span class='chapter-number'>5</span>  <span class='chapter-title'>15장 연관규칙</span>"
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>15장 연관규칙</span>"
     ]
   },
   {
@@ -204,7 +281,7 @@
     "text": "(예 15.7 - 15.9)\n\n패키지 로드\n\nlibrary(arulesSequences)\n\n\nAttaching package: 'arulesSequences'\n\n\nThe following object is masked from 'package:arules':\n\n    itemsets\n\n\n\n\n데이터 로드\n\n# read specifically formatted data into transactions with temporal information\ntrans &lt;- read_baskets(\n  con = \"data/ch15_sequence.txt\",\n  info = c(\"sequenceID\", \"eventID\", \"SIZE\") # do not change the names\n)\n\n\n\n(예 15.7) 최대 시퀀스\n모든 시퀀스 (최소 지지도 0.4)\n\nseqs &lt;- cspade(trans, parameter = list(support = 0.4))\ninspect(seqs)\n\n   items support \n 1 &lt;{a}&gt;     0.8 \n 2 &lt;{b}&gt;     0.6 \n 3 &lt;{e}&gt;     0.4 \n 4 &lt;{g}&gt;     0.6 \n 5 &lt;{a},  \n    {g}&gt;     0.4 \n 6 &lt;{e,   \n     g}&gt;     0.4 \n 7 &lt;{a},  \n    {e,   \n     g}&gt;     0.4 \n 8 &lt;{a},  \n    {e}&gt;     0.4 \n 9 &lt;{a},  \n    {b}&gt;     0.4 \n \n\n\n최대 시퀀스 (최소 지지도 0.4)\n\nmax_seqs &lt;- subset(seqs, is.maximal(seqs))\ninspect(max_seqs)\n\n   items support \n 1 &lt;{a},  \n    {e,   \n     g}&gt;     0.4 \n 2 &lt;{a},  \n    {b}&gt;     0.4 \n \n\n\n\n\n(예 15.8) 빈발항목집합\n\nitemsets &lt;- cspade(trans, parameter = list(support = 0.4, maxlen = 1))\ninspect(itemsets)\n\n   items support \n 1 &lt;{a}&gt;     0.8 \n 2 &lt;{b}&gt;     0.6 \n 3 &lt;{e}&gt;     0.4 \n 4 &lt;{g}&gt;     0.6 \n 5 &lt;{e,   \n     g}&gt;     0.4 \n \n\n\n\n\n(예 15.9) 시퀀스 탐색\n모든 빈발 시퀀스 (최소 신뢰도 0.5)\n\nrules &lt;- ruleInduction(seqs, confidence = 0.5)\ninspect(rules)\n\n   lhs      rhs   support confidence      lift \n 1 &lt;{a}&gt; =&gt; &lt;{g}&gt;     0.4        0.5 0.8333333 \n 2 &lt;{a}&gt; =&gt; &lt;{e,      0.4        0.5 1.2500000 \n              g}&gt;    \n 3 &lt;{a}&gt; =&gt; &lt;{e}&gt;     0.4        0.5 1.2500000 \n 4 &lt;{a}&gt; =&gt; &lt;{b}&gt;     0.4        0.5 0.8333333 \n \n\n\n최대 빈발 시퀀스 (최소 신뢰도 0.5)\n\nmax_rules &lt;- ruleInduction(max_seqs, trans, confidence = 0.5)\n\nWarning in match(x@items, table@items, nomatch = nomatch, incomparables =\nincomparables): Item coding not compatible, recoding item matrices first.\n\n\nWarning in .local(x, ...): Item coding not compatible, recoding item matrices.\n\ninspect(max_rules)\n\n   lhs      rhs   support confidence      lift \n 1 &lt;{a}&gt; =&gt; &lt;{e,      0.4        0.5 1.2500000 \n              g}&gt;    \n 2 &lt;{a}&gt; =&gt; &lt;{b}&gt;     0.4        0.5 0.8333333",
     "crumbs": [
       "연관규칙",
-      "<span class='chapter-number'>5</span>  <span class='chapter-title'>15장 연관규칙</span>"
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>15장 연관규칙</span>"
     ]
   },
   {
@@ -215,7 +292,7 @@
     "text": "(예 16.2)",
     "crumbs": [
       "연관규칙",
-      "<span class='chapter-number'>6</span>  <span class='chapter-title'>16장 추천시스템</span>"
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>16장 추천시스템</span>"
     ]
   },
   {
@@ -226,7 +303,7 @@
     "text": "데이터 로드\n\ndf &lt;- read.csv(\"data/ch16_content.csv\")\nuser_weights &lt;- as.vector(df[, 2])\ndoc_weights &lt;- as.matrix(df[, -c(1, 2)])\n\n\n\n유용도 산출\n\nnumerator &lt;- t(user_weights) %*% doc_weights\ndenominator &lt;- norm(user_weights, type = \"2\") *\n  apply(doc_weights, 2, norm, type = \"2\")\nutility &lt;- numerator / denominator\nround(utility, 4)\n\n       doc1   doc2   doc3   doc4   doc5   doc6\n[1,] 0.6595 0.8409 0.9189 0.4478 0.9717 0.3728",
     "crumbs": [
       "연관규칙",
-      "<span class='chapter-number'>6</span>  <span class='chapter-title'>16장 추천시스템</span>"
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>16장 추천시스템</span>"
     ]
   },
   {
@@ -237,7 +314,7 @@
     "text": "(예 16.3)\n\n패키지 로드\n\nlibrary(\"recommenderlab\")\n\nLoading required package: Matrix\n\n\nLoading required package: arules\n\n\n\nAttaching package: 'arules'\n\n\nThe following objects are masked from 'package:base':\n\n    abbreviate, write\n\n\nLoading required package: proxy\n\n\n\nAttaching package: 'proxy'\n\n\nThe following object is masked from 'package:Matrix':\n\n    as.matrix\n\n\nThe following objects are masked from 'package:stats':\n\n    as.dist, dist\n\n\nThe following object is masked from 'package:base':\n\n    as.matrix\n\n\nRegistered S3 methods overwritten by 'registry':\n  method               from \n  print.registry_field proxy\n  print.registry_entry proxy\n\n\n\n\n데이터 로드\n\ndf &lt;- read.csv(\"data/ch16_ratings.csv\")\n\n\n\n평점 행렬로 변환\n\nratings &lt;- as(df, \"realRatingMatrix\")\nprint(ratings@data)\n\n7 x 7 sparse Matrix of class \"dgCMatrix\"\n  1 2 3 4 5 6 7\n1 5 . 4 . 1 0 3\n2 4 4 4 . . . 1\n3 5 4 . 1 2 . 3\n4 1 2 1 4 3 5 2\n5 0 1 . 3 5 5 .\n6 . 2 . . 4 4 2\n7 5 . . 1 . . 2\n\n\n\n\n목표고객 설정\n\ntarget &lt;- 7\n\n\n\n목표고객과 각 고객간의 유사성 산출\n\ncentered &lt;- normalize(ratings)\nsimilarity(centered[-target], centered[target])\n\n           7\n1 0.95163875\n2 0.78234196\n3 0.98038446\n4 0.06238169\n5 0.07346149\n6 1.00000000\n\n\n\n\n협업 필터링 추천 시스템 생성\n\nrec &lt;- Recommender(ratings, method = \"UBCF\")\nrec\n\nRecommender of type 'UBCF' for 'realRatingMatrix' \nlearned using 7 users.\n\n\n\n\n평점 추정\n\npredicted &lt;- predict(rec, ratings[target], type = \"ratings\")\nprint(predicted@data)\n\n1 x 7 sparse Matrix of class \"dgCMatrix\"\n  1        2        3 4        5        6 7\n7 . 2.804412 3.680394 . 2.238142 2.110424 .\n\n\n\n\n상위-N 추천\n\nrecommended &lt;- predict(rec, ratings[target], n = 2)\nprint(recommended@items)\n\n$`0`\n[1] 3 2",
     "crumbs": [
       "연관규칙",
-      "<span class='chapter-number'>6</span>  <span class='chapter-title'>16장 추천시스템</span>"
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>16장 추천시스템</span>"
     ]
   },
   {
@@ -248,7 +325,7 @@
     "text": "(예 16.4)\n\n패키지 로드\n\nlibrary(\"recommenderlab\")\n\n\n\n데이터 로드\n\ndf &lt;- read.csv(\"data/ch16_purchase.csv\")\n\n\n\n시장바구니 데이터 행렬로 변환\n\npurchases &lt;- as(df, \"binaryRatingMatrix\")\nmat &lt;- as(purchases@data, \"matrix\")\nmat\n\n      1     2     3     4     5     6     7\n1  TRUE FALSE  TRUE FALSE  TRUE FALSE  TRUE\n2  TRUE  TRUE  TRUE FALSE FALSE FALSE  TRUE\n3  TRUE  TRUE FALSE  TRUE  TRUE FALSE  TRUE\n4  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE\n5 FALSE  TRUE FALSE  TRUE  TRUE  TRUE FALSE\n6 FALSE  TRUE FALSE FALSE  TRUE  TRUE  TRUE\n7  TRUE FALSE FALSE  TRUE FALSE FALSE  TRUE\n\n\n\n\n목표고객 설정\n\ntarget &lt;- 7\n\n\n\n목표고객과 각 고객간의 유사성 산출\n\nsim &lt;- similarity(purchases[-target], purchases[target], method = \"jaccard\")\nround(sim, 4)\n\n       7\n1 0.4000\n2 0.4000\n3 0.6000\n4 0.5000\n5 0.1667\n6 0.1667\n\n\n\n\n평점 추정\n\ntarget_items &lt;- !mat[target, ]\npredicted &lt;- 1 / sum(sim) *\n  t(sim) %*% as(purchases[-target], \"matrix\")[, target_items]\nround(predicted, 4)\n\n       2      3     5      6\n7 0.8209 0.5821 0.597 0.3731",
     "crumbs": [
       "연관규칙",
-      "<span class='chapter-number'>6</span>  <span class='chapter-title'>16장 추천시스템</span>"
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>16장 추천시스템</span>"
     ]
   }
 ]

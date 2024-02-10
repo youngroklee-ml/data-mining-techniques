@@ -12,7 +12,7 @@ dat$class <- factor(dat$class)
 dat
 
 # SVM training
-svm_model <- ksvm(
+model <- ksvm(
   class ~ x1 + x2,
   data = dat,
   scaled = FALSE,
@@ -20,22 +20,22 @@ svm_model <- ksvm(
 )
 
 # support vectors
-svm_model@alphaindex[[1]]
+model@alphaindex[[1]]
 
 # alpha values for support vectors
-svm_model@alpha[[1]]
+model@alpha[[1]]
 
 # objective value
 # note that we placed minus(-) sign
--svm_model@obj
+-model@obj
 
-# hyperplane coefficient vector w and intercept b
-w <- svm_model@coef[[1]] %*% svm_model@xmatrix[[1]]
+# hyperplane coefficient vector w
+w <- model@coef[[1]] %*% model@xmatrix[[1]]
 w
 
 # hyperplane's intercept b
 # Note that we placed minus(-) sign
--svm_model@b
+-model@b
 
 # visualize
-plot(svm_model, data = dat)
+plot(model, data = dat)

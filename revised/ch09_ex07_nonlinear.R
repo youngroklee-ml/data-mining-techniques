@@ -26,15 +26,15 @@ model@alphaindex[[1]]
 # alpha values for support vectors
 model@alpha[[1]]
 
-# betas
+# hyperplane
 beta1 <- 2 * sum(model@coef[[1]] * model@xmatrix[[1]][, "x1"])
 beta2 <- 2 * sum(model@coef[[1]] * model@xmatrix[[1]][, "x2"])
 beta11 <- sum(model@coef[[1]] * model@xmatrix[[1]][, "x1"]^2)
 beta22 <- sum(model@coef[[1]] * model@xmatrix[[1]][, "x2"]^2)
 beta12 <- 2 * sum(model@coef[[1]] * apply(model@xmatrix[[1]], 1, prod))
-betas <- c(-model@b, beta1, beta2, beta11, beta22, beta12)
-names(betas) <- c("b", "beta1", "beta2", "beta11", "beta22", "beta12")
-round(betas, 4)
+hyperplane <- c(-model@b, beta1, beta2, beta11, beta22, beta12)
+names(hyperplane) <- c("b", "beta1", "beta2", "beta11", "beta22", "beta12")
+round(hyperplane, 4)
 
 # misclassified objects
 which(model@ymatrix != as.integer(model@fitted))
@@ -64,16 +64,16 @@ for (i in seq_along(Cs)) {
   message("Alpha values for support vectors:")
   print(round(models[[i]]@alpha[[1]], 4))
 
-  # betas
+  # hyperplane
   beta1 <- 2 * sum(models[[i]]@coef[[1]] * models[[i]]@xmatrix[[1]][, "x1"])
   beta2 <- 2 * sum(models[[i]]@coef[[1]] * models[[i]]@xmatrix[[1]][, "x2"])
   beta11 <- sum(models[[i]]@coef[[1]] * models[[i]]@xmatrix[[1]][, "x1"]^2)
   beta22 <- sum(models[[i]]@coef[[1]] * models[[i]]@xmatrix[[1]][, "x2"]^2)
   beta12 <- 2 * sum(models[[i]]@coef[[1]] * apply(models[[i]]@xmatrix[[1]], 1, prod))
-  betas <- c(-models[[i]]@b, beta1, beta2, beta11, beta22, beta12)
-  names(betas) <- c("b", "beta1", "beta2", "beta11", "beta22", "beta12")
+  hyperplane <- c(-models[[i]]@b, beta1, beta2, beta11, beta22, beta12)
+  names(hyperplane) <- c("b", "beta1", "beta2", "beta11", "beta22", "beta12")
   message("Hyperplane coefficients:")
-  print(round(betas, 4))
+  print(round(hyperplane, 4))
 
   # misclassified objects
   message("Misclassified instances:")

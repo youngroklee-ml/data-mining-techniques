@@ -1,0 +1,1497 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.549">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>데이터마이닝 기법과 응용: R 예제 - 9장 서포트 벡터 머신</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../chapters/ch11_cluster.html" rel="next">
+<link href="../chapters/ch5_classification.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/ch5_classification.html">분류분석</a></li><li class="breadcrumb-item"><a href="../chapters/ch09_svm.html"><span class="chapter-title">9장 서포트 벡터 머신</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">데이터마이닝 기법과 응용: R 예제</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/youngroklee-ml/data-mining-techniques" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">소개</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">예측</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/ch2_regression.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">2장 회귀분석</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text">분류분석</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/ch5_classification.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">5장 분류분석 개요</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/ch09_svm.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">9장 서포트 벡터 머신</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text">군집분석</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/ch11_cluster.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">11장 군집분석 개요</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/ch12_cluster.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">12장 계층적 군집방법</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/ch13_cluster_dbscan.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">13장 비계층적 군집방법</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text">연관규칙</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/ch15_association_rule.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">15장 연관규칙</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/ch16_recommender_system.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">16장 추천시스템</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#예-9.1" id="toc-예-9.1" class="nav-link active" data-scroll-target="#예-9.1">(예 9.1)</a></li>
+  <li><a href="#예-9.2" id="toc-예-9.2" class="nav-link" data-scroll-target="#예-9.2">(예 9.2)</a></li>
+  <li><a href="#예-9.3" id="toc-예-9.3" class="nav-link" data-scroll-target="#예-9.3">(예 9.3)</a></li>
+  <li><a href="#예-9.6" id="toc-예-9.6" class="nav-link" data-scroll-target="#예-9.6">(예 9.6)</a></li>
+  <li><a href="#예-9.7" id="toc-예-9.7" class="nav-link" data-scroll-target="#예-9.7">(예 9.7)</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/ch5_classification.html">분류분석</a></li><li class="breadcrumb-item"><a href="../chapters/ch09_svm.html"><span class="chapter-title">9장 서포트 벡터 머신</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-title">9장 서포트 벡터 머신</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="예-9.1" class="level2">
+<h2 class="anchored" data-anchor-id="예-9.1">(예 9.1)</h2>
+<section id="패키지-로드" class="level4">
+<h4 class="anchored" data-anchor-id="패키지-로드">패키지 로드</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kernlab)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="데이터-로드" class="level4">
+<h4 class="anchored" data-anchor-id="데이터-로드">데이터 로드</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/ch9_dat1.csv"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>class <span class="ot">&lt;-</span> <span class="fu">factor</span>(dat<span class="sc">$</span>class)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>dat</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  x1 x2 class
+1  5  7     1
+2  4  3    -1
+3  7  8     1
+4  8  6     1
+5  3  6    -1
+6  2  5    -1
+7  6  6     1
+8  9  6     1
+9  5  4    -1</code></pre>
+</div>
+</div>
+</section>
+<section id="svm-학습" class="level4">
+<h4 class="anchored" data-anchor-id="svm-학습">SVM 학습</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">ksvm</span>(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  class <span class="sc">~</span> x1 <span class="sc">+</span> x2,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> dat,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">scaled =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">kernel =</span> <span class="st">"vanilladot"</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> Setting default kernel parameters  </code></pre>
+</div>
+</div>
+</section>
+<section id="서포트-벡터-객체" class="level4">
+<h4 class="anchored" data-anchor-id="서포트-벡터-객체">서포트 벡터 객체</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>model<span class="sc">@</span>alphaindex[[<span class="dv">1</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1 5 7 9</code></pre>
+</div>
+</div>
+</section>
+<section id="최적해-alpha값-서포트-벡터" class="level4">
+<h4 class="anchored" data-anchor-id="최적해-alpha값-서포트-벡터">최적해: <span class="math inline">\(\alpha\)</span>값 (서포트 벡터)</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>model<span class="sc">@</span>alpha[[<span class="dv">1</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.1555556 0.1888889 0.2888889 0.2555556</code></pre>
+</div>
+</div>
+</section>
+<section id="목적함수값" class="level4">
+<h4 class="anchored" data-anchor-id="목적함수값">목적함수값</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>model<span class="sc">@</span>obj</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.4444444</code></pre>
+</div>
+</div>
+</section>
+<section id="하이퍼플레인-추정" class="level4">
+<h4 class="anchored" data-anchor-id="하이퍼플레인-추정">하이퍼플레인 추정</h4>
+<p>계수 (w)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>w <span class="ot">&lt;-</span> model<span class="sc">@</span>coef[[<span class="dv">1</span>]] <span class="sc">%*%</span> model<span class="sc">@</span>xmatrix[[<span class="dv">1</span>]]</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>w</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            x1        x2
+[1,] 0.6666667 0.6666667</code></pre>
+</div>
+</div>
+<p>절편 (b)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>model<span class="sc">@</span>b</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -7</code></pre>
+</div>
+</div>
+</section>
+<section id="시각화" class="level4">
+<h4 class="anchored" data-anchor-id="시각화">시각화</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(model, <span class="at">data =</span> dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="ch09_svm_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="예-9.2" class="level2">
+<h2 class="anchored" data-anchor-id="예-9.2">(예 9.2)</h2>
+<section id="패키지-로드-1" class="level4">
+<h4 class="anchored" data-anchor-id="패키지-로드-1">패키지 로드</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kernlab)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="데이터-로드-1" class="level4">
+<h4 class="anchored" data-anchor-id="데이터-로드-1">데이터 로드</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/ch9_dat2.csv"</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>class <span class="ot">&lt;-</span> <span class="fu">factor</span>(dat<span class="sc">$</span>class)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>dat</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   x1 x2 class
+1   5  7     1
+2   4  3    -1
+3   7  8     1
+4   8  6     1
+5   3  6    -1
+6   2  5    -1
+7   6  6     1
+8   9  6     1
+9   5  4    -1
+10  7  6    -1</code></pre>
+</div>
+</div>
+</section>
+<section id="svm-학습-1" class="level4">
+<h4 class="anchored" data-anchor-id="svm-학습-1">SVM 학습</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">ksvm</span>(</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  class <span class="sc">~</span> x1 <span class="sc">+</span> x2,</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> dat,</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">scaled =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">kernel =</span> <span class="st">"vanilladot"</span>,</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">C =</span> <span class="dv">1</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> Setting default kernel parameters  </code></pre>
+</div>
+</div>
+</section>
+<section id="서포트-벡터-객체-1" class="level4">
+<h4 class="anchored" data-anchor-id="서포트-벡터-객체-1">서포트 벡터 객체</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>model<span class="sc">@</span>alphaindex[[<span class="dv">1</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]  1  5  7 10</code></pre>
+</div>
+</div>
+</section>
+<section id="최적해-alpha값-서포트-벡터-1" class="level4">
+<h4 class="anchored" data-anchor-id="최적해-alpha값-서포트-벡터-1">최적해: <span class="math inline">\(\alpha\)</span>값 (서포트 벡터)</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>model<span class="sc">@</span>alpha[[<span class="dv">1</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.8 0.8 1.0 1.0</code></pre>
+</div>
+</div>
+</section>
+<section id="목적함수값-1" class="level4">
+<h4 class="anchored" data-anchor-id="목적함수값-1">목적함수값</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>model<span class="sc">@</span>obj</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3.1</code></pre>
+</div>
+</div>
+</section>
+<section id="하이퍼플레인-추정-1" class="level4">
+<h4 class="anchored" data-anchor-id="하이퍼플레인-추정-1">하이퍼플레인 추정</h4>
+<p>계수 (w)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>w <span class="ot">&lt;-</span> model<span class="sc">@</span>coef[[<span class="dv">1</span>]] <span class="sc">%*%</span> model<span class="sc">@</span>xmatrix[[<span class="dv">1</span>]]</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>w</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      x1  x2
+[1,] 0.6 0.8</code></pre>
+</div>
+</div>
+<p>절편 (b)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>model<span class="sc">@</span>b</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -7.6</code></pre>
+</div>
+</div>
+</section>
+<section id="오분류-객체" class="level4">
+<h4 class="anchored" data-anchor-id="오분류-객체">오분류 객체</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">which</span>(model<span class="sc">@</span>ymatrix <span class="sc">!=</span> <span class="fu">as.integer</span>(model<span class="sc">@</span>fitted))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 10</code></pre>
+</div>
+</div>
+</section>
+<section id="시각화-1" class="level4">
+<h4 class="anchored" data-anchor-id="시각화-1">시각화</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(model, <span class="at">data =</span> dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="ch09_svm_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="패널티-단가c-변경-1-5-100" class="level4">
+<h4 class="anchored" data-anchor-id="패널티-단가c-변경-1-5-100">패널티 단가(C) 변경: 1, 5, 100</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Try with C = 1, C = 5 and C = 100</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>Cs <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">100</span>)</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>models <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="st">"list"</span>, <span class="at">length =</span> <span class="fu">length</span>(Cs))</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(Cs)) {</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">message</span>(<span class="fu">paste0</span>(<span class="st">"-------</span><span class="sc">\n</span><span class="st">C = "</span>, Cs[i], <span class="st">"</span><span class="sc">\n</span><span class="st">-------"</span>))</span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># SVM with 2nd order polynomial kernel</span></span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>  models[[i]] <span class="ot">&lt;-</span> <span class="fu">ksvm</span>(</span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>    class <span class="sc">~</span> x1 <span class="sc">+</span> x2,</span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> dat,</span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">scaled =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">kernel =</span> <span class="st">"vanilladot"</span>,</span>
+<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">C =</span> Cs[i]</span>
+<span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb35-16"><a href="#cb35-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-17"><a href="#cb35-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># support vectors</span></span>
+<span id="cb35-18"><a href="#cb35-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">message</span>(<span class="st">"Support vectors:"</span>)</span>
+<span id="cb35-19"><a href="#cb35-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(models[[i]]<span class="sc">@</span>alphaindex[[<span class="dv">1</span>]])</span>
+<span id="cb35-20"><a href="#cb35-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-21"><a href="#cb35-21" aria-hidden="true" tabindex="-1"></a>  <span class="co"># alpha values for support vectors</span></span>
+<span id="cb35-22"><a href="#cb35-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">message</span>(<span class="st">"Alpha values for support vectors:"</span>)</span>
+<span id="cb35-23"><a href="#cb35-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">round</span>(models[[i]]<span class="sc">@</span>alpha[[<span class="dv">1</span>]], <span class="dv">4</span>))</span>
+<span id="cb35-24"><a href="#cb35-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-25"><a href="#cb35-25" aria-hidden="true" tabindex="-1"></a>  <span class="co"># objective value</span></span>
+<span id="cb35-26"><a href="#cb35-26" aria-hidden="true" tabindex="-1"></a>  <span class="co"># note that we placed minus(-) sign</span></span>
+<span id="cb35-27"><a href="#cb35-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">message</span>(<span class="st">"Objective value:"</span>)</span>
+<span id="cb35-28"><a href="#cb35-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="sc">-</span>models[[i]]<span class="sc">@</span>obj)</span>
+<span id="cb35-29"><a href="#cb35-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-30"><a href="#cb35-30" aria-hidden="true" tabindex="-1"></a>  <span class="co"># hyperplane coefficient vector w and intercept b</span></span>
+<span id="cb35-31"><a href="#cb35-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">message</span>(<span class="st">"Hyperplane coefficients (w):"</span>)</span>
+<span id="cb35-32"><a href="#cb35-32" aria-hidden="true" tabindex="-1"></a>  w <span class="ot">&lt;-</span> models[[i]]<span class="sc">@</span>coef[[<span class="dv">1</span>]] <span class="sc">%*%</span> models[[i]]<span class="sc">@</span>xmatrix[[<span class="dv">1</span>]]</span>
+<span id="cb35-33"><a href="#cb35-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(w)</span>
+<span id="cb35-34"><a href="#cb35-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-35"><a href="#cb35-35" aria-hidden="true" tabindex="-1"></a>  <span class="co"># hyperplane's intercept b</span></span>
+<span id="cb35-36"><a href="#cb35-36" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Note that we placed minus(-) sign</span></span>
+<span id="cb35-37"><a href="#cb35-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">message</span>(<span class="st">"Hyperplane intercept (b):"</span>)</span>
+<span id="cb35-38"><a href="#cb35-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="sc">-</span>models[[i]]<span class="sc">@</span>b)</span>
+<span id="cb35-39"><a href="#cb35-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-40"><a href="#cb35-40" aria-hidden="true" tabindex="-1"></a>  <span class="co"># misclassified objects</span></span>
+<span id="cb35-41"><a href="#cb35-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">message</span>(<span class="st">"Misclassified instances:"</span>)</span>
+<span id="cb35-42"><a href="#cb35-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">which</span>(models[[i]]<span class="sc">@</span>ymatrix <span class="sc">!=</span> <span class="fu">as.integer</span>(models[[i]]<span class="sc">@</span>fitted)))</span>
+<span id="cb35-43"><a href="#cb35-43" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>-------
+C = 1
+-------</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code> Setting default kernel parameters  </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Support vectors:</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]  1  5  7 10</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Alpha values for support vectors:</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.8 0.8 1.0 1.0</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Objective value:</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3.1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Hyperplane coefficients (w):</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      x1  x2
+[1,] 0.6 0.8</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Hyperplane intercept (b):</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -7.6</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Misclassified instances:</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 10</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>-------
+C = 5
+-------</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code> Setting default kernel parameters  </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Support vectors:</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]  1  4  5  7 10</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Alpha values for support vectors:</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1.1991 0.6004 1.7995 5.0000 5.0000</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Objective value:</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 12.8</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Hyperplane coefficients (w):</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      x1       x2
+[1,] 0.4 1.199115</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Hyperplane intercept (b):</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -9.394396</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Misclassified instances:</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 10</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>-------
+C = 100
+-------</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code> Setting default kernel parameters  </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Support vectors:</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]  1  4  5  7 10</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Alpha values for support vectors:</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]   1.2004  19.5999  20.8003 100.0000 100.0000</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Objective value:</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 240.8</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Hyperplane coefficients (w):</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            x1       x2
+[1,] 0.4001396 1.200419</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Hyperplane intercept (b):</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -9.403397</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Misclassified instances:</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 10</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="예-9.3" class="level2">
+<h2 class="anchored" data-anchor-id="예-9.3">(예 9.3)</h2>
+<section id="패키지-로드-2" class="level4">
+<h4 class="anchored" data-anchor-id="패키지-로드-2">패키지 로드</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kernlab)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="데이터-로드-2" class="level4">
+<h4 class="anchored" data-anchor-id="데이터-로드-2">데이터 로드</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="sc">-</span><span class="dv">1</span>), <span class="at">nrow =</span> <span class="dv">3</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb79-2"><a href="#cb79-2" aria-hidden="true" tabindex="-1"></a>dat</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2]
+[1,]    1    2
+[2,]    2    2
+[3,]    2   -1</code></pre>
+</div>
+</div>
+</section>
+<section id="가우시안-커널" class="level4">
+<h4 class="anchored" data-anchor-id="가우시안-커널">가우시안 커널</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb81"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a><span class="fu">kernelMatrix</span>(<span class="fu">rbfdot</span>(<span class="at">sigma =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="dv">2</span>), dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>An object of class "kernelMatrix"
+            [,1]      [,2]        [,3]
+[1,] 1.000000000 0.6065307 0.006737947
+[2,] 0.606530660 1.0000000 0.011108997
+[3,] 0.006737947 0.0111090 1.000000000</code></pre>
+</div>
+</div>
+</section>
+<section id="이차-커널" class="level4">
+<h4 class="anchored" data-anchor-id="이차-커널">이차 커널</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb83"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="fu">kernelMatrix</span>(<span class="fu">polydot</span>(<span class="at">degree =</span> <span class="dv">2</span>), dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>An object of class "kernelMatrix"
+     [,1] [,2] [,3]
+[1,]   36   49    1
+[2,]   49   81    9
+[3,]    1    9   36</code></pre>
+</div>
+</div>
+</section>
+<section id="시그모이드-커널-하이퍼볼릭-탄젠트-커널" class="level4">
+<h4 class="anchored" data-anchor-id="시그모이드-커널-하이퍼볼릭-탄젠트-커널">시그모이드 커널 (하이퍼볼릭 탄젠트 커널)</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb85"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a><span class="fu">kernelMatrix</span>(<span class="fu">tanhdot</span>(<span class="at">offset =</span> <span class="dv">0</span>), dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>An object of class "kernelMatrix"
+          [,1]      [,2]      [,3]
+[1,] 0.9999092 0.9999877 0.0000000
+[2,] 0.9999877 0.9999998 0.9640276
+[3,] 0.0000000 0.9640276 0.9999092</code></pre>
+</div>
+</div>
+</section>
+<section id="선형-커널" class="level4">
+<h4 class="anchored" data-anchor-id="선형-커널">선형 커널</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb87"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="fu">kernelMatrix</span>(<span class="fu">vanilladot</span>(), dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>An object of class "kernelMatrix"
+     [,1] [,2] [,3]
+[1,]    5    6    0
+[2,]    6    8    2
+[3,]    0    2    5</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="예-9.6" class="level2">
+<h2 class="anchored" data-anchor-id="예-9.6">(예 9.6)</h2>
+<section id="패키지-로드-3" class="level4">
+<h4 class="anchored" data-anchor-id="패키지-로드-3">패키지 로드</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb89"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kernlab)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="데이터-로드-3" class="level4">
+<h4 class="anchored" data-anchor-id="데이터-로드-3">데이터 로드</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb90"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb90-2"><a href="#cb90-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">x1 =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>),</span>
+<span id="cb90-3"><a href="#cb90-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x2 =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>),</span>
+<span id="cb90-4"><a href="#cb90-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">class =</span> <span class="fu">factor</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="sc">-</span><span class="dv">1</span>))</span>
+<span id="cb90-5"><a href="#cb90-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb90-6"><a href="#cb90-6" aria-hidden="true" tabindex="-1"></a>dat</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  x1 x2 class
+1 -1 -1    -1
+2 -1  1     1
+3  1 -1     1
+4  1  1    -1</code></pre>
+</div>
+</div>
+</section>
+<section id="이차-커널-1" class="level4">
+<h4 class="anchored" data-anchor-id="이차-커널-1">이차 커널</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb92"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(dat[, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>])</span>
+<span id="cb92-2"><a href="#cb92-2" aria-hidden="true" tabindex="-1"></a>K <span class="ot">&lt;-</span> <span class="fu">kernelMatrix</span>(<span class="fu">polydot</span>(<span class="at">degree =</span> <span class="dv">2</span>), X)</span>
+<span id="cb92-3"><a href="#cb92-3" aria-hidden="true" tabindex="-1"></a>K</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>An object of class "kernelMatrix"
+     [,1] [,2] [,3] [,4]
+[1,]    9    1    1    1
+[2,]    1    9    1    1
+[3,]    1    1    9    1
+[4,]    1    1    1    9</code></pre>
+</div>
+</div>
+</section>
+<section id="svm-학습-2" class="level4">
+<h4 class="anchored" data-anchor-id="svm-학습-2">SVM 학습</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb94"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">ksvm</span>(</span>
+<span id="cb94-2"><a href="#cb94-2" aria-hidden="true" tabindex="-1"></a>  class <span class="sc">~</span> x1 <span class="sc">+</span> x2,</span>
+<span id="cb94-3"><a href="#cb94-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> dat,</span>
+<span id="cb94-4"><a href="#cb94-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">scaled =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb94-5"><a href="#cb94-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">kernel =</span> <span class="fu">polydot</span>(<span class="at">degree =</span> <span class="dv">2</span>)</span>
+<span id="cb94-6"><a href="#cb94-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="서포트-벡터-객체-2" class="level4">
+<h4 class="anchored" data-anchor-id="서포트-벡터-객체-2">서포트 벡터 객체</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb95"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb95-1"><a href="#cb95-1" aria-hidden="true" tabindex="-1"></a>model<span class="sc">@</span>alphaindex[[<span class="dv">1</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1 2 3 4</code></pre>
+</div>
+</div>
+</section>
+<section id="최적해-alpha값-서포트-벡터-2" class="level4">
+<h4 class="anchored" data-anchor-id="최적해-alpha값-서포트-벡터-2">최적해: <span class="math inline">\(\alpha\)</span>값 (서포트 벡터)</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb97"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb97-1"><a href="#cb97-1" aria-hidden="true" tabindex="-1"></a>model<span class="sc">@</span>alpha[[<span class="dv">1</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.125 0.125 0.125 0.125</code></pre>
+</div>
+</div>
+</section>
+<section id="하이퍼플레인-추정-2" class="level4">
+<h4 class="anchored" data-anchor-id="하이퍼플레인-추정-2">하이퍼플레인 추정</h4>
+<p>계수 (beta)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb99"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb99-1"><a href="#cb99-1" aria-hidden="true" tabindex="-1"></a>beta1 <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">sum</span>(model<span class="sc">@</span>coef[[<span class="dv">1</span>]] <span class="sc">*</span> model<span class="sc">@</span>xmatrix[[<span class="dv">1</span>]][, <span class="st">"x1"</span>])</span>
+<span id="cb99-2"><a href="#cb99-2" aria-hidden="true" tabindex="-1"></a>beta2 <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">sum</span>(model<span class="sc">@</span>coef[[<span class="dv">1</span>]] <span class="sc">*</span> model<span class="sc">@</span>xmatrix[[<span class="dv">1</span>]][, <span class="st">"x2"</span>])</span>
+<span id="cb99-3"><a href="#cb99-3" aria-hidden="true" tabindex="-1"></a>beta11 <span class="ot">&lt;-</span> <span class="fu">sum</span>(model<span class="sc">@</span>coef[[<span class="dv">1</span>]] <span class="sc">*</span> model<span class="sc">@</span>xmatrix[[<span class="dv">1</span>]][, <span class="st">"x1"</span>]<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb99-4"><a href="#cb99-4" aria-hidden="true" tabindex="-1"></a>beta22 <span class="ot">&lt;-</span> <span class="fu">sum</span>(model<span class="sc">@</span>coef[[<span class="dv">1</span>]] <span class="sc">*</span> model<span class="sc">@</span>xmatrix[[<span class="dv">1</span>]][, <span class="st">"x2"</span>]<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb99-5"><a href="#cb99-5" aria-hidden="true" tabindex="-1"></a>beta12 <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">sum</span>(model<span class="sc">@</span>coef[[<span class="dv">1</span>]] <span class="sc">*</span> <span class="fu">apply</span>(model<span class="sc">@</span>xmatrix[[<span class="dv">1</span>]], <span class="dv">1</span>, prod))</span>
+<span id="cb99-6"><a href="#cb99-6" aria-hidden="true" tabindex="-1"></a>betas <span class="ot">&lt;-</span> <span class="fu">c</span>(beta1, beta2, beta11, beta22, beta12)</span>
+<span id="cb99-7"><a href="#cb99-7" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(betas) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"beta1"</span>, <span class="st">"beta2"</span>, <span class="st">"beta11"</span>, <span class="st">"beta22"</span>, <span class="st">"beta12"</span>)</span>
+<span id="cb99-8"><a href="#cb99-8" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(betas, <span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> beta1  beta2 beta11 beta22 beta12 
+     0      0      0      0     -1 </code></pre>
+</div>
+</div>
+<p>절편 (b)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb101"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb101-1"><a href="#cb101-1" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>model<span class="sc">@</span>b</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="예-9.7" class="level2">
+<h2 class="anchored" data-anchor-id="예-9.7">(예 9.7)</h2>
+<section id="패키지-로드-4" class="level4">
+<h4 class="anchored" data-anchor-id="패키지-로드-4">패키지 로드</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb103"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb103-1"><a href="#cb103-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kernlab)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="데이터-로드-4" class="level4">
+<h4 class="anchored" data-anchor-id="데이터-로드-4">데이터 로드</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb104"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/ch9_dat3.csv"</span>)</span>
+<span id="cb104-2"><a href="#cb104-2" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>class <span class="ot">&lt;-</span> <span class="fu">factor</span>(dat<span class="sc">$</span>class)</span>
+<span id="cb104-3"><a href="#cb104-3" aria-hidden="true" tabindex="-1"></a>dat</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  x1 x2 class
+1  5  7     1
+2  4  3    -1
+3  7  8    -1
+4  8  6    -1
+5  3  6     1
+6  2  5     1
+7  6  6     1
+8  9  6    -1
+9  5  4    -1</code></pre>
+</div>
+</div>
+</section>
+<section id="svm-학습-3" class="level4">
+<h4 class="anchored" data-anchor-id="svm-학습-3">SVM 학습</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb106"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">ksvm</span>(</span>
+<span id="cb106-2"><a href="#cb106-2" aria-hidden="true" tabindex="-1"></a>  class <span class="sc">~</span> x1 <span class="sc">+</span> x2,</span>
+<span id="cb106-3"><a href="#cb106-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> dat,</span>
+<span id="cb106-4"><a href="#cb106-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">scaled =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb106-5"><a href="#cb106-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">kernel =</span> <span class="fu">polydot</span>(<span class="at">degree =</span> <span class="dv">2</span>),</span>
+<span id="cb106-6"><a href="#cb106-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">C =</span> <span class="dv">1</span></span>
+<span id="cb106-7"><a href="#cb106-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="서포트-벡터-객체-3" class="level4">
+<h4 class="anchored" data-anchor-id="서포트-벡터-객체-3">서포트 벡터 객체</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb107"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb107-1"><a href="#cb107-1" aria-hidden="true" tabindex="-1"></a>model<span class="sc">@</span>alphaindex[[<span class="dv">1</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1 2 3 7 9</code></pre>
+</div>
+</div>
+</section>
+<section id="최적해-alpha값-서포트-벡터-3" class="level4">
+<h4 class="anchored" data-anchor-id="최적해-alpha값-서포트-벡터-3">최적해: <span class="math inline">\(\alpha\)</span>값 (서포트 벡터)</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb109"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb109-1"><a href="#cb109-1" aria-hidden="true" tabindex="-1"></a>model<span class="sc">@</span>alpha[[<span class="dv">1</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.23555183 0.50094882 0.65316473 1.00000000 0.08143829</code></pre>
+</div>
+</div>
+</section>
+<section id="하이퍼플레인-추정-3" class="level4">
+<h4 class="anchored" data-anchor-id="하이퍼플레인-추정-3">하이퍼플레인 추정</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb111"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb111-1"><a href="#cb111-1" aria-hidden="true" tabindex="-1"></a>beta1 <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">sum</span>(model<span class="sc">@</span>coef[[<span class="dv">1</span>]] <span class="sc">*</span> model<span class="sc">@</span>xmatrix[[<span class="dv">1</span>]][, <span class="st">"x1"</span>])</span>
+<span id="cb111-2"><a href="#cb111-2" aria-hidden="true" tabindex="-1"></a>beta2 <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">sum</span>(model<span class="sc">@</span>coef[[<span class="dv">1</span>]] <span class="sc">*</span> model<span class="sc">@</span>xmatrix[[<span class="dv">1</span>]][, <span class="st">"x2"</span>])</span>
+<span id="cb111-3"><a href="#cb111-3" aria-hidden="true" tabindex="-1"></a>beta11 <span class="ot">&lt;-</span> <span class="fu">sum</span>(model<span class="sc">@</span>coef[[<span class="dv">1</span>]] <span class="sc">*</span> model<span class="sc">@</span>xmatrix[[<span class="dv">1</span>]][, <span class="st">"x1"</span>]<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb111-4"><a href="#cb111-4" aria-hidden="true" tabindex="-1"></a>beta22 <span class="ot">&lt;-</span> <span class="fu">sum</span>(model<span class="sc">@</span>coef[[<span class="dv">1</span>]] <span class="sc">*</span> model<span class="sc">@</span>xmatrix[[<span class="dv">1</span>]][, <span class="st">"x2"</span>]<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb111-5"><a href="#cb111-5" aria-hidden="true" tabindex="-1"></a>beta12 <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">sum</span>(model<span class="sc">@</span>coef[[<span class="dv">1</span>]] <span class="sc">*</span> <span class="fu">apply</span>(model<span class="sc">@</span>xmatrix[[<span class="dv">1</span>]], <span class="dv">1</span>, prod))</span>
+<span id="cb111-6"><a href="#cb111-6" aria-hidden="true" tabindex="-1"></a>hyperplane <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span>model<span class="sc">@</span>b, beta1, beta2, beta11, beta22, beta12)</span>
+<span id="cb111-7"><a href="#cb111-7" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(hyperplane) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"b"</span>, <span class="st">"beta1"</span>, <span class="st">"beta2"</span>, <span class="st">"beta11"</span>, <span class="st">"beta22"</span>, <span class="st">"beta12"</span>)</span>
+<span id="cb111-8"><a href="#cb111-8" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(hyperplane, <span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      b   beta1   beta2  beta11  beta22  beta12 
+-3.4455  0.3892  1.1899 -0.1674 -0.0721  0.0539 </code></pre>
+</div>
+</div>
+</section>
+<section id="오분류-객체-1" class="level4">
+<h4 class="anchored" data-anchor-id="오분류-객체-1">오분류 객체</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb113"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb113-1"><a href="#cb113-1" aria-hidden="true" tabindex="-1"></a><span class="fu">which</span>(model<span class="sc">@</span>ymatrix <span class="sc">!=</span> <span class="fu">as.integer</span>(model<span class="sc">@</span>fitted))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 7</code></pre>
+</div>
+</div>
+</section>
+<section id="패널티-단가c-변경-1-5-100-1" class="level4">
+<h4 class="anchored" data-anchor-id="패널티-단가c-변경-1-5-100-1">패널티 단가(C) 변경: 1, 5, 100</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb115"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb115-1"><a href="#cb115-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Try with C = 1, C = 5 and C = 100</span></span>
+<span id="cb115-2"><a href="#cb115-2" aria-hidden="true" tabindex="-1"></a>Cs <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">100</span>)</span>
+<span id="cb115-3"><a href="#cb115-3" aria-hidden="true" tabindex="-1"></a>models <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="st">"list"</span>, <span class="at">length =</span> <span class="fu">length</span>(Cs))</span>
+<span id="cb115-4"><a href="#cb115-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb115-5"><a href="#cb115-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(Cs)) {</span>
+<span id="cb115-6"><a href="#cb115-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">message</span>(<span class="fu">paste0</span>(<span class="st">"-------</span><span class="sc">\n</span><span class="st">C = "</span>, Cs[i], <span class="st">"</span><span class="sc">\n</span><span class="st">-------"</span>))</span>
+<span id="cb115-7"><a href="#cb115-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb115-8"><a href="#cb115-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># SVM with 2nd order polynomial kernel</span></span>
+<span id="cb115-9"><a href="#cb115-9" aria-hidden="true" tabindex="-1"></a>  models[[i]] <span class="ot">&lt;-</span> <span class="fu">ksvm</span>(</span>
+<span id="cb115-10"><a href="#cb115-10" aria-hidden="true" tabindex="-1"></a>    class <span class="sc">~</span> x1 <span class="sc">+</span> x2,</span>
+<span id="cb115-11"><a href="#cb115-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> dat,</span>
+<span id="cb115-12"><a href="#cb115-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">scaled =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb115-13"><a href="#cb115-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">kernel =</span> <span class="fu">polydot</span>(<span class="at">degree =</span> <span class="dv">2</span>),</span>
+<span id="cb115-14"><a href="#cb115-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">C =</span> Cs[i]</span>
+<span id="cb115-15"><a href="#cb115-15" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb115-16"><a href="#cb115-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb115-17"><a href="#cb115-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># support vectors</span></span>
+<span id="cb115-18"><a href="#cb115-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">message</span>(<span class="st">"Support vectors:"</span>)</span>
+<span id="cb115-19"><a href="#cb115-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(models[[i]]<span class="sc">@</span>alphaindex[[<span class="dv">1</span>]])</span>
+<span id="cb115-20"><a href="#cb115-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb115-21"><a href="#cb115-21" aria-hidden="true" tabindex="-1"></a>  <span class="co"># alpha values for support vectors</span></span>
+<span id="cb115-22"><a href="#cb115-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">message</span>(<span class="st">"Alpha values for support vectors:"</span>)</span>
+<span id="cb115-23"><a href="#cb115-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">round</span>(models[[i]]<span class="sc">@</span>alpha[[<span class="dv">1</span>]], <span class="dv">4</span>))</span>
+<span id="cb115-24"><a href="#cb115-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb115-25"><a href="#cb115-25" aria-hidden="true" tabindex="-1"></a>  <span class="co"># hyperplane</span></span>
+<span id="cb115-26"><a href="#cb115-26" aria-hidden="true" tabindex="-1"></a>  beta1 <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">sum</span>(models[[i]]<span class="sc">@</span>coef[[<span class="dv">1</span>]] <span class="sc">*</span> models[[i]]<span class="sc">@</span>xmatrix[[<span class="dv">1</span>]][, <span class="st">"x1"</span>])</span>
+<span id="cb115-27"><a href="#cb115-27" aria-hidden="true" tabindex="-1"></a>  beta2 <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">sum</span>(models[[i]]<span class="sc">@</span>coef[[<span class="dv">1</span>]] <span class="sc">*</span> models[[i]]<span class="sc">@</span>xmatrix[[<span class="dv">1</span>]][, <span class="st">"x2"</span>])</span>
+<span id="cb115-28"><a href="#cb115-28" aria-hidden="true" tabindex="-1"></a>  beta11 <span class="ot">&lt;-</span> <span class="fu">sum</span>(models[[i]]<span class="sc">@</span>coef[[<span class="dv">1</span>]] <span class="sc">*</span> models[[i]]<span class="sc">@</span>xmatrix[[<span class="dv">1</span>]][, <span class="st">"x1"</span>]<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb115-29"><a href="#cb115-29" aria-hidden="true" tabindex="-1"></a>  beta22 <span class="ot">&lt;-</span> <span class="fu">sum</span>(models[[i]]<span class="sc">@</span>coef[[<span class="dv">1</span>]] <span class="sc">*</span> models[[i]]<span class="sc">@</span>xmatrix[[<span class="dv">1</span>]][, <span class="st">"x2"</span>]<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb115-30"><a href="#cb115-30" aria-hidden="true" tabindex="-1"></a>  beta12 <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">sum</span>(models[[i]]<span class="sc">@</span>coef[[<span class="dv">1</span>]] <span class="sc">*</span> <span class="fu">apply</span>(models[[i]]<span class="sc">@</span>xmatrix[[<span class="dv">1</span>]], <span class="dv">1</span>, prod))</span>
+<span id="cb115-31"><a href="#cb115-31" aria-hidden="true" tabindex="-1"></a>  hyperplane <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span>models[[i]]<span class="sc">@</span>b, beta1, beta2, beta11, beta22, beta12)</span>
+<span id="cb115-32"><a href="#cb115-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(hyperplane) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"b"</span>, <span class="st">"beta1"</span>, <span class="st">"beta2"</span>, <span class="st">"beta11"</span>, <span class="st">"beta22"</span>, <span class="st">"beta12"</span>)</span>
+<span id="cb115-33"><a href="#cb115-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">message</span>(<span class="st">"Hyperplane coefficients:"</span>)</span>
+<span id="cb115-34"><a href="#cb115-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">round</span>(hyperplane, <span class="dv">4</span>))</span>
+<span id="cb115-35"><a href="#cb115-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb115-36"><a href="#cb115-36" aria-hidden="true" tabindex="-1"></a>  <span class="co"># misclassified objects</span></span>
+<span id="cb115-37"><a href="#cb115-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">message</span>(<span class="st">"Misclassified instances:"</span>)</span>
+<span id="cb115-38"><a href="#cb115-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">which</span>(models[[i]]<span class="sc">@</span>ymatrix <span class="sc">!=</span> <span class="fu">as.integer</span>(models[[i]]<span class="sc">@</span>fitted)))</span>
+<span id="cb115-39"><a href="#cb115-39" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>-------
+C = 1
+-------</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Support vectors:</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1 2 3 7 9</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Alpha values for support vectors:</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.2356 0.5009 0.6532 1.0000 0.0814</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Hyperplane coefficients:</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      b   beta1   beta2  beta11  beta22  beta12 
+-3.4455  0.3892  1.1899 -0.1674 -0.0721  0.0539 </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Misclassified instances:</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 7</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>-------
+C = 5
+-------
+Support vectors:</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2 3 6 7 9</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Alpha values for support vectors:</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.0865 2.1573 0.2357 5.0000 2.9919</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Hyperplane coefficients:</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      b   beta1   beta2  beta11  beta22  beta12 
+-5.2716  0.1297  3.3860 -0.9460 -0.8234  1.3451 </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Misclassified instances:</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>integer(0)</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>-------
+C = 100
+-------
+Support vectors:</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2 3 6 7 9</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Alpha values for support vectors:</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.0152 2.7412 0.2814 6.3923 3.9173</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Hyperplane coefficients:</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      b   beta1   beta2  beta11  beta22  beta12 
+-6.2803  0.1622  4.2330 -1.2444 -1.0915  1.8056 </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Misclassified instances:</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>integer(0)</code></pre>
+</div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../chapters/ch5_classification.html" class="pagination-link  aria-label=" &lt;span="" 분류분석="" 개요&lt;="" span&gt;"="">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">5장 분류분석 개요</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../chapters/ch11_cluster.html" class="pagination-link" aria-label="<span class='chapter-number'>4</span>&nbsp; <span class='chapter-title'>11장 군집분석 개요</span>">
+        <span class="nav-page-text"><span class="chapter-title">11장 군집분석 개요</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

@@ -12,7 +12,7 @@ dat$class <- factor(dat$class)
 dat
 
 # SVM with 2nd order polynomial kernel
-svm_model_1 <- ksvm(
+model <- ksvm(
   class ~ x1 + x2,
   data = dat,
   scaled = FALSE,
@@ -21,23 +21,23 @@ svm_model_1 <- ksvm(
 )
 
 # support vectors
-svm_model_1@alphaindex[[1]]
+model@alphaindex[[1]]
 
 # alpha values for support vectors
-svm_model_1@alpha[[1]]
+model@alpha[[1]]
 
 # betas
-beta1 <- 2 * sum(svm_model_1@coef[[1]] * svm_model_1@xmatrix[[1]][, "x1"])
-beta2 <- 2 * sum(svm_model_1@coef[[1]] * svm_model_1@xmatrix[[1]][, "x2"])
-beta11 <- sum(svm_model_1@coef[[1]] * svm_model_1@xmatrix[[1]][, "x1"]^2)
-beta22 <- sum(svm_model_1@coef[[1]] * svm_model_1@xmatrix[[1]][, "x2"]^2)
-beta12 <- 2 * sum(svm_model_1@coef[[1]] * apply(svm_model_1@xmatrix[[1]], 1, prod))
-betas <- c(-svm_model_1@b, beta1, beta2, beta11, beta22, beta12)
+beta1 <- 2 * sum(model@coef[[1]] * model@xmatrix[[1]][, "x1"])
+beta2 <- 2 * sum(model@coef[[1]] * model@xmatrix[[1]][, "x2"])
+beta11 <- sum(model@coef[[1]] * model@xmatrix[[1]][, "x1"]^2)
+beta22 <- sum(model@coef[[1]] * model@xmatrix[[1]][, "x2"]^2)
+beta12 <- 2 * sum(model@coef[[1]] * apply(model@xmatrix[[1]], 1, prod))
+betas <- c(-model@b, beta1, beta2, beta11, beta22, beta12)
 names(betas) <- c("b", "beta1", "beta2", "beta11", "beta22", "beta12")
 round(betas, 4)
 
 # misclassified objects
-which(svm_model_1@ymatrix != as.integer(svm_model_1@fitted))
+which(model@ymatrix != as.integer(model@fitted))
 
 
 # Try with C = 1, C = 5 and C = 100

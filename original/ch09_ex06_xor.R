@@ -19,7 +19,7 @@ K <- kernelMatrix(polydot(degree = 2), X)
 K
 
 # SVM with 2nd order polynomial kernel
-svm_model <- ksvm(
+model <- ksvm(
   class ~ x1 + x2,
   data = dat,
   scaled = FALSE,
@@ -27,11 +27,11 @@ svm_model <- ksvm(
 )
 
 # support vectors
-svm_model@alphaindex[[1]]
+model@alphaindex[[1]]
 
 # alpha values for support vectors
-svm_model@alpha[[1]]
+model@alpha[[1]]
 
 # nonlinear hyperplane's intercept b
 # Note that we placed minus(-) sign
--svm_model@b
+-model@b

@@ -417,9 +417,8 @@ Attaching package: 'olsrr'</code></pre>
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>dat_ba <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/Player.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="예-2.13-다중공선성" class="level4">
-<h4 class="anchored" data-anchor-id="예-2.13-다중공선성">(예 2.13) 다중공선성</h4>
-<p>회귀모형 추정</p>
+<section id="다중-회귀모형-추정" class="level4">
+<h4 class="anchored" data-anchor-id="다중-회귀모형-추정">다중 회귀모형 추정</h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>lm_model <span class="ot">&lt;-</span> <span class="fu">lm</span>(Salary <span class="sc">~</span> Hits <span class="sc">+</span> Walks <span class="sc">+</span> CRuns <span class="sc">+</span> HmRun <span class="sc">+</span> CWalks, <span class="at">data =</span> dat_ba)</span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -450,81 +449,12 @@ Multiple R-squared:  0.4391,    Adjusted R-squared:  0.4282
 F-statistic: 40.24 on 5 and 257 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
-<p>분산팽창계수</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>vif_value1 <span class="ot">&lt;-</span> <span class="fu">vif</span>(lm_model)</span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>vif_value1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>     Hits     Walks     CRuns     HmRun    CWalks 
- 2.626281  2.641472 11.132539  1.465358 12.496169 </code></pre>
-</div>
-</div>
-<p>변수간 상관계수</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>vars1 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Hits"</span>, <span class="st">"Walks"</span>, <span class="st">"CRuns"</span>, <span class="st">"HmRun"</span>, <span class="st">"CWalks"</span>)</span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(dat_ba[vars1])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>            Hits     Walks     CRuns     HmRun    CWalks
-Hits   1.0000000 0.6412106 0.2617869 0.5621579 0.1518182
-Walks  0.6412106 1.0000000 0.3384780 0.4810143 0.4245071
-CRuns  0.2617869 0.3384780 1.0000000 0.2623606 0.9278069
-HmRun  0.5621579 0.4810143 0.2623606 1.0000000 0.2331537
-CWalks 0.1518182 0.4245071 0.9278069 0.2331537 1.0000000</code></pre>
-</div>
-</div>
-<p>상관계수가 높은 두 변수 간의 선형관계</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(dat_ba[, <span class="fu">c</span>(<span class="st">"CRuns"</span>, <span class="st">"CWalks"</span>)])</span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="fu">lm</span>(CWalks <span class="sc">~</span> CRuns, <span class="at">data =</span> dat_ba), <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">lty =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="ch2_regression_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>상관계수가 높은 두 변수 중 하나의 변수를 제거</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>lm2_model <span class="ot">&lt;-</span> <span class="fu">lm</span>(Salary <span class="sc">~</span> Hits <span class="sc">+</span> Walks <span class="sc">+</span> CRuns <span class="sc">+</span> HmRun, <span class="at">data =</span> dat_ba)</span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm2_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-Call:
-lm(formula = Salary ~ Hits + Walks + CRuns + HmRun, data = dat_ba)
-
-Residuals:
-    Min      1Q  Median      3Q     Max 
--902.84 -189.20  -37.78  104.27 2196.70 
-
-Coefficients:
-             Estimate Std. Error t value Pr(&gt;|t|)    
-(Intercept) -75.27564   57.04814  -1.320 0.188168    
-Hits          2.23021    0.62602   3.563 0.000437 ***
-Walks         2.97024    1.25939   2.358 0.019096 *  
-CRuns         0.61299    0.06849   8.950  &lt; 2e-16 ***
-HmRun         2.33890    2.92909   0.799 0.425310    
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-Residual standard error: 343.2 on 258 degrees of freedom
-  (59 observations deleted due to missingness)
-Multiple R-squared:  0.4301,    Adjusted R-squared:  0.4213 
-F-statistic: 48.68 on 4 and 258 DF,  p-value: &lt; 2.2e-16</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>vif_value2 <span class="ot">&lt;-</span> <span class="fu">vif</span>(lm2_model)</span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>vif_value2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>    Hits    Walks    CRuns    HmRun 
-1.775329 1.664286 1.144697 1.463700 </code></pre>
-</div>
-</div>
 </section>
 <section id="예-2.8-모든-가능한-조합의-회귀분석" class="level4">
 <h4 class="anchored" data-anchor-id="예-2.8-모든-가능한-조합의-회귀분석">(예 2.8) 모든 가능한 조합의 회귀분석</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>k <span class="ot">&lt;-</span> <span class="fu">ols_step_all_possible</span>(lm_model)</span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>k</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>k <span class="ot">&lt;-</span> <span class="fu">ols_step_all_possible</span>(lm_model)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>k</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   Index N                    Predictors  R-Square Adj. R-Square Mallow's Cp
 3      1 1                         CRuns 0.3166062     0.3139878   54.140213
@@ -564,7 +494,7 @@ F-statistic: 48.68 on 4 and 258 DF,  p-value: &lt; 2.2e-16</code></pre>
 <section id="예-2.9-단계별방법" class="level4">
 <h4 class="anchored" data-anchor-id="예-2.9-단계별방법">(예 2.9) 단계별방법</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ols_step_both_p</span>(lm_model, <span class="at">details =</span> <span class="cn">TRUE</span>, <span class="at">pent =</span> <span class="fl">0.3</span>, <span class="at">prem =</span> <span class="fl">0.3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ols_step_both_p</span>(lm_model, <span class="at">details =</span> <span class="cn">TRUE</span>, <span class="at">pent =</span> <span class="fl">0.3</span>, <span class="at">prem =</span> <span class="fl">0.3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Stepwise Selection Method   
 ---------------------------
@@ -872,6 +802,78 @@ Step    Variable    Removed     R-Square    R-Square     C(p)         AIC       
 </div>
 </div>
 </section>
+<section id="예-2.13-다중공선성" class="level4">
+<h4 class="anchored" data-anchor-id="예-2.13-다중공선성">(예 2.13) 다중공선성</h4>
+<p>분산팽창계수</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>vif_value1 <span class="ot">&lt;-</span> <span class="fu">vif</span>(lm_model)</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>vif_value1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     Hits     Walks     CRuns     HmRun    CWalks 
+ 2.626281  2.641472 11.132539  1.465358 12.496169 </code></pre>
+</div>
+</div>
+<p>변수간 상관계수</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>vars1 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Hits"</span>, <span class="st">"Walks"</span>, <span class="st">"CRuns"</span>, <span class="st">"HmRun"</span>, <span class="st">"CWalks"</span>)</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(dat_ba[vars1])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Hits     Walks     CRuns     HmRun    CWalks
+Hits   1.0000000 0.6412106 0.2617869 0.5621579 0.1518182
+Walks  0.6412106 1.0000000 0.3384780 0.4810143 0.4245071
+CRuns  0.2617869 0.3384780 1.0000000 0.2623606 0.9278069
+HmRun  0.5621579 0.4810143 0.2623606 1.0000000 0.2331537
+CWalks 0.1518182 0.4245071 0.9278069 0.2331537 1.0000000</code></pre>
+</div>
+</div>
+<p>상관계수가 높은 두 변수 간의 선형관계</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(dat_ba[, <span class="fu">c</span>(<span class="st">"CRuns"</span>, <span class="st">"CWalks"</span>)])</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="fu">lm</span>(CWalks <span class="sc">~</span> CRuns, <span class="at">data =</span> dat_ba), <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">lty =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="ch2_regression_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>상관계수가 높은 두 변수 중 하나의 변수를 제거</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>lm2_model <span class="ot">&lt;-</span> <span class="fu">lm</span>(Salary <span class="sc">~</span> Hits <span class="sc">+</span> Walks <span class="sc">+</span> CRuns <span class="sc">+</span> HmRun, <span class="at">data =</span> dat_ba)</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm2_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Salary ~ Hits + Walks + CRuns + HmRun, data = dat_ba)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-902.84 -189.20  -37.78  104.27 2196.70 
+
+Coefficients:
+             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -75.27564   57.04814  -1.320 0.188168    
+Hits          2.23021    0.62602   3.563 0.000437 ***
+Walks         2.97024    1.25939   2.358 0.019096 *  
+CRuns         0.61299    0.06849   8.950  &lt; 2e-16 ***
+HmRun         2.33890    2.92909   0.799 0.425310    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 343.2 on 258 degrees of freedom
+  (59 observations deleted due to missingness)
+Multiple R-squared:  0.4301,    Adjusted R-squared:  0.4213 
+F-statistic: 48.68 on 4 and 258 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>vif_value2 <span class="ot">&lt;-</span> <span class="fu">vif</span>(lm2_model)</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>vif_value2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    Hits    Walks    CRuns    HmRun 
+1.775329 1.664286 1.144697 1.463700 </code></pre>
+</div>
+</div>
+</section>
 </section>
 <section id="예-2.14-2.16" class="level2">
 <h2 class="anchored" data-anchor-id="예-2.14-2.16">(예 2.14, 2.16)</h2>
@@ -974,7 +976,7 @@ F-statistic:   120 on 3 and 6 DF,  p-value: 9.577e-06</code></pre>
 <div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dat1, <span class="fu">aes</span>(<span class="at">x =</span> temp, <span class="at">y =</span> y, <span class="at">shape =</span> thick, <span class="at">linetype =</span> thick)) <span class="sc">+</span></span>
 <span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">color =</span> <span class="st">"grey30"</span>) <span class="sc">+</span></span>
 <span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
-<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"CT"</span>, <span class="at">y =</span> <span class="st">"TS"</span>, <span class="at">shape =</span> <span class="st">"thickness"</span>, <span class="at">linetype =</span> <span class="st">"thickness"</span>) <span class="sc">+</span></span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"X(temp)"</span>, <span class="at">y =</span> <span class="st">"Y"</span>, <span class="at">shape =</span> <span class="st">"thickness"</span>, <span class="at">linetype =</span> <span class="st">"thickness"</span>) <span class="sc">+</span></span>
 <span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
 <span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="fu">c</span>(<span class="fl">0.2</span>, <span class="fl">0.2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">

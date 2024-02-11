@@ -23,6 +23,6 @@ summary(lm_fit_interaction)
 ggplot(dat1, aes(x = temp, y = y, shape = thick, linetype = thick)) +
   geom_smooth(method = "lm", se = FALSE, color = "grey30") +
   geom_point(size = 3) +
-  labs(x = "CT", y = "TS", shape = "thickness", linetype = "thickness") +
+  labs(x = "X1(temp)", y = "Y", shape = "thickness", linetype = "thickness") +
   theme_classic() +
   theme(legend.position = c(0.2, 0.2))

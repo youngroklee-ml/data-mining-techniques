@@ -2,39 +2,37 @@
 # ch7.5 LDA with 3 types
 
 # load library
-library(ggplot2)
-library(MASS) # for LDA, QDA
-library(caret) # confusion matrix
+library(MASS) # for LDA
+library(yardstick) # confusion matrix
 
 # read csv file# read csv file
 iris <- read.csv("data/iris.csv", stringsAsFactors = TRUE)
+names(iris) <- c("x1", "x2", "x3", "x4", "class")
 
-# training/ test data : n=150
-set.seed(1000)
-n <- nrow(iris)
-# train set 100, test set 50
-tr.idx <- sample.int(n, size = round(2 / 3 * n))
-
-# attributes in training and test
-iris.train <- iris[tr.idx, -5]
-iris.test <- iris[-tr.idx, -5]
-
-# target value in training and test
-trainLabels <- iris[tr.idx, 5]
-testLabels <- iris[-tr.idx, 5]
-
-train <- iris[tr.idx, ]
-test <- iris[-tr.idx, ]
+# train set: first 30 rows by class
+tr_idx <- c(1:30, 51:80, 101:130)
+train <- iris[tr_idx, ]
 
 # Linear Discriminant Analysis (LDA)
-iris.lda <- lda(Species ~ ., data = train, prior = c(1 / 3, 1 / 3, 1 / 3))
-iris.lda
+iris_lda <- lda(class ~ ., data = train, prior = c(1 / 3, 1 / 3, 1 / 3))
+iris_lda
 
-# iris.lda <- lda(Species=Setal.Length+Setal.Width+Petal.Length+Petal.Width, data=train, prior=c(1/3,1/3,1/3))
+# predict: first row by class 
+pred_idx <- c(1, 51, 101)
+pred <- predict(iris_lda, newdata = iris[pred_idx, -5])
+pred
 
-# predict test data set n=50
-testpred <- predict(iris.lda, iris.test)
-testpred
+# summary table
+results <- cbind(iris[pred_idx, ], pred_class = pred$class)
+results
 
-# accuracy of LDA
-confusionMatrix(testpred$class, testLabels)
+# OPTIONAL: Predict on hold-out test data
+
+# test set: all except training data
+test <- iris[-tr_idx, ]
+pred_test <- predict(iris_lda, newdata = iris[-tr_idx, -5])
+results_test <- cbind(test, pred_class = pred_test$class)
+
+# confusion matrix
+cm <- conf_mat(results_test, truth = "class", estimate = "pred_class")
+cm

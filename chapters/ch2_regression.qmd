@@ -91,15 +91,29 @@ library("car")
 dat_ba <- read.csv("data/Player.csv")
 ```
 
-
-#### (예 2.13) 다중공선성
-
-회귀모형 추정
+#### 다중 회귀모형 추정
 
 ```{r}
 lm_model <- lm(Salary ~ Hits + Walks + CRuns + HmRun + CWalks, data = dat_ba)
 summary(lm_model)
 ```
+
+
+#### (예 2.8) 모든 가능한 조합의 회귀분석
+
+```{r}
+k <- ols_step_all_possible(lm_model)
+k
+```
+
+#### (예 2.9) 단계별방법
+
+```{r}
+ols_step_both_p(lm_model, details = TRUE, pent = 0.3, prem = 0.3)
+```
+
+
+#### (예 2.13) 다중공선성
 
 분산팽창계수
 
@@ -130,20 +144,6 @@ summary(lm2_model)
 
 vif_value2 <- vif(lm2_model)
 vif_value2
-```
-
-
-#### (예 2.8) 모든 가능한 조합의 회귀분석
-
-```{r}
-k <- ols_step_all_possible(lm_model)
-k
-```
-
-#### (예 2.9) 단계별방법
-
-```{r}
-ols_step_both_p(lm_model, details = TRUE, pent = 0.3, prem = 0.3)
 ```
 
 
@@ -194,7 +194,7 @@ summary(lm_fit_interaction)
 ggplot(dat1, aes(x = temp, y = y, shape = thick, linetype = thick)) +
   geom_smooth(method = "lm", se = FALSE, color = "grey30") +
   geom_point(size = 3) +
-  labs(x = "CT", y = "TS", shape = "thickness", linetype = "thickness") +
+  labs(x = "X(temp)", y = "Y", shape = "thickness", linetype = "thickness") +
   theme_classic() +
   theme(legend.position = c(0.2, 0.2))
 ```

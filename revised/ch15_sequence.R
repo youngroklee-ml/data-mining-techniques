@@ -1,3 +1,14 @@
+# ch15: association rule mining
+# section 15.3: sequential patterns
+
+# NOTE: This R code uses different algorithm called SPADE
+#       The results should be the same to examples in the book,
+#       but underlying algorithms and computational steps 
+#       are different from AprioriAll or AprioriSome.
+#       For SPADE algorithm, please see the paper below:
+#       Zaki, M. J. (2001). SPADE: An efficient algorithm for 
+#         mining frequent sequences. Machine learning, 42, 31-60.
+
 # load package
 library(arulesSequences)
 

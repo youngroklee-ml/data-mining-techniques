@@ -1,0 +1,188 @@
+# 7장 판별분석
+
+## (예 7.4)
+
+#### 패키지 로드
+
+```{r}
+library(MASS)
+library(yardstick)
+```
+
+
+#### 데이터 로드
+
+```{r}
+dat1 <- read.csv("data/ch7_dat1.csv")
+dat1 <- dat1[, -1]
+dat1$class <- as.factor(dat1$class)
+```
+
+#### 선형 판별분석 (사전확률 = 0.5)
+
+```{r}
+lda_fit <- lda(class ~ ., data = dat1, prior = c(1 / 2, 1 / 2))
+lda_fit
+```
+
+
+#### 각 객체에 대한 추정
+
+추정 실행
+
+```{r}
+pred <- predict(lda_fit, dat1)
+```
+
+추정된 사후확률
+
+```{r}
+pred$posterior
+```
+
+
+추정된 범주
+
+```{r}
+pred$class
+```
+
+추정결과 요약
+
+```{r}
+results <- cbind(dat1, posterior = pred$posterior, pred_class = pred$class)
+results
+```
+
+
+#### 추정 성능
+
+```{r}
+metrics_multi <- metric_set(accuracy, sens, spec, f_meas, roc_auc)
+metrics_multi(results, truth = "class", estimate = "pred_class", posterior.1)
+```
+
+
+## (예 7.6)
+
+#### 패키지 로드
+
+```{r}
+library(MASS)
+library(yardstick)
+```
+
+#### 데이터 로드
+
+```{r}
+dat1 <- read.csv("data/ch7_dat1.csv")
+dat1 <- dat1[, -1]
+dat1$class <- as.factor(dat1$class)
+```
+
+#### 이차 판별분석 (사전확률 = 0.5)
+
+```{r}
+qda_fit <- qda(class ~ ., data = dat1, prior = c(1 / 2, 1 / 2))
+qda_fit
+```
+
+
+#### 각 객체에 대한 추정
+
+추정 실행
+
+```{r}
+pred <- predict(qda_fit, dat1)
+```
+
+추정된 사후확률
+
+```{r}
+pred$posterior
+```
+
+
+추정된 범주
+
+```{r}
+pred$class
+```
+
+추정결과 요약
+
+```{r}
+results <- cbind(dat1, posterior = pred$posterior, pred_class = pred$class)
+results
+```
+
+
+#### 추정 성능
+
+```{r}
+metrics_multi <- metric_set(accuracy, sens, spec, f_meas, roc_auc)
+metrics_multi(results, truth = "class", estimate = "pred_class", posterior.1)
+```
+
+
+## (예 7.7)
+
+#### 패키지 로드
+
+```{r}
+library(MASS)
+library(yardstick)
+```
+
+#### 데이터 로드
+
+```{r}
+iris <- read.csv("data/iris.csv", stringsAsFactors = TRUE)
+names(iris) <- c("x1", "x2", "x3", "x4", "class")
+```
+
+#### 학습 데이터 생성
+
+```{r}
+tr_idx <- c(1:30, 51:80, 101:130)
+train <- iris[tr_idx, ]
+```
+
+#### 선형 판별분석
+
+```{r}
+iris_lda <- lda(class ~ ., data = train, prior = c(1 / 3, 1 / 3, 1 / 3))
+iris_lda
+```
+
+#### 객체 분류 - 각 범주별 첫 번째 객체
+
+```{r}
+pred_idx <- c(1, 51, 101)
+pred <- predict(iris_lda, newdata = iris[pred_idx, -5])
+pred
+```
+
+요약표
+
+```{r}
+results <- cbind(iris[pred_idx, ], pred_class = pred$class)
+results
+```
+
+
+#### OPTIONAL: 테스트 데이터에 대해 추정 수행
+
+```{r}
+test <- iris[-tr_idx, ]
+pred_test <- predict(iris_lda, newdata = iris[-tr_idx, -5])
+results_test <- cbind(test, pred_class = pred_test$class)
+```
+
+정오분류표
+
+```{r}
+cm <- conf_mat(results_test, truth = "class", estimate = "pred_class")
+cm
+```
+

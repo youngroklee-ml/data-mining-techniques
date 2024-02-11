@@ -1,10 +1,11 @@
 # ch7_QDA.R
 # ch7.4 Quadratic Discriminant Analysis
 
+# ex7.6
+
 # load library
-library(ggplot2)
-library(MASS) # for LDA, QDA
-library(caret) # confusion matrix
+library(MASS) # QDA
+library(yardstick) # measure performance
 
 # read csv file# read csv file
 dat1 <- read.csv("data/ch7_dat1.csv")
@@ -19,14 +20,20 @@ dat1$class <- as.factor(dat1$class)
 qda_fit <- qda(class ~ ., data = dat1, prior = c(1 / 2, 1 / 2))
 qda_fit
 
-# Predict posterior probabilities
-posterior_probs <- predict(qda_fit, type = "posterior")
-posterior <- round(posterior_probs$posterior, 3)
-posterior
+# predict test data set:
+# in this example, test data is the same to training data
+pred <- predict(qda_fit, dat1)
 
-# predict test data
-testpred <- predict(qda_fit, dat1)
-testpred
+# predicted posterior probabilities
+pred$posterior
 
-# accuracy of QDA
-confusionMatrix(testpred$class, as.factor(dat1$class))
+# predicted class
+pred$class
+
+# summary table
+results <- cbind(dat1, posterior = pred$posterior, pred_class = pred$class)
+results
+
+# measuring performance of QDA
+metrics_multi <- metric_set(accuracy, sens, spec, f_meas, roc_auc)
+metrics_multi(results, truth = "class", estimate = "pred_class", posterior.1)

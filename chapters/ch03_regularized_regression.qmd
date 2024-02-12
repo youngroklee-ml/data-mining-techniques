@@ -1,0 +1,74 @@
+# 3장 규제 회귀분석
+
+## (예 3.1 - 3.2)
+
+#### 패키지 로드
+
+```{r}
+library(glmnet)
+```
+
+
+#### 데이터 로드
+
+```{r}
+dat1 <- read.csv("data/ch3_dat1.csv")
+x <- as.matrix(dat1[, 1:2])
+y <- dat1$y
+```
+
+#### 독립변수 데이터 표준화
+
+```{r}
+std_x <- scale(x)
+```
+
+#### (예 3.1) Lasso
+
+원하는 $\lambda$값을 `glmnet` 수식에 맞춰 변환
+
+```{r}
+lambda <- seq(0, 3, by = 1)
+N <- length(y) # number of observations in training data
+lasso_lambda <- lambda / (2 * N)
+```
+
+Lasso regression
+
+```{r}
+lasso <- glmnet(
+  std_x, y, alpha = 1, lambda = lasso_lambda, standardize = FALSE
+)
+```
+
+$\lambda$값에 따른 회귀계수 변화
+
+```{r}
+lasso_coef <- predict(lasso, s = lasso_lambda, type = "coefficients")
+round(lasso_coef, 2)
+```
+
+
+#### (예 3.2) ridge
+
+원하는 $\lambda$값을 `glmnet` 수식에 맞춰 변환
+
+```{r}
+ridge_lambda <- lambda / N
+```
+
+ridge regression
+
+```{r}
+ridge <- glmnet(
+  std_x, y, alpha = 0, lambda = ridge_lambda, standardize = FALSE
+)
+```
+
+$\lambda$값에 따른 회귀계수 변화
+
+```{r}
+ridge_coef <- predict(ridge, s = ridge_lambda, type = "coefficients")
+round(ridge_coef, 2)
+```
+

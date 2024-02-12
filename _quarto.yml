@@ -11,6 +11,7 @@ book:
     - part: "예측"
       chapters:
         - chapters/ch2_regression.qmd
+        - chapters/ch03_regularized_regression.qmd
     - part: "분류분석"
       chapters: 
         - chapters/ch5_classification.qmd

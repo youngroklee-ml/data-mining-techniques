@@ -20,3 +20,6 @@ experimental/
 
 # code to generate data
 data_generation/
+
+# code to be deleted
+deleted/

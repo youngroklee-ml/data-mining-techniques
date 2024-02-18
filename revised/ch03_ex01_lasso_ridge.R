@@ -1,6 +1,6 @@
-# ch3_lasso_ridge_text.R
-# LASSO, Ridge, Elastic net
-# data : example data in Chap3
+# ch03_ex01_lasso_ridge.R
+# ch3.1 Lasso
+# ch3.2 Ridge
 
 # load library
 library(glmnet)

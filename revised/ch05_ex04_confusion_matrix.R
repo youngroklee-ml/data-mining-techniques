@@ -1,3 +1,6 @@
+# ch05_ex04_confusion_matrix.R
+# ch5.3 classification performance metrics
+
 # ex5-4
 
 # load packages

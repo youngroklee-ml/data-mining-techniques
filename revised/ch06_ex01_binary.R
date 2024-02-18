@@ -1,5 +1,4 @@
 # ch06_ex01_binary.R
-
 # ch6.1 binary logistic regression
 
 # load package

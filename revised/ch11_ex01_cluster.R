@@ -1,7 +1,7 @@
-# ch11_cluster.r
-# Euclidean distance, Minkowski distance
+# ch11_ex01_cluster.R
+# ch11.2 similarity/distance metrics
 
-# ch11_dat1 (ex 11_1) ##########
+# ex11.1
 
 # read csv file
 dat1 <- read.csv("data/ch11_dat1.csv")
@@ -14,7 +14,7 @@ D1 <- round(D1, 2)
 D1
 
 # Minkowski distance
-# D2<- dist(m1, method="minkowski", p=3)
+# D2 <- dist(m1, method = "minkowski", p = 3)
 # D2
 
 # Mean and covariance matrix

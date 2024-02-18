@@ -1,4 +1,6 @@
-# ex5-3: Naive Bayes classification
+# ch05_ex03_NB.R
+# ch5.2 basic methods (ch5.2.2 naive Bayes)
+# ch5.3 classification performance metrics 
 
 # load packages
 library(e1071) # naive bayes
@@ -12,6 +14,9 @@ dat3$class <- factor(dat3$class)
 
 # summary about data
 summary(dat3)
+
+
+# ex5-3: Naive Bayes classification
 
 # Naive Bayes classification
 nb_fit <- naiveBayes(class ~ gender + age_gr, data = dat3)

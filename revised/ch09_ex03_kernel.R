@@ -1,5 +1,5 @@
-# ch9 SVM
-# ch9.3 nonlinear svm
+# ch09_ex03_kernel.R
+# ch9.3 nonlinear SVM
 
 # ex9.3 kernel
 

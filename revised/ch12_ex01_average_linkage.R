@@ -1,5 +1,8 @@
-# ch12.1 Distance measures
-# ch12.2 Average linkage method
+# ch12_ex01_average_linkage.R
+# ch12.1 cluster distance metrics and linkage methods
+# ch12.2 algorithm of linkage methods
+
+# ex12.1
 
 # read csv file
 dat1 <- read.csv("data/ch12_dat1.csv")

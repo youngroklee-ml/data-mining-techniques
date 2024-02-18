@@ -1,4 +1,5 @@
-# ch2.8 regression with indicator variable (ch2_indicator.R)
+# ch02_ex14_indicator.R
+# ch2.8 regression with indicator variable
 
 # load package
 library(ggplot2)

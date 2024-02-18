@@ -1,5 +1,4 @@
 # ch06_ex04_nominal.R
-
 # ch6.2 nominal logistic regression
 
 # load package

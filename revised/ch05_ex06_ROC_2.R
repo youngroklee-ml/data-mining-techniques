@@ -1,3 +1,6 @@
+# ch05_ex06_ROC_2.R
+# ch5.4 ROC curve
+
 # ex5-6
 
 # load package

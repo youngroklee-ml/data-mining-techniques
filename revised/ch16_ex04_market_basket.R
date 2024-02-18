@@ -1,3 +1,6 @@
+# ch16_ex04_market_basket.R
+# ch16.3 collaborative filtering on market-basket data
+
 # ex16.4
 
 # load library

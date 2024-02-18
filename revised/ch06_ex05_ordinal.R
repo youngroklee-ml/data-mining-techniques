@@ -1,5 +1,4 @@
 # ch06_ex05_ordinal.R
-
 # ch6.3 ordinal logistic regression
 
 # load package

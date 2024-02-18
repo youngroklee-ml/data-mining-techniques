@@ -1,5 +1,7 @@
-# ch7_iris_LDA.R
+# ch07_ex07_iris_LDA.R
 # ch7.5 LDA with 3 types
+
+# ex7-7
 
 # load library
 library(MASS) # for LDA

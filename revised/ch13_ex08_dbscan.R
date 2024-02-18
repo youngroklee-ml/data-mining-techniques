@@ -1,4 +1,7 @@
+# ch13_ex08_dbscan.R
 # ch13.5 DBSCAN
+
+# ex13.8
 
 # load packages
 library(fpc)

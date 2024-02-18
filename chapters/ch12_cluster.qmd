@@ -98,7 +98,7 @@ plot(clus_diana, which.plots = 2, main = "Dendrogram of Diana")
 ```
 
 
-## (예 12.4)
+## (예 12.5)
 
 #### 패키지 로드
 

@@ -1,0 +1,1312 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.550">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>데이터마이닝 기법과 응용: R 예제 - 6장 로지스틱 회귀분석</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../chapters/ch07_da.html" rel="next">
+<link href="../chapters/ch5_classification.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/ch5_classification.html">분류분석</a></li><li class="breadcrumb-item"><a href="../chapters/ch06_logistic_regression.html"><span class="chapter-title">6장 로지스틱 회귀분석</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">데이터마이닝 기법과 응용: R 예제</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/youngroklee-ml/data-mining-techniques" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">소개</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">예측</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/ch2_regression.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">2장 회귀분석</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/ch03_regularized_regression.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">3장 규제 회귀분석</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text">분류분석</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/ch5_classification.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">5장 분류분석 개요</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/ch06_logistic_regression.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">6장 로지스틱 회귀분석</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/ch07_da.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">7장 판별분석</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/ch09_svm.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">9장 서포트 벡터 머신</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text">군집분석</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/ch11_cluster.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">11장 군집분석 개요</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/ch12_cluster.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">12장 계층적 군집방법</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/ch13_cluster_dbscan.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">13장 비계층적 군집방법</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text">연관규칙</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/ch15_association_rule.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">15장 연관규칙</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../chapters/ch16_recommender_system.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">16장 추천시스템</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#예-6.1-6.3" id="toc-예-6.1-6.3" class="nav-link active" data-scroll-target="#예-6.1-6.3">(예 6.1, 6.3)</a></li>
+  <li><a href="#예-6.4" id="toc-예-6.4" class="nav-link" data-scroll-target="#예-6.4">(예 6.4)</a></li>
+  <li><a href="#예-6.5---6.6" id="toc-예-6.5---6.6" class="nav-link" data-scroll-target="#예-6.5---6.6">(예 6.5 - 6.6)</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/ch5_classification.html">분류분석</a></li><li class="breadcrumb-item"><a href="../chapters/ch06_logistic_regression.html"><span class="chapter-title">6장 로지스틱 회귀분석</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-title">6장 로지스틱 회귀분석</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="예-6.1-6.3" class="level2">
+<h2 class="anchored" data-anchor-id="예-6.1-6.3">(예 6.1, 6.3)</h2>
+<section id="패키지-로드" class="level4">
+<h4 class="anchored" data-anchor-id="패키지-로드">패키지 로드</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(yardstick) <span class="co"># confusion matrix</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="데이터-로드" class="level4">
+<h4 class="anchored" data-anchor-id="데이터-로드">데이터 로드</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>dat1 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/ch6_dat1.csv"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>dat1<span class="sc">$</span>Class <span class="ot">&lt;-</span> <span class="fu">factor</span>(dat1<span class="sc">$</span>Class, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Average"</span>, <span class="st">"Excellent"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="예-6.1" class="level4">
+<h4 class="anchored" data-anchor-id="예-6.1">(예 6.1)</h4>
+<p>로짓모형 추정</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>bin.fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  Class <span class="sc">~</span> Break <span class="sc">+</span> Sleep <span class="sc">+</span> Circle,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> dat1,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">binomial</span>(<span class="st">"logit"</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(bin.fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = Class ~ Break + Sleep + Circle, family = binomial("logit"), 
+    data = dat1)
+
+Coefficients:
+            Estimate Std. Error z value Pr(&gt;|z|)  
+(Intercept)  -30.511     18.018  -1.693   0.0904 .
+Break          2.031      1.984   1.024   0.3058  
+Sleep          3.471      2.075   1.673   0.0944 .
+Circle         2.414      1.396   1.729   0.0838 .
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 20.190  on 14  degrees of freedom
+Residual deviance: 10.418  on 11  degrees of freedom
+AIC: 18.418
+
+Number of Fisher Scoring iterations: 6</code></pre>
+</div>
+</div>
+<p>승산비 (odds ratio)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(<span class="fu">coef</span>(bin.fit))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> (Intercept)        Break        Sleep       Circle 
+5.614515e-14 7.623824e+00 3.215832e+01 1.118291e+01 </code></pre>
+</div>
+</div>
+<p>logit 추정</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>logit <span class="ot">&lt;-</span> <span class="fu">predict</span>(bin.fit, <span class="at">newdata =</span> dat1, <span class="at">type =</span> <span class="st">"link"</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>logit</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         1          2          3          4          5          6          7 
+ 2.0833072 -1.7704728  0.7252047  2.0020167  4.1145853  1.0270229 -6.2161377 
+         8          9         10         11         12         13         14 
+-5.2411440 -1.3873640 -0.3310796 -8.3287064 -0.7141884 -2.4436483  0.6439141 
+        15 
+-7.2724220 </code></pre>
+</div>
+</div>
+<p>확률 추정</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>pred.prob <span class="ot">&lt;-</span> <span class="fu">predict</span>(bin.fit, <span class="at">newdata =</span> dat1, <span class="at">type =</span> <span class="st">"response"</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>pred.prob</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>           1            2            3            4            5            6 
+0.8892701130 0.1454835466 0.6737520946 0.8810086527 0.9839297588 0.7363383193 
+           7            8            9           10           11           12 
+0.0019929633 0.0052663161 0.1998289192 0.4179779549 0.0002414259 0.3286740111 
+          13           14           15 
+0.0799042803 0.6556377156 0.0006939461 </code></pre>
+</div>
+</div>
+<p>범주 추정</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>pred.class <span class="ot">&lt;-</span> <span class="fu">factor</span>(</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ifelse</span>(pred.prob <span class="sc">&gt;</span> .<span class="dv">5</span>, <span class="st">"Excellent"</span>, <span class="st">"Average"</span>), </span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Average"</span>, <span class="st">"Excellent"</span>)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>pred.class</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        1         2         3         4         5         6         7         8 
+Excellent   Average Excellent Excellent Excellent Excellent   Average   Average 
+        9        10        11        12        13        14        15 
+  Average   Average   Average   Average   Average Excellent   Average 
+Levels: Average Excellent</code></pre>
+</div>
+</div>
+<p>결과 요약표</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">cbind</span>(dat1, <span class="at">logit =</span> logit, <span class="at">P =</span> pred.prob, <span class="at">pred_class =</span> pred.class)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>results</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Break Sleep Circle     Class      logit            P pred_class
+1      0     8      2 Excellent  2.0833072 0.8892701130  Excellent
+2      1     7      1 Excellent -1.7704728 0.1454835466    Average
+3      0     9      0 Excellent  0.7252047 0.6737520946  Excellent
+4      1     6      4 Excellent  2.0020167 0.8810086527  Excellent
+5      1     8      2 Excellent  4.1145853 0.9839297588  Excellent
+6      0     7      3 Excellent  1.0270229 0.7363383193  Excellent
+7      0     7      0   Average -6.2161377 0.0019929633    Average
+8      1     6      1   Average -5.2411440 0.0052663161    Average
+9      0     7      2   Average -1.3873640 0.1998289192    Average
+10     0     8      1   Average -0.3310796 0.4179779549    Average
+11     0     5      2   Average -8.3287064 0.0002414259    Average
+12     1     8      0   Average -0.7141884 0.3286740111    Average
+13     0     6      3   Average -2.4436483 0.0799042803    Average
+14     1     7      2   Average  0.6439141 0.6556377156  Excellent
+15     0     6      1   Average -7.2724220 0.0006939461    Average</code></pre>
+</div>
+</div>
+<p>정오분류표</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">conf_mat</span>(results, <span class="at">truth =</span> <span class="st">"Class"</span>, <span class="at">estimate =</span> <span class="st">"pred_class"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>           Truth
+Prediction  Average Excellent
+  Average         8         1
+  Excellent       1         5</code></pre>
+</div>
+</div>
+</section>
+<section id="예-6.3" class="level4">
+<h4 class="anchored" data-anchor-id="예-6.3">(예 6.3)</h4>
+<p>곰핏모형 추정</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>gompit.fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  Class <span class="sc">~</span> Break <span class="sc">+</span> Sleep <span class="sc">+</span> Circle, </span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> dat1, </span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">binomial</span>(<span class="st">"cloglog"</span>)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(gompit.fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = Class ~ Break + Sleep + Circle, family = binomial("cloglog"), 
+    data = dat1)
+
+Coefficients:
+            Estimate Std. Error z value Pr(&gt;|z|)  
+(Intercept)  -26.350     14.979  -1.759   0.0786 .
+Break          1.350      1.503   0.898   0.3692  
+Sleep          2.967      1.711   1.734   0.0828 .
+Circle         2.040      1.071   1.905   0.0567 .
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 20.190  on 14  degrees of freedom
+Residual deviance:  9.676  on 11  degrees of freedom
+AIC: 17.676
+
+Number of Fisher Scoring iterations: 10</code></pre>
+</div>
+</div>
+<p>노밋모형 추정</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>normit.fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  Class <span class="sc">~</span> Break <span class="sc">+</span> Sleep <span class="sc">+</span> Circle, </span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> dat1, </span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">binomial</span>(<span class="st">"probit"</span>)</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(normit.fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = Class ~ Break + Sleep + Circle, family = binomial("probit"), 
+    data = dat1)
+
+Coefficients:
+            Estimate Std. Error z value Pr(&gt;|z|)  
+(Intercept) -17.8505     9.9127  -1.801   0.0717 .
+Break         1.2607     1.1288   1.117   0.2641  
+Sleep         2.0313     1.1424   1.778   0.0754 .
+Circle        1.4144     0.7798   1.814   0.0697 .
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 20.190  on 14  degrees of freedom
+Residual deviance: 10.381  on 11  degrees of freedom
+AIC: 18.381
+
+Number of Fisher Scoring iterations: 8</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="예-6.4" class="level2">
+<h2 class="anchored" data-anchor-id="예-6.4">(예 6.4)</h2>
+<section id="패키지-로드-1" class="level4">
+<h4 class="anchored" data-anchor-id="패키지-로드-1">패키지 로드</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nnet) <span class="co"># nominal logistic regression</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(yardstick) <span class="co"># confusion matrix</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="데이터-로드-1" class="level4">
+<h4 class="anchored" data-anchor-id="데이터-로드-1">데이터 로드</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>dat2 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/ch6_dat2.csv"</span>)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>dat2<span class="sc">$</span>Y <span class="ot">&lt;-</span> <span class="fu">factor</span>(dat2<span class="sc">$</span>Y, <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="모형-추정" class="level4">
+<h4 class="anchored" data-anchor-id="모형-추정">모형 추정</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>nom.fit <span class="ot">&lt;-</span> <span class="fu">multinom</span>(</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  Y <span class="sc">~</span> X1 <span class="sc">+</span> X2,</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> dat2</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># weights:  12 (6 variable)
+initial  value 19.775021 
+iter  10 value 17.466403
+iter  20 value 15.284871
+iter  30 value 14.370416
+iter  40 value 14.229073
+iter  50 value 14.169298
+iter  60 value 14.124675
+iter  70 value 14.113683
+iter  80 value 14.109933
+iter  90 value 14.107827
+final  value 14.106976 
+converged</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(nom.fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Call:
+multinom(formula = Y ~ X1 + X2, data = dat2)
+
+Coefficients:
+  (Intercept)         X1        X2
+2   -74.29739  0.8048018  12.98658
+3    85.80346 -1.4767302 -14.26795
+
+Std. Errors:
+  (Intercept)        X1        X2
+2    52.49867 0.7464051  9.467255
+3    69.11561 0.8853856 13.019163
+
+Residual Deviance: 28.21395 
+AIC: 40.21395 </code></pre>
+</div>
+</div>
+</section>
+<section id="확률-추정" class="level4">
+<h4 class="anchored" data-anchor-id="확률-추정">확률 추정</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>pred.prob <span class="ot">&lt;-</span> <span class="fu">predict</span>(nom.fit, <span class="at">newdata =</span> dat2, <span class="at">type =</span> <span class="st">"probs"</span>)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>pred.prob</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>           1          2           3
+1  0.3710259 0.07521250 0.553761557
+2  0.4962993 0.14091316 0.362787538
+3  0.6000149 0.33506283 0.064922267
+4  0.1847598 0.81270788 0.002532356
+5  0.3926307 0.59109035 0.016278920
+6  0.5215422 0.45340905 0.025048770
+7  0.3391730 0.63640377 0.024423244
+8  0.2067844 0.01156141 0.781654190
+9  0.4143635 0.52411629 0.061520246
+10 0.5638953 0.13097391 0.305130814
+11 0.4915098 0.08398930 0.424500880
+12 0.1948346 0.02303418 0.782131197
+13 0.4180557 0.09174773 0.490196581
+14 0.1782425 0.01299234 0.808765136
+15 0.3853146 0.57648020 0.038205222
+16 0.5840208 0.37054351 0.045435719
+17 0.4504473 0.10280271 0.446749976
+18 0.2048577 0.02380630 0.771336031</code></pre>
+</div>
+</div>
+</section>
+<section id="범주-추정" class="level4">
+<h4 class="anchored" data-anchor-id="범주-추정">범주 추정</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>pred.class <span class="ot">&lt;-</span> <span class="fu">predict</span>(nom.fit, <span class="at">newdata =</span> dat2, <span class="at">type =</span> <span class="st">"class"</span>)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>pred.class</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] 3 1 1 2 2 1 2 3 2 1 1 3 3 3 2 1 1 3
+Levels: 1 2 3</code></pre>
+</div>
+</div>
+</section>
+<section id="결과-요약표" class="level4">
+<h4 class="anchored" data-anchor-id="결과-요약표">결과 요약표</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">cbind</span>(dat2, <span class="at">P =</span> pred.prob, <span class="at">pred_class =</span> pred.class)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>results</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      X1   X2 Y       P.1        P.2         P.3 pred_class
+1   9.33 5.02 1 0.3710259 0.07521250 0.553761557          3
+2   9.91 5.01 1 0.4962993 0.14091316 0.362787538          1
+3  11.88 4.94 1 0.6000149 0.33506283 0.064922267          1
+4  11.54 5.12 1 0.1847598 0.81270788 0.002532356          2
+5  11.66 5.03 1 0.3926307 0.59109035 0.016278920          2
+6  12.43 4.94 2 0.5215422 0.45340905 0.025048770          1
+7  10.32 5.13 2 0.3391730 0.63640377 0.024423244          2
+8  10.15 4.87 1 0.2067844 0.01156141 0.781654190          3
+9   9.83 5.13 2 0.4143635 0.52411629 0.061520246          2
+10 10.79 4.94 3 0.5638953 0.13097391 0.305130814          1
+11 10.57 4.93 3 0.4915098 0.08398930 0.424500880          1
+12  8.66 5.02 3 0.1948346 0.02303418 0.782131197          3
+13  9.59 5.01 3 0.4180557 0.09174773 0.490196581          3
+14  9.35 4.94 3 0.1782425 0.01299234 0.808765136          3
+15 10.20 5.12 2 0.3853146 0.57648020 0.038205222          2
+16 12.20 4.93 2 0.5840208 0.37054351 0.045435719          1
+17  9.80 5.00 1 0.4504473 0.10280271 0.446749976          1
+18  8.80 5.01 3 0.2048577 0.02380630 0.771336031          3</code></pre>
+</div>
+</div>
+</section>
+<section id="정오분류표" class="level4">
+<h4 class="anchored" data-anchor-id="정오분류표">정오분류표</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">conf_mat</span>(results, <span class="at">truth =</span> <span class="st">"Y"</span>, <span class="at">estimate =</span> <span class="st">"pred_class"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          Truth
+Prediction 1 2 3
+         1 3 2 2
+         2 2 3 0
+         3 2 0 4</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="예-6.5---6.6" class="level2">
+<h2 class="anchored" data-anchor-id="예-6.5---6.6">(예 6.5 - 6.6)</h2>
+<section id="패키지-로드-2" class="level4">
+<h4 class="anchored" data-anchor-id="패키지-로드-2">패키지 로드</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(VGAM) <span class="co"># ordinal logistic regression</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: stats4</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: splines</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(yardstick) <span class="co"># confusion matrix</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="데이터-로드-2" class="level4">
+<h4 class="anchored" data-anchor-id="데이터-로드-2">데이터 로드</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>dat3 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/ch6_dat3.csv"</span>)</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>dat3<span class="sc">$</span>Y <span class="ot">&lt;-</span> <span class="fu">factor</span>(dat3<span class="sc">$</span>Y, <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="at">ordered =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="예-16.5" class="level4">
+<h4 class="anchored" data-anchor-id="예-16.5">(예 16.5)</h4>
+<p>누적 로짓모형 추정</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>cum.fit <span class="ot">&lt;-</span> <span class="fu">vglm</span>(</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>  Y <span class="sc">~</span> N <span class="sc">+</span> L,</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> dat3,</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">cumulative</span>(<span class="at">parallel =</span> <span class="cn">TRUE</span>, <span class="at">reverse =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(cum.fit, <span class="at">HDEtest =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+vglm(formula = Y ~ N + L, family = cumulative(parallel = TRUE, 
+    reverse = FALSE), data = dat3)
+
+Coefficients: 
+              Estimate Std. Error z value Pr(&gt;|z|)  
+(Intercept):1 -13.0353     6.7831  -1.922   0.0546 .
+(Intercept):2 -11.3991     6.4017  -1.781   0.0750 .
+N               0.2236     0.1467   1.525   0.1273  
+L               0.2999     0.1383   2.169   0.0301 *
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Names of linear predictors: logitlink(P[Y&lt;=1]), logitlink(P[Y&lt;=2])
+
+Residual deviance: 12.8825 on 20 degrees of freedom
+
+Log-likelihood: -6.4413 on 20 degrees of freedom
+
+Number of Fisher scoring iterations: 9 
+
+
+Exponentiated coefficients:
+       N        L 
+1.250617 1.349690 </code></pre>
+</div>
+</div>
+<p>확률 추정</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>pred.prob <span class="ot">&lt;-</span> <span class="fu">predict</span>(cum.fit, dat3, <span class="at">type =</span> <span class="st">"response"</span>)</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>pred.prob</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             1           2            3
+1  0.002612032 0.010659596 0.9867283719
+2  0.011593638 0.045225094 0.9431812685
+3  0.190480692 0.356717172 0.4528021357
+4  0.825181904 0.135202201 0.0396158953
+5  0.012375914 0.048089960 0.9395341263
+6  0.053142270 0.170610178 0.7762475514
+7  0.529608187 0.322951084 0.1474407283
+8  0.957601516 0.033851255 0.0085472293
+9  0.104970550 0.270942513 0.6240869366
+10 0.344387383 0.385182621 0.2704299967
+11 0.913326457 0.068531057 0.0181424862
+12 0.995291622 0.003788121 0.0009202566</code></pre>
+</div>
+</div>
+<p>범주 추정</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>pred.class <span class="ot">&lt;-</span> <span class="fu">factor</span>(</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">apply</span>(pred.prob, <span class="dv">1</span>, which.max),</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>),</span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">ordered =</span> <span class="cn">TRUE</span></span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>pred.class</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> 1  2  3  4  5  6  7  8  9 10 11 12 
+ 3  3  3  1  3  3  1  1  3  2  1  1 
+Levels: 1 &lt; 2 &lt; 3</code></pre>
+</div>
+</div>
+<p>결과 요약표</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">cbind</span>(dat3, <span class="at">P =</span> pred.prob, <span class="at">pred_class =</span> pred.class)</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>results</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    N  L Y         P.1         P.2          P.3 pred_class
+1  25  5 3 0.002612032 0.010659596 0.9867283719          3
+2  25 10 3 0.011593638 0.045225094 0.9431812685          3
+3  25 20 2 0.190480692 0.356717172 0.4528021357          3
+4  25 30 1 0.825181904 0.135202201 0.0396158953          1
+5  32  5 3 0.012375914 0.048089960 0.9395341263          3
+6  32 10 3 0.053142270 0.170610178 0.7762475514          3
+7  32 20 2 0.529608187 0.322951084 0.1474407283          1
+8  32 30 1 0.957601516 0.033851255 0.0085472293          1
+9  42  5 1 0.104970550 0.270942513 0.6240869366          3
+10 42 10 3 0.344387383 0.385182621 0.2704299967          2
+11 42 20 1 0.913326457 0.068531057 0.0181424862          1
+12 42 30 1 0.995291622 0.003788121 0.0009202566          1</code></pre>
+</div>
+</div>
+<p>정오분류표</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">conf_mat</span>(results, <span class="at">truth =</span> <span class="st">"Y"</span>, <span class="at">estimate =</span> <span class="st">"pred_class"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          Truth
+Prediction 1 2 3
+         1 4 1 0
+         2 0 0 1
+         3 1 1 4</code></pre>
+</div>
+</div>
+</section>
+<section id="예-6-6---인근범주-로짓모형" class="level4">
+<h4 class="anchored" data-anchor-id="예-6-6---인근범주-로짓모형">(예 6-6) - 인근범주 로짓모형</h4>
+<p>인근범주 로짓모형 추정</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>adj.fit <span class="ot">&lt;-</span> <span class="fu">vglm</span>(</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>  Y <span class="sc">~</span> N <span class="sc">+</span> L,</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> dat3,</span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">acat</span>(<span class="at">parallel =</span> <span class="cn">FALSE</span>, <span class="at">reverse =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(adj.fit, <span class="at">HDEtest =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+vglm(formula = Y ~ N + L, family = acat(parallel = FALSE, reverse = FALSE), 
+    data = dat3)
+
+Coefficients: 
+              Estimate Std. Error z value Pr(&gt;|z|)
+(Intercept):1 12.94227   10.91281   1.186    0.236
+(Intercept):2  6.10598    8.12750   0.751    0.452
+N:1           -0.31432    0.24616  -1.277    0.202
+N:2           -0.04643    0.20835  -0.223    0.824
+L:1           -0.17500    0.18967  -0.923    0.356
+L:2           -0.29578    0.21017  -1.407    0.159
+
+Names of linear predictors: loglink(P[Y=2]/P[Y=1]), loglink(P[Y=3]/P[Y=2])
+
+Residual deviance: 11.6777 on 18 degrees of freedom
+
+Log-likelihood: -5.8388 on 18 degrees of freedom
+
+Number of Fisher scoring iterations: 6 </code></pre>
+</div>
+</div>
+<p>확률 추정</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>pred.prob <span class="ot">&lt;-</span> <span class="fu">predict</span>(adj.fit, dat3, <span class="at">type =</span> <span class="st">"response"</span>)</span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>pred.prob</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             1           2            3
+1  0.000449727 0.030272428 9.692778e-01
+2  0.004277162 0.120015544 8.757073e-01
+3  0.129475890 0.631302720 2.392214e-01
+4  0.536500470 0.454554350 8.945179e-03
+5  0.005525946 0.041206436 9.532676e-01
+6  0.048790213 0.151661243 7.995485e-01
+7  0.592407688 0.319984941 8.760737e-02
+8  0.913080653 0.085700815 1.218532e-03
+9  0.166660093 0.053620769 7.797191e-01
+10 0.633490909 0.084962109 2.815470e-01
+11 0.973410484 0.022685475 3.904041e-03
+12 0.995930771 0.004033183 3.604585e-05</code></pre>
+</div>
+</div>
+<p>범주 추정</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>pred.class <span class="ot">&lt;-</span> <span class="fu">factor</span>(</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">apply</span>(pred.prob, <span class="dv">1</span>, which.max),</span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>),</span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">ordered =</span> <span class="cn">TRUE</span></span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>pred.class</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> 1  2  3  4  5  6  7  8  9 10 11 12 
+ 3  3  2  1  3  3  1  1  3  1  1  1 
+Levels: 1 &lt; 2 &lt; 3</code></pre>
+</div>
+</div>
+<p>결과 요약표</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">cbind</span>(dat3, <span class="at">P =</span> pred.prob, <span class="at">pred_class =</span> pred.class)</span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>results</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    N  L Y         P.1         P.2          P.3 pred_class
+1  25  5 3 0.000449727 0.030272428 9.692778e-01          3
+2  25 10 3 0.004277162 0.120015544 8.757073e-01          3
+3  25 20 2 0.129475890 0.631302720 2.392214e-01          2
+4  25 30 1 0.536500470 0.454554350 8.945179e-03          1
+5  32  5 3 0.005525946 0.041206436 9.532676e-01          3
+6  32 10 3 0.048790213 0.151661243 7.995485e-01          3
+7  32 20 2 0.592407688 0.319984941 8.760737e-02          1
+8  32 30 1 0.913080653 0.085700815 1.218532e-03          1
+9  42  5 1 0.166660093 0.053620769 7.797191e-01          3
+10 42 10 3 0.633490909 0.084962109 2.815470e-01          1
+11 42 20 1 0.973410484 0.022685475 3.904041e-03          1
+12 42 30 1 0.995930771 0.004033183 3.604585e-05          1</code></pre>
+</div>
+</div>
+<p>정오분류표</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">conf_mat</span>(results, <span class="at">truth =</span> <span class="st">"Y"</span>, <span class="at">estimate =</span> <span class="st">"pred_class"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          Truth
+Prediction 1 2 3
+         1 4 1 1
+         2 0 1 0
+         3 1 0 4</code></pre>
+</div>
+</div>
+</section>
+<section id="예-6-6-명목-로지스틱-회귀모형" class="level4">
+<h4 class="anchored" data-anchor-id="예-6-6-명목-로지스틱-회귀모형">(예 6-6) 명목 로지스틱 회귀모형</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>nom.fit <span class="ot">&lt;-</span> <span class="fu">vglm</span>(</span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>  Y <span class="sc">~</span> N <span class="sc">+</span> L,</span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> dat3,</span>
+<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">multinomial</span>(<span class="at">refLevel =</span> <span class="dv">1</span>)</span>
+<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in eval(slot(family, "initialize")): response should be nominal, not
+ordinal</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(nom.fit, <span class="at">HDEtest =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+vglm(formula = Y ~ N + L, family = multinomial(refLevel = 1), 
+    data = dat3)
+
+Coefficients: 
+              Estimate Std. Error z value Pr(&gt;|z|)  
+(Intercept):1  12.9423    10.9128   1.186   0.2356  
+(Intercept):2  19.0482    12.2270   1.558   0.1193  
+N:1            -0.3143     0.2462  -1.277   0.2016  
+N:2            -0.3607     0.2631  -1.371   0.1704  
+L:1            -0.1750     0.1897  -0.923   0.3562  
+L:2            -0.4708     0.2642  -1.782   0.0748 .
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Names of linear predictors: log(mu[,2]/mu[,1]), log(mu[,3]/mu[,1])
+
+Residual deviance: 11.6777 on 18 degrees of freedom
+
+Log-likelihood: -5.8388 on 18 degrees of freedom
+
+Number of Fisher scoring iterations: 6 
+
+
+Reference group is level  1  of the response</code></pre>
+</div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../chapters/ch5_classification.html" class="pagination-link" aria-label="5장 분류분석 개요">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">5장 분류분석 개요</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../chapters/ch07_da.html" class="pagination-link" aria-label="7장 판별분석">
+        <span class="nav-page-text"><span class="chapter-title">7장 판별분석</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

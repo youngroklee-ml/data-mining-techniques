@@ -2,7 +2,6 @@
 
 # load package
 library(class) # knn
-library(proxy) # dist - support cross-distance
 
 # load data
 dat1 <- read.csv("data/ch7_dat1.csv")
@@ -17,9 +16,6 @@ dist(train_x)
 # estimate class for each training data
 # as the most frequent class among 3-nearest neighbor
 knn.cv(train_x, train_y, k = 3)
-
-# compute Euclidean distance between test and training data
-dist(test_x, train_x)
 
 # estimate class for each test data
 # as the most frequent class among 3-nearest neighbor in training data

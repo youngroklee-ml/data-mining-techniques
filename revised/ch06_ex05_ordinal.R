@@ -55,6 +55,7 @@ summary(adj.fit, HDEtest = FALSE)
 
 # predicted probabilities
 pred.prob <- predict(adj.fit, dat3, type = "response")
+pred.prob
 
 # predicted class
 pred.class <- factor(
@@ -62,6 +63,7 @@ pred.class <- factor(
   levels = c(1, 2, 3),
   ordered = TRUE
 )
+pred.class
 
 # result table
 results <- cbind(dat3, P = pred.prob, pred_class = pred.class)
@@ -90,19 +92,3 @@ nom.fit <- vglm(
 # does not represent actual class label
 # but represent relative class order after excluding reference class
 summary(nom.fit, HDEtest = FALSE)
-
-# predicted probabilities
-pred.prob <- predict(nom.fit, dat3, type = "response")
-
-# predicted class
-pred.class <- factor(
-  apply(pred.prob, 1, which.max),
-  levels = c(1, 2, 3),
-  ordered = TRUE
-)
-
-# result table
-results <- cbind(dat3, P = pred.prob, pred_class = pred.class)
-
-# confusion matrix
-conf_mat(results, truth = "Y", estimate = "pred_class")

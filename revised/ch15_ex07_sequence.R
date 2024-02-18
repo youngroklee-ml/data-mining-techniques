@@ -1,5 +1,5 @@
-# ch15: association rule mining
-# section 15.3: sequential patterns
+# ch15_ex07_sequence.R
+# ch15.3: sequential pattern mining
 
 # NOTE: This R code uses different algorithm called SPADE
 #       The results should be the same to examples in the book,

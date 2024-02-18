@@ -1,5 +1,5 @@
-# ch9 SVM
-# ch9.1 linearly separable
+# ch09_ex01_linear_separable.R
+# ch9.1 linear SVM - separable
 
 # ex9.1
 

@@ -1,4 +1,7 @@
-# ch2.2 - 2.3 regression model
+# ch02_ex03_reg_basic.R
+# ch2.2 regression model estimation
+# ch2.3 inference
+# ch2.6 prediction
 
 # read csv file
 dat1 <- read.csv("data/ch2_reg1.csv")

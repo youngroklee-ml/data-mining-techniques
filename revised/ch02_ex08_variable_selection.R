@@ -1,4 +1,6 @@
-# ch.2.4 variable selection (ch2_stepwise.R)
+# ch02_ex08_variable_selection.R
+# ch2.4 variable selection
+# ch2.7 multicollinearity
 
 # load packages
 library("olsrr")

@@ -1,0 +1,285 @@
+# 6장 로지스틱 회귀분석
+
+## (예 6.1, 6.3)
+
+#### 패키지 로드
+
+```{r}
+library(yardstick) # confusion matrix
+```
+
+#### 데이터 로드
+
+```{r}
+dat1 <- read.csv("data/ch6_dat1.csv")
+dat1$Class <- factor(dat1$Class, levels = c("Average", "Excellent"))
+```
+
+#### (예 6.1)
+
+로짓모형 추정
+
+```{r}
+bin.fit <- glm(
+  Class ~ Break + Sleep + Circle,
+  data = dat1,
+  family = binomial("logit")
+)
+
+summary(bin.fit)
+```
+
+승산비 (odds ratio)
+
+```{r}
+exp(coef(bin.fit))
+```
+
+
+logit 추정
+
+```{r}
+logit <- predict(bin.fit, newdata = dat1, type = "link")
+logit
+```
+
+확률 추정
+
+```{r}
+pred.prob <- predict(bin.fit, newdata = dat1, type = "response")
+pred.prob
+```
+
+범주 추정
+
+```{r}
+pred.class <- factor(
+  ifelse(pred.prob > .5, "Excellent", "Average"), 
+  levels = c("Average", "Excellent")
+)
+pred.class
+```
+
+결과 요약표
+
+```{r}
+results <- cbind(dat1, logit = logit, P = pred.prob, pred_class = pred.class)
+results
+```
+
+정오분류표
+
+```{r}
+conf_mat(results, truth = "Class", estimate = "pred_class")
+```
+
+
+#### (예 6.3)
+
+곰핏모형 추정
+
+```{r}
+gompit.fit <- glm(
+  Class ~ Break + Sleep + Circle, 
+  data = dat1, 
+  family = binomial("cloglog")
+)
+
+summary(gompit.fit)
+```
+
+
+노밋모형 추정
+
+```{r}
+normit.fit <- glm(
+  Class ~ Break + Sleep + Circle, 
+  data = dat1, 
+  family = binomial("probit")
+)
+
+summary(normit.fit)
+```
+
+
+## (예 6.4)
+
+#### 패키지 로드
+
+```{r}
+library(nnet) # nominal logistic regression
+library(yardstick) # confusion matrix
+```
+
+#### 데이터 로드
+
+```{r}
+dat2 <- read.csv("data/ch6_dat2.csv")
+dat2$Y <- factor(dat2$Y, levels = c(1, 2, 3))
+```
+
+#### 모형 추정
+
+```{r}
+nom.fit <- multinom(
+  Y ~ X1 + X2,
+  data = dat2
+)
+
+summary(nom.fit)
+```
+
+#### 확률 추정
+
+```{r}
+pred.prob <- predict(nom.fit, newdata = dat2, type = "probs")
+pred.prob
+```
+
+
+#### 범주 추정
+
+```{r}
+pred.class <- predict(nom.fit, newdata = dat2, type = "class")
+pred.class
+```
+
+
+#### 결과 요약표
+
+```{r}
+results <- cbind(dat2, P = pred.prob, pred_class = pred.class)
+results
+```
+
+
+#### 정오분류표
+
+```{r}
+conf_mat(results, truth = "Y", estimate = "pred_class")
+```
+
+
+## (예 6.5 - 6.6)
+
+#### 패키지 로드
+
+```{r}
+library(VGAM) # ordinal logistic regression
+library(yardstick) # confusion matrix
+```
+
+#### 데이터 로드
+
+```{r}
+dat3 <- read.csv("data/ch6_dat3.csv")
+dat3$Y <- factor(dat3$Y, levels = c(1, 2, 3), ordered = TRUE)
+```
+
+
+#### (예 16.5)
+
+누적 로짓모형 추정
+
+```{r}
+cum.fit <- vglm(
+  Y ~ N + L,
+  data = dat3,
+  family = cumulative(parallel = TRUE, reverse = FALSE)
+)
+
+summary(cum.fit, HDEtest = FALSE)
+```
+
+확률 추정
+
+```{r}
+pred.prob <- predict(cum.fit, dat3, type = "response")
+pred.prob
+```
+
+범주 추정
+
+```{r}
+pred.class <- factor(
+  apply(pred.prob, 1, which.max),
+  levels = c(1, 2, 3),
+  ordered = TRUE
+)
+pred.class
+```
+
+결과 요약표
+
+```{r}
+results <- cbind(dat3, P = pred.prob, pred_class = pred.class)
+results
+```
+
+
+정오분류표
+
+```{r}
+conf_mat(results, truth = "Y", estimate = "pred_class")
+```
+
+
+#### (예 6-6) - 인근범주 로짓모형
+
+인근범주 로짓모형 추정
+
+```{r}
+adj.fit <- vglm(
+  Y ~ N + L,
+  data = dat3,
+  family = acat(parallel = FALSE, reverse = FALSE)
+)
+
+summary(adj.fit, HDEtest = FALSE)
+```
+
+확률 추정
+
+```{r}
+pred.prob <- predict(adj.fit, dat3, type = "response")
+pred.prob
+```
+
+범주 추정
+
+```{r}
+pred.class <- factor(
+  apply(pred.prob, 1, which.max),
+  levels = c(1, 2, 3),
+  ordered = TRUE
+)
+pred.class
+```
+
+결과 요약표
+
+```{r}
+results <- cbind(dat3, P = pred.prob, pred_class = pred.class)
+results
+```
+
+정오분류표
+
+```{r}
+conf_mat(results, truth = "Y", estimate = "pred_class")
+```
+
+
+
+#### (예 6-6) 명목 로지스틱 회귀모형
+
+```{r}
+nom.fit <- vglm(
+  Y ~ N + L,
+  data = dat3,
+  family = multinomial(refLevel = 1)
+)
+
+summary(nom.fit, HDEtest = FALSE)
+```
+

@@ -6,7 +6,6 @@
 
 ```{r}
 library(class) # knn
-library(proxy) # dist - support cross-distance
 ```
 
 
@@ -26,19 +25,14 @@ test_x <- dat1[8:9, 2:3]
 dist(train_x)
 ```
 
-#### 3-인접객체법
+#### 3-인접객체법 - 학습데이터
 
 ```{r}
 knn.cv(train_x, train_y, k = 3)
 ```
 
-#### 새로운 객체들과 학습데이터 간 유클리디안 거리
 
-```{r}
-dist(test_x, train_x)
-```
-
-#### 3-인접객체법
+#### 3-인접객체법 - 새로운 객체
 
 ```{r}
 knn(train_x, test_x, train_y, k = 3)

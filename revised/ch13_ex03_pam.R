@@ -1,4 +1,7 @@
-# ch13.2 PAM (Partitioning Around Medoids)
+# ch13_ex03_pam.R
+# ch13.2 K-medoids (13.2.1 PAM: Partitioning Around Medoids)
+
+# ex13.3
 
 # load packages
 library(cluster)

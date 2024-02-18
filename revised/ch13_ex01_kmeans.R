@@ -1,4 +1,7 @@
+# ch13_ex01_kmeans.R
 # ch13.1 k-means : Non-hierarchical clustering
+
+# ex13.1
 
 # load packages
 library(factoextra)

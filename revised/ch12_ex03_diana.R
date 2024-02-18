@@ -1,4 +1,7 @@
+# ch12_ex03_diana.R
 # ch12.4 Diana
+
+# ex12.3
 
 # load packages
 library(cluster)

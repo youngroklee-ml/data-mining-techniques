@@ -1,4 +1,7 @@
+# ch12_ex02_ward.R
 # ch12.3 Ward's method
+
+# ex12.2
 
 # read csv file
 dat1 <- read.csv("data/ch12_dat2.csv")

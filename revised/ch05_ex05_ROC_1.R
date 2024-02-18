@@ -1,4 +1,7 @@
-# ex5-5 dat
+# ch05_ex05_ROC_1.R
+# ch5.4 ROC curve
+
+# ex5-5
 
 # load package
 library(yardstick)

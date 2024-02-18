@@ -1,3 +1,8 @@
+# ch05_ex07_lift.R
+# ch5.5 gain/lift chart
+
+# ex5-7
+
 # load package
 library(yardstick)
 library(ggplot2)

@@ -1,3 +1,6 @@
+# ch05_ex02_knn.R
+# ch5.2 basic methods (ch5.2.1 k-nearest neighbor)
+
 # ex5-2: k-nearest neighbor classification
 
 # load package

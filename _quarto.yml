@@ -14,7 +14,7 @@ book:
         - chapters/ch03_regularized_regression.qmd
     - part: "분류분석"
       chapters: 
-        - chapters/ch5_classification.qmd
+        - chapters/ch05_classification.qmd
         - chapters/ch06_logistic_regression.qmd
         - chapters/ch07_da.qmd
         - chapters/ch09_svm.qmd

@@ -1,3 +1,6 @@
+# ch16_ex02_content_based.R
+# ch16.2 content-based recommender system
+
 # ex16.2
 
 # load data

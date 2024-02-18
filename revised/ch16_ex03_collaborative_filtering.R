@@ -1,3 +1,6 @@
+# ch16_ex03_collaborative_filtering.R
+# ch16.2 collaborative filtering
+
 # ex16.3
 
 # load package

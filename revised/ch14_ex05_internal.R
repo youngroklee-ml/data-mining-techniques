@@ -20,6 +20,10 @@ sol_2 <- as.integer(c(1, 2, 1, 2, 2, 1, 2, 2))
 clust_1 <- cls.scatt.data(df, sol_1)
 clust_2 <- cls.scatt.data(df, sol_2)
 
+# see cluster summary, including cluster center, size, 
+# and various inter/intra-cluster distance metrics
+print(clust_1)
+
 # Dunn index
 clv.Dunn(clust_1, intracls = "complete", intercls = "single")
 clv.Dunn(clust_2, intracls = "complete", intercls = "single")

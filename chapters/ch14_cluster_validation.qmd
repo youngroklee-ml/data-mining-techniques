@@ -1,0 +1,165 @@
+# 14장 군집해의 평가 및 해석
+
+## (예 14.1, 14.3)
+
+#### 패키지 로드
+
+```{r}
+library(clv)
+```
+
+#### 데이터 로드
+
+```{r}
+sol_1 <- as.integer(c(1, 1, 2, 2, 2, 3, 3))
+sol_2 <- as.integer(c(1, 1, 2, 3, 2, 1, 3))
+```
+
+#### 카운팅
+
+```{r}
+std <- std.ext(sol_1, sol_2)
+std
+```
+
+#### (예 14.1) 랜드지수
+
+```{r}
+clv.Rand(std)
+```
+
+
+#### (예 14.3) 수정랜드지수
+
+```{r}
+clv.Phi(std)
+```
+
+
+## (예 14.4)
+
+#### 패키지 로드
+
+```{r}
+library(clv)
+```
+
+#### 데이터 로드
+
+```{r}
+sol_1 <- as.integer(c(1, 1, 1, 1, 2, 2, 2, 3, 3, 3))
+sol_2 <- as.integer(c(1, 1, 2, 3, 1, 2, 3, 1, 2, 3))
+```
+
+#### 카운팅
+
+```{r}
+std <- std.ext(sol_1, sol_2)
+std
+```
+
+#### 랜드지수
+
+```{r}
+clv.Rand(std)
+```
+
+
+#### 수정랜드지수
+
+```{r}
+clv.Phi(std)
+```
+
+
+## (예 14.5)
+
+#### 패키지 로드
+
+```{r}
+library(clv) # Dunn, connectivity, silhouette
+library(fpc) # Calinski-Harabasz(CH)
+```
+
+
+#### 데이터 로드
+
+데이터
+
+```{r}
+df <- read.csv("data/ch14_dat1.csv", colClasses = "numeric")
+mat <- as.matrix(df)
+D <- dist(mat)
+```
+
+군집해
+
+```{r}
+sol_1 <- as.integer(c(1, 2, 1, 3, 2, 1, 2, 3))
+sol_2 <- as.integer(c(1, 2, 1, 2, 2, 1, 2, 2))
+```
+
+#### 군집해 분석
+
+```{r}
+clust_1 <- cls.scatt.data(df, sol_1)
+clust_2 <- cls.scatt.data(df, sol_2)
+```
+
+첫 번째 군집해 분석
+
+```{r}
+print(clust_1)
+```
+
+두 번째 군집해 분석
+
+```{r}
+print(clust_2)
+```
+
+
+#### Dunn index
+
+```{r}
+clv.Dunn(clust_1, intracls = "complete", intercls = "single")
+clv.Dunn(clust_2, intracls = "complete", intercls = "single")
+```
+
+
+#### CH index
+
+```{r}
+calinhara(df, sol_1)
+calinhara(df, sol_2)
+```
+
+#### Connectivity (BI)
+
+```{r}
+connectivity(df, sol_1, neighbour.num = 1)
+connectivity(df, sol_2, neighbour.num = 1)
+```
+
+#### 실루엣
+
+```{r}
+summary(silhouette(sol_1, dist = D))[["avg.width"]]
+summary(silhouette(sol_2, dist = D))[["avg.width"]]
+```
+
+
+#### 객체별 실루엣
+
+군집해 1
+
+```{r}
+silhouette(sol_1, dist = D)
+```
+
+군집해 2
+
+```{r}
+silhouette(sol_2, dist = D)
+```
+

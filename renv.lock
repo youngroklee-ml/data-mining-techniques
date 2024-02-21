@@ -586,6 +586,17 @@
       ],
       "Hash": "0aaa05204035dc43ea0004b9c76611dd"
     },
+    "clv": {
+      "Package": "clv",
+      "Version": "0.3-2.4",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "class",
+        "cluster"
+      ],
+      "Hash": "c19533eeb3f8890504b61f188d0fec21"
+    },
     "codetools": {
       "Package": "codetools",
       "Version": "0.2-19",

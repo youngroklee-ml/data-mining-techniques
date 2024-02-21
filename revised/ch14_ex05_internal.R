@@ -23,6 +23,7 @@ clust_2 <- cls.scatt.data(df, sol_2)
 # see cluster summary, including cluster center, size, 
 # and various inter/intra-cluster distance metrics
 print(clust_1)
+print(clust_2)
 
 # Dunn index
 clv.Dunn(clust_1, intracls = "complete", intercls = "single")
@@ -32,7 +33,7 @@ clv.Dunn(clust_2, intracls = "complete", intercls = "single")
 calinhara(df, sol_1)
 calinhara(df, sol_2)
 
-# connectivity
+# connectivity (BI)
 connectivity(df, sol_1, neighbour.num = 1)
 connectivity(df, sol_2, neighbour.num = 1)
 
@@ -40,5 +41,6 @@ connectivity(df, sol_2, neighbour.num = 1)
 summary(silhouette(sol_1, dist = D))[["avg.width"]]
 summary(silhouette(sol_2, dist = D))[["avg.width"]]
 
-# silhouettes by observations: cluster 1
-silhouette(sol_1, dist = D)
+# silhouettes by observations
+silhouette(sol_1, dist = D) # cluster solution 1
+silhouette(sol_2, dist = D) # cluster solution 2

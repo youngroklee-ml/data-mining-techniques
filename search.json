@@ -428,6 +428,50 @@
     ]
   },
   {
+    "objectID": "chapters/ch14_cluster_validation.html",
+    "href": "chapters/ch14_cluster_validation.html",
+    "title": "14장 군집해의 평가 및 해석",
+    "section": "",
+    "text": "(예 14.1, 14.3)",
+    "crumbs": [
+      "군집분석",
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>14장 군집해의 평가 및 해석</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/ch14_cluster_validation.html#예-14.1-14.3",
+    "href": "chapters/ch14_cluster_validation.html#예-14.1-14.3",
+    "title": "14장 군집해의 평가 및 해석",
+    "section": "",
+    "text": "패키지 로드\n\nlibrary(clv)\n\nLoading required package: cluster\n\n\nLoading required package: class\n\n\n\n\n데이터 로드\n\nsol_1 &lt;- as.integer(c(1, 1, 2, 2, 2, 3, 3))\nsol_2 &lt;- as.integer(c(1, 1, 2, 3, 2, 1, 3))\n\n\n\n카운팅\n\nstd &lt;- std.ext(sol_1, sol_2)\nstd\n\n$SS\n[1] 2\n\n$SD\n[1] 3\n\n$DS\n[1] 3\n\n$DD\n[1] 13\n\n\n\n\n(예 14.1) 랜드지수\n\nclv.Rand(std)\n\n[1] 0.7142857\n\n\n\n\n(예 14.3) 수정랜드지수\n\nclv.Phi(std)\n\n[1] 0.2125",
+    "crumbs": [
+      "군집분석",
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>14장 군집해의 평가 및 해석</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/ch14_cluster_validation.html#예-14.4",
+    "href": "chapters/ch14_cluster_validation.html#예-14.4",
+    "title": "14장 군집해의 평가 및 해석",
+    "section": "(예 14.4)",
+    "text": "(예 14.4)\n\n패키지 로드\n\nlibrary(clv)\n\n\n\n데이터 로드\n\nsol_1 &lt;- as.integer(c(1, 1, 1, 1, 2, 2, 2, 3, 3, 3))\nsol_2 &lt;- as.integer(c(1, 1, 2, 3, 1, 2, 3, 1, 2, 3))\n\n\n\n카운팅\n\nstd &lt;- std.ext(sol_1, sol_2)\nstd\n\n$SS\n[1] 1\n\n$SD\n[1] 11\n\n$DS\n[1] 11\n\n$DD\n[1] 22\n\n\n\n\n랜드지수\n\nclv.Rand(std)\n\n[1] 0.5111111\n\n\n\n\n수정랜드지수\n\nclv.Phi(std)\n\n[1] -0.25",
+    "crumbs": [
+      "군집분석",
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>14장 군집해의 평가 및 해석</span>"
+    ]
+  },
+  {
+    "objectID": "chapters/ch14_cluster_validation.html#예-14.5",
+    "href": "chapters/ch14_cluster_validation.html#예-14.5",
+    "title": "14장 군집해의 평가 및 해석",
+    "section": "(예 14.5)",
+    "text": "(예 14.5)\n\n패키지 로드\n\nlibrary(clv) # Dunn, connectivity, silhouette\nlibrary(fpc) # Calinski-Harabasz(CH)\n\n\n\n데이터 로드\n데이터\n\ndf &lt;- read.csv(\"data/ch14_dat1.csv\", colClasses = \"numeric\")\nmat &lt;- as.matrix(df)\nD &lt;- dist(mat)\n\n군집해\n\nsol_1 &lt;- as.integer(c(1, 2, 1, 3, 2, 1, 2, 3))\nsol_2 &lt;- as.integer(c(1, 2, 1, 2, 2, 1, 2, 2))\n\n\n\n군집해 분석\n\nclust_1 &lt;- cls.scatt.data(df, sol_1)\nclust_2 &lt;- cls.scatt.data(df, sol_2)\n\n첫 번째 군집해 분석\n\nprint(clust_1)\n\n$intracls.complete\n           c1       c2       c3\n[1,] 5.656854 5.385165 2.236068\n\n$intracls.average\n           c1       c2       c3\n[1,] 4.426029 3.933126 2.236068\n\n$intracls.centroid\n           c1       c2       c3\n[1,] 2.613873 2.375377 1.118034\n\n$intercls.single\n         c1        c2        c3\nc1  0.00000 10.816654 11.180340\nc2 10.81665  0.000000  6.082763\nc3 11.18034  6.082763  0.000000\n\n$intercls.complete\n         c1       c2       c3\nc1  0.00000 17.00000 18.60108\nc2 17.00000  0.00000 13.15295\nc3 18.60108 13.15295  0.00000\n\n$intercls.average\n         c1        c2        c3\nc1  0.00000 14.021500 15.728940\nc2 14.02150  0.000000  9.102761\nc3 15.72894  9.102761  0.000000\n\n$intercls.centroid\n         c1        c2        c3\nc1  0.00000 13.703203 15.692355\nc2 13.70320  0.000000  9.001543\nc3 15.69235  9.001543  0.000000\n\n$intercls.ave_to_cent\n         c1        c2        c3\nc1  0.00000 13.860760 15.711641\nc2 13.86076  0.000000  9.056783\nc3 15.71164  9.056783  0.000000\n\n$intercls.hausdorff\n         c1       c2       c3\nc1  0.00000 14.56022 16.64332\nc2 12.16553  0.00000 11.04536\nc3 13.03840  8.00000  0.00000\n\n$cluster.center\n       [,1] [,2]\nc1  5.00000   13\nc2 18.66667   14\nc3 18.50000    5\n\n$cluster.size\n[1] 3 3 2\n\nattr(,\"class\")\n[1] \"cls.list\"\n\n\n두 번째 군집해 분석\n\nprint(clust_2)\n\n$intracls.complete\n           c1       c2\n[1,] 5.656854 13.15295\n\n$intracls.average\n           c1       c2\n[1,] 4.426029 6.865201\n\n$intracls.centroid\n           c1       c2\n[1,] 2.613873 4.449317\n\n$intercls.single\n         c1       c2\nc1  0.00000 10.81665\nc2 10.81665  0.00000\n\n$intercls.complete\n         c1       c2\nc1  0.00000 18.60108\nc2 18.60108  0.00000\n\n$intercls.average\n         c1       c2\nc1  0.00000 14.70448\nc2 14.70448  0.00000\n\n$intercls.centroid\n        c1      c2\nc1  0.0000 13.8463\nc2 13.8463  0.0000\n\n$intercls.ave_to_cent\n         c1       c2\nc1  0.00000 14.35407\nc2 14.35407  0.00000\n\n$intercls.hausdorff\n        c1       c2\nc1  0.0000 14.56022\nc2 13.0384  0.00000\n\n$cluster.center\n   [,1] [,2]\nc1  5.0 13.0\nc2 18.6 10.4\n\n$cluster.size\n[1] 3 5\n\nattr(,\"class\")\n[1] \"cls.list\"\n\n\n\n\nDunn index\n\nclv.Dunn(clust_1, intracls = \"complete\", intercls = \"single\")\n\n        comp\nsin 1.075291\n\nclv.Dunn(clust_2, intracls = \"complete\", intercls = \"single\")\n\n        comp\nsin 0.822375\n\n\n\n\nCH index\n\ncalinhara(df, sol_1)\n\n[1] 26.45029\n\ncalinhara(df, sol_2)\n\n[1] 15.36218\n\n\n\n\nConnectivity (BI)\n\nconnectivity(df, sol_1, neighbour.num = 1)\n\n[1] 0\n\nconnectivity(df, sol_2, neighbour.num = 1)\n\n[1] 0\n\n\n\n\n실루엣\n\nsummary(silhouette(sol_1, dist = D))[[\"avg.width\"]]\n\n[1] 0.6507364\n\nsummary(silhouette(sol_2, dist = D))[[\"avg.width\"]]\n\n[1] 0.5864226\n\n\n\n\n객체별 실루엣\n군집해 1\n\nsilhouette(sol_1, dist = D)\n\n     cluster neighbor sil_width\n[1,]       1        2 0.7343912\n[2,]       2        3 0.6073450\n[3,]       1        2 0.7597919\n[4,]       3        2 0.7779353\n[5,]       2        3 0.5708309\n[6,]       1        2 0.5132464\n[7,]       2        3 0.5171843\n[8,]       3        2 0.7251663\nattr(,\"Ordered\")\n[1] FALSE\nattr(,\"call\")\nsilhouette.default(x = sol_1, dist = D)\nattr(,\"class\")\n[1] \"silhouette\"\n\n\n군집해 2\n\nsilhouette(sol_2, dist = D)\n\n     cluster neighbor sil_width\n[1,]       1        2 0.7527866\n[2,]       2        1 0.6232664\n[3,]       1        2 0.7690590\n[4,]       2        1 0.5133052\n[5,]       2        1 0.3268174\n[6,]       1        2 0.5260634\n[7,]       2        1 0.6303927\n[8,]       2        1 0.5496900\nattr(,\"Ordered\")\n[1] FALSE\nattr(,\"call\")\nsilhouette.default(x = sol_2, dist = D)\nattr(,\"class\")\n[1] \"silhouette\"",
+    "crumbs": [
+      "군집분석",
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>14장 군집해의 평가 및 해석</span>"
+    ]
+  },
+  {
     "objectID": "chapters/ch15_association_rule.html",
     "href": "chapters/ch15_association_rule.html",
     "title": "15장 연관규칙",
@@ -435,7 +479,7 @@
     "text": "(예 15.3 - 15.4)",
     "crumbs": [
       "연관규칙",
-      "<span class='chapter-number'>10</span>  <span class='chapter-title'>15장 연관규칙</span>"
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>15장 연관규칙</span>"
     ]
   },
   {
@@ -446,7 +490,7 @@
     "text": "패키지 로드\n\nlibrary(arules)\n\nLoading required package: Matrix\n\n\n\nAttaching package: 'arules'\n\n\nThe following objects are masked from 'package:base':\n\n    abbreviate, write\n\n\n\n\n데이터 로드\n\ndf &lt;- read.csv(\"data/ch15_transaction.csv\")\n\n\n\n데이터 변환\n\n# convert a data frame into a list of transactions\ntransaction_list &lt;- split(df$item, df$id)\nprint(transaction_list)\n\n$`1`\n[1] \"b\" \"c\" \"g\"\n\n$`2`\n[1] \"a\" \"b\" \"d\" \"e\" \"f\"\n\n$`3`\n[1] \"a\" \"b\" \"c\" \"g\"\n\n$`4`\n[1] \"b\" \"c\" \"e\" \"f\"\n\n$`5`\n[1] \"b\" \"c\" \"e\" \"f\" \"g\"\n\n# convert a list into an object of class \"transactions\"\ntransactions &lt;- as(transaction_list, \"transactions\")\nprint(transactions)\n\ntransactions in sparse format with\n 5 transactions (rows) and\n 7 items (columns)\n\n\n\n\n(예 15.3) 빈발항목집합 생성: 최소 지지도 0.4\n\nitemsets &lt;- apriori(\n  transactions,\n  parameter = list(\n    support = 0.4,\n    target = \"frequent itemsets\"\n  ),\n  control = list(verbose = FALSE)  # do not print progress\n)\n\ninspect(itemsets)\n\n     items        support count\n[1]  {a}          0.4     2    \n[2]  {g}          0.6     3    \n[3]  {e}          0.6     3    \n[4]  {f}          0.6     3    \n[5]  {c}          0.8     4    \n[6]  {b}          1.0     5    \n[7]  {a, b}       0.4     2    \n[8]  {c, g}       0.6     3    \n[9]  {b, g}       0.6     3    \n[10] {e, f}       0.6     3    \n[11] {c, e}       0.4     2    \n[12] {b, e}       0.6     3    \n[13] {c, f}       0.4     2    \n[14] {b, f}       0.6     3    \n[15] {b, c}       0.8     4    \n[16] {b, c, g}    0.6     3    \n[17] {c, e, f}    0.4     2    \n[18] {b, e, f}    0.6     3    \n[19] {b, c, e}    0.4     2    \n[20] {b, c, f}    0.4     2    \n[21] {b, c, e, f} 0.4     2    \n\n\n\n\n(예 15.4) 규칙 탐사: 최소 신뢰도 0.7\n\nrules &lt;- ruleInduction(\n  itemsets,\n  transactions,\n  confidence = 0.7,\n  method = \"apriori\"\n)\n\ninspect(rules)\n\n     lhs          rhs support confidence coverage lift     count\n[1]  {}        =&gt; {c} 0.8     0.80       1.0      1.000000 4    \n[2]  {}        =&gt; {b} 1.0     1.00       1.0      1.000000 5    \n[3]  {a}       =&gt; {b} 0.4     1.00       0.4      1.000000 2    \n[4]  {g}       =&gt; {c} 0.6     1.00       0.6      1.250000 3    \n[5]  {c}       =&gt; {g} 0.6     0.75       0.8      1.250000 3    \n[6]  {g}       =&gt; {b} 0.6     1.00       0.6      1.000000 3    \n[7]  {e}       =&gt; {f} 0.6     1.00       0.6      1.666667 3    \n[8]  {f}       =&gt; {e} 0.6     1.00       0.6      1.666667 3    \n[9]  {e}       =&gt; {b} 0.6     1.00       0.6      1.000000 3    \n[10] {f}       =&gt; {b} 0.6     1.00       0.6      1.000000 3    \n[11] {c}       =&gt; {b} 0.8     1.00       0.8      1.000000 4    \n[12] {b}       =&gt; {c} 0.8     0.80       1.0      1.000000 4    \n[13] {c, g}    =&gt; {b} 0.6     1.00       0.6      1.000000 3    \n[14] {b, g}    =&gt; {c} 0.6     1.00       0.6      1.250000 3    \n[15] {b, c}    =&gt; {g} 0.6     0.75       0.8      1.250000 3    \n[16] {c, e}    =&gt; {f} 0.4     1.00       0.4      1.666667 2    \n[17] {c, f}    =&gt; {e} 0.4     1.00       0.4      1.666667 2    \n[18] {e, f}    =&gt; {b} 0.6     1.00       0.6      1.000000 3    \n[19] {b, e}    =&gt; {f} 0.6     1.00       0.6      1.666667 3    \n[20] {b, f}    =&gt; {e} 0.6     1.00       0.6      1.666667 3    \n[21] {c, e}    =&gt; {b} 0.4     1.00       0.4      1.000000 2    \n[22] {c, f}    =&gt; {b} 0.4     1.00       0.4      1.000000 2    \n[23] {c, e, f} =&gt; {b} 0.4     1.00       0.4      1.000000 2    \n[24] {b, c, e} =&gt; {f} 0.4     1.00       0.4      1.666667 2    \n[25] {b, c, f} =&gt; {e} 0.4     1.00       0.4      1.666667 2    \n\n\n\n\n빈발항목집합 + 규칙탐사\n\napriori_results &lt;- apriori(\n  transactions,\n  parameter = list(\n    support = 0.4,\n    confidence = 0.7,\n    target = \"rules\"\n  ),\n  control = list(verbose = FALSE)  # do not print progress\n)\n\ninspect(apriori_results)\n\n     lhs          rhs support confidence coverage lift     count\n[1]  {}        =&gt; {c} 0.8     0.80       1.0      1.000000 4    \n[2]  {}        =&gt; {b} 1.0     1.00       1.0      1.000000 5    \n[3]  {a}       =&gt; {b} 0.4     1.00       0.4      1.000000 2    \n[4]  {g}       =&gt; {c} 0.6     1.00       0.6      1.250000 3    \n[5]  {c}       =&gt; {g} 0.6     0.75       0.8      1.250000 3    \n[6]  {g}       =&gt; {b} 0.6     1.00       0.6      1.000000 3    \n[7]  {e}       =&gt; {f} 0.6     1.00       0.6      1.666667 3    \n[8]  {f}       =&gt; {e} 0.6     1.00       0.6      1.666667 3    \n[9]  {e}       =&gt; {b} 0.6     1.00       0.6      1.000000 3    \n[10] {f}       =&gt; {b} 0.6     1.00       0.6      1.000000 3    \n[11] {c}       =&gt; {b} 0.8     1.00       0.8      1.000000 4    \n[12] {b}       =&gt; {c} 0.8     0.80       1.0      1.000000 4    \n[13] {c, g}    =&gt; {b} 0.6     1.00       0.6      1.000000 3    \n[14] {b, g}    =&gt; {c} 0.6     1.00       0.6      1.250000 3    \n[15] {b, c}    =&gt; {g} 0.6     0.75       0.8      1.250000 3    \n[16] {c, e}    =&gt; {f} 0.4     1.00       0.4      1.666667 2    \n[17] {c, f}    =&gt; {e} 0.4     1.00       0.4      1.666667 2    \n[18] {e, f}    =&gt; {b} 0.6     1.00       0.6      1.000000 3    \n[19] {b, e}    =&gt; {f} 0.6     1.00       0.6      1.666667 3    \n[20] {b, f}    =&gt; {e} 0.6     1.00       0.6      1.666667 3    \n[21] {c, e}    =&gt; {b} 0.4     1.00       0.4      1.000000 2    \n[22] {c, f}    =&gt; {b} 0.4     1.00       0.4      1.000000 2    \n[23] {c, e, f} =&gt; {b} 0.4     1.00       0.4      1.000000 2    \n[24] {b, c, e} =&gt; {f} 0.4     1.00       0.4      1.666667 2    \n[25] {b, c, f} =&gt; {e} 0.4     1.00       0.4      1.666667 2",
     "crumbs": [
       "연관규칙",
-      "<span class='chapter-number'>10</span>  <span class='chapter-title'>15장 연관규칙</span>"
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>15장 연관규칙</span>"
     ]
   },
   {
@@ -457,7 +501,7 @@
     "text": "(예 15.7 - 15.9)\n본 R코드는 교재에 나온 AprioriAll이나 AprioriSome이 아닌, SPADE라는 알고리즘을 이용하여 구현한 R 패키지를 사용하였습니다. 수행 결과는 동일하며, SPADE 알고리즘이 효율성이 더 높은 것으로 알려져 있습니다.\nSPADE 알고리즘은 아래 논문에 소개되어 있습니다.\nZaki, M. J. (2001). SPADE: An efficient algorithm for mining frequent sequences. Machine learning, 42, 31-60.\n\n패키지 로드\n\nlibrary(arulesSequences)\n\n\nAttaching package: 'arulesSequences'\n\n\nThe following object is masked from 'package:arules':\n\n    itemsets\n\n\n\n\n데이터 로드\n\n# read specifically formatted data into transactions with temporal information\ntrans &lt;- read_baskets(\n  con = \"data/ch15_sequence.txt\",\n  info = c(\"sequenceID\", \"eventID\", \"SIZE\") # do not change the names\n)\n\n\n\n(예 15.7) 최대 시퀀스\n모든 시퀀스 (최소 지지도 0.4)\n\nseqs &lt;- cspade(trans, parameter = list(support = 0.4))\ninspect(seqs)\n\n   items support \n 1 &lt;{a}&gt;     0.8 \n 2 &lt;{b}&gt;     0.6 \n 3 &lt;{e}&gt;     0.4 \n 4 &lt;{g}&gt;     0.6 \n 5 &lt;{a},  \n    {g}&gt;     0.4 \n 6 &lt;{e,   \n     g}&gt;     0.4 \n 7 &lt;{a},  \n    {e,   \n     g}&gt;     0.4 \n 8 &lt;{a},  \n    {e}&gt;     0.4 \n 9 &lt;{a},  \n    {b}&gt;     0.4 \n \n\n\n최대 시퀀스 (최소 지지도 0.4)\n\nmax_seqs &lt;- subset(seqs, is.maximal(seqs))\ninspect(max_seqs)\n\n   items support \n 1 &lt;{a},  \n    {e,   \n     g}&gt;     0.4 \n 2 &lt;{a},  \n    {b}&gt;     0.4 \n \n\n\n\n\n(예 15.8) 빈발항목집합\n\nitemsets &lt;- cspade(trans, parameter = list(support = 0.4, maxlen = 1))\ninspect(itemsets)\n\n   items support \n 1 &lt;{a}&gt;     0.8 \n 2 &lt;{b}&gt;     0.6 \n 3 &lt;{e}&gt;     0.4 \n 4 &lt;{g}&gt;     0.6 \n 5 &lt;{e,   \n     g}&gt;     0.4 \n \n\n\n\n\n(예 15.9) 시퀀스 탐색\n모든 빈발 시퀀스 (최소 신뢰도 0.5)\n\nrules &lt;- ruleInduction(seqs, confidence = 0.5)\ninspect(rules)\n\n   lhs      rhs   support confidence      lift \n 1 &lt;{a}&gt; =&gt; &lt;{g}&gt;     0.4        0.5 0.8333333 \n 2 &lt;{a}&gt; =&gt; &lt;{e,      0.4        0.5 1.2500000 \n              g}&gt;    \n 3 &lt;{a}&gt; =&gt; &lt;{e}&gt;     0.4        0.5 1.2500000 \n 4 &lt;{a}&gt; =&gt; &lt;{b}&gt;     0.4        0.5 0.8333333 \n \n\n\n최대 빈발 시퀀스 (최소 신뢰도 0.5)\n\nmax_rules &lt;- ruleInduction(max_seqs, trans, confidence = 0.5)\n\nWarning in match(x@items, table@items, nomatch = nomatch, incomparables =\nincomparables): Item coding not compatible, recoding item matrices first.\n\n\nWarning in .local(x, ...): Item coding not compatible, recoding item matrices.\n\ninspect(max_rules)\n\n   lhs      rhs   support confidence      lift \n 1 &lt;{a}&gt; =&gt; &lt;{e,      0.4        0.5 1.2500000 \n              g}&gt;    \n 2 &lt;{a}&gt; =&gt; &lt;{b}&gt;     0.4        0.5 0.8333333",
     "crumbs": [
       "연관규칙",
-      "<span class='chapter-number'>10</span>  <span class='chapter-title'>15장 연관규칙</span>"
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>15장 연관규칙</span>"
     ]
   },
   {
@@ -468,7 +512,7 @@
     "text": "(예 16.2)",
     "crumbs": [
       "연관규칙",
-      "<span class='chapter-number'>11</span>  <span class='chapter-title'>16장 추천시스템</span>"
+      "<span class='chapter-number'>12</span>  <span class='chapter-title'>16장 추천시스템</span>"
     ]
   },
   {
@@ -479,7 +523,7 @@
     "text": "데이터 로드\n\ndf &lt;- read.csv(\"data/ch16_content.csv\")\nuser_weights &lt;- as.vector(df[, 2])\ndoc_weights &lt;- as.matrix(df[, -c(1, 2)])\n\n\n\n유용도 산출\n\nnumerator &lt;- t(user_weights) %*% doc_weights\ndenominator &lt;- norm(user_weights, type = \"2\") *\n  apply(doc_weights, 2, norm, type = \"2\")\nutility &lt;- numerator / denominator\nround(utility, 4)\n\n       doc1   doc2   doc3   doc4   doc5   doc6\n[1,] 0.6595 0.8409 0.9189 0.4478 0.9717 0.3728",
     "crumbs": [
       "연관규칙",
-      "<span class='chapter-number'>11</span>  <span class='chapter-title'>16장 추천시스템</span>"
+      "<span class='chapter-number'>12</span>  <span class='chapter-title'>16장 추천시스템</span>"
     ]
   },
   {
@@ -490,7 +534,7 @@
     "text": "(예 16.3)\n\n패키지 로드\n\nlibrary(\"recommenderlab\")\n\nLoading required package: Matrix\n\n\nLoading required package: arules\n\n\n\nAttaching package: 'arules'\n\n\nThe following objects are masked from 'package:base':\n\n    abbreviate, write\n\n\nLoading required package: proxy\n\n\n\nAttaching package: 'proxy'\n\n\nThe following object is masked from 'package:Matrix':\n\n    as.matrix\n\n\nThe following objects are masked from 'package:stats':\n\n    as.dist, dist\n\n\nThe following object is masked from 'package:base':\n\n    as.matrix\n\n\nRegistered S3 methods overwritten by 'registry':\n  method               from \n  print.registry_field proxy\n  print.registry_entry proxy\n\n\n\n\n데이터 로드\n\ndf &lt;- read.csv(\"data/ch16_ratings.csv\")\n\n\n\n평점 행렬로 변환\n\nratings &lt;- as(df, \"realRatingMatrix\")\nprint(ratings@data)\n\n7 x 7 sparse Matrix of class \"dgCMatrix\"\n  1 2 3 4 5 6 7\n1 5 . 4 . 1 0 3\n2 4 4 4 . . . 1\n3 5 4 . 1 2 . 3\n4 1 2 1 4 3 5 2\n5 0 1 . 3 5 5 .\n6 . 2 . . 4 4 2\n7 5 . . 1 . . 2\n\n\n\n\n목표고객 설정\n\ntarget &lt;- 7\n\n\n\n목표고객과 각 고객간의 유사성 산출\n\ncentered &lt;- normalize(ratings)\nsimilarity(centered[-target], centered[target])\n\n           7\n1 0.95163875\n2 0.78234196\n3 0.98038446\n4 0.06238169\n5 0.07346149\n6 1.00000000\n\n\n\n\n협업 필터링 추천 시스템 생성\n\nrec &lt;- Recommender(ratings, method = \"UBCF\")\nrec\n\nRecommender of type 'UBCF' for 'realRatingMatrix' \nlearned using 7 users.\n\n\n\n\n평점 추정\n\npredicted &lt;- predict(rec, ratings[target], type = \"ratings\")\nprint(predicted@data)\n\n1 x 7 sparse Matrix of class \"dgCMatrix\"\n  1        2        3 4        5        6 7\n7 . 2.804412 3.680394 . 2.238142 2.110424 .\n\n\n\n\n상위-N 추천\n\nrecommended &lt;- predict(rec, ratings[target], n = 2)\nprint(recommended@items)\n\n$`0`\n[1] 3 2",
     "crumbs": [
       "연관규칙",
-      "<span class='chapter-number'>11</span>  <span class='chapter-title'>16장 추천시스템</span>"
+      "<span class='chapter-number'>12</span>  <span class='chapter-title'>16장 추천시스템</span>"
     ]
   },
   {
@@ -501,7 +545,7 @@
     "text": "(예 16.4)\n\n패키지 로드\n\nlibrary(\"recommenderlab\")\n\n\n\n데이터 로드\n\ndf &lt;- read.csv(\"data/ch16_purchase.csv\")\n\n\n\n시장바구니 데이터 행렬로 변환\n\npurchases &lt;- as(df, \"binaryRatingMatrix\")\nmat &lt;- as(purchases@data, \"matrix\")\nmat\n\n      1     2     3     4     5     6     7\n1  TRUE FALSE  TRUE FALSE  TRUE FALSE  TRUE\n2  TRUE  TRUE  TRUE FALSE FALSE FALSE  TRUE\n3  TRUE  TRUE FALSE  TRUE  TRUE FALSE  TRUE\n4  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE\n5 FALSE  TRUE FALSE  TRUE  TRUE  TRUE FALSE\n6 FALSE  TRUE FALSE FALSE  TRUE  TRUE  TRUE\n7  TRUE FALSE FALSE  TRUE FALSE FALSE  TRUE\n\n\n\n\n목표고객 설정\n\ntarget &lt;- 7\n\n\n\n목표고객과 각 고객간의 유사성 산출\n\nsim &lt;- similarity(purchases[-target], purchases[target], method = \"jaccard\")\nround(sim, 4)\n\n       7\n1 0.4000\n2 0.4000\n3 0.6000\n4 0.5000\n5 0.1667\n6 0.1667\n\n\n\n\n평점 추정\n\ntarget_items &lt;- !mat[target, ]\npredicted &lt;- 1 / sum(sim) *\n  t(sim) %*% as(purchases[-target], \"matrix\")[, target_items]\nround(predicted, 4)\n\n       2      3     5      6\n7 0.8209 0.5821 0.597 0.3731",
     "crumbs": [
       "연관규칙",
-      "<span class='chapter-number'>11</span>  <span class='chapter-title'>16장 추천시스템</span>"
+      "<span class='chapter-number'>12</span>  <span class='chapter-title'>16장 추천시스템</span>"
     ]
   }
 ]

@@ -323,12 +323,12 @@ window.Quarto = {
 <section id="패키지-로드" class="level4">
 <h4 class="anchored" data-anchor-id="패키지-로드">패키지 로드</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmnet)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(penalized)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Loading required package: Matrix</code></pre>
+<pre><code>Loading required package: survival</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Loaded glmnet 4.1-8</code></pre>
+<pre><code>Welcome to penalized. For extended examples, see vignette("penalized").</code></pre>
 </div>
 </div>
 </section>
@@ -348,53 +348,54 @@ window.Quarto = {
 </section>
 <section id="예-3.1-lasso" class="level4">
 <h4 class="anchored" data-anchor-id="예-3.1-lasso">(예 3.1) Lasso</h4>
-<p>원하는 <span class="math inline">\(\lambda\)</span>값을 <code>glmnet</code> 수식에 맞춰 변환</p>
+<p>교재의 <span class="math inline">\(\lambda\)</span>값을 <code>penalized()</code> 함수 인자로 사용하기 위해 변환</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>lambda <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">3</span>, <span class="at">by =</span> <span class="dv">1</span>)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="fu">length</span>(y) <span class="co"># number of observations in training data</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>lasso_lambda <span class="ot">&lt;-</span> lambda <span class="sc">/</span> (<span class="dv">2</span> <span class="sc">*</span> N)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>lasso_lambda <span class="ot">&lt;-</span> lambda <span class="sc">/</span> <span class="dv">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Lasso regression</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>lasso <span class="ot">&lt;-</span> <span class="fu">glmnet</span>(</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  std_x, y, <span class="at">alpha =</span> <span class="dv">1</span>, <span class="at">lambda =</span> lasso_lambda, <span class="at">standardize =</span> <span class="cn">FALSE</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p><span class="math inline">\(\lambda\)</span>값에 따른 회귀계수 변화</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>lasso_coef <span class="ot">&lt;-</span> <span class="fu">predict</span>(lasso, <span class="at">s =</span> lasso_lambda, <span class="at">type =</span> <span class="st">"coefficients"</span>)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(lasso_coef, <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> lasso_lambda) {</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># estimate Lasso regression</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  lasso <span class="ot">&lt;-</span> <span class="fu">penalized</span>(y, std_x, <span class="at">lambda1 =</span> i, <span class="at">trace =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># print coefficients</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">round</span>(<span class="fu">coef</span>(lasso), <span class="dv">4</span>))</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>3 x 4 sparse Matrix of class "dgCMatrix"
-              s1   s2   s3   s4
-(Intercept) 0.00 0.00 0.00 0.00
-x1          2.02 1.97 1.93 1.88
-x2          0.13 0.09 0.04 .   </code></pre>
+<pre><code>(Intercept)          x1          x2 
+     0.0000      2.0201      0.1339 
+(Intercept)          x1          x2 
+     0.0000      1.9736      0.0875 
+(Intercept)          x1          x2 
+     0.0000      1.9272      0.0410 
+(Intercept)          x1 
+     0.0000      1.8764 </code></pre>
 </div>
 </div>
 </section>
 <section id="예-3.2-ridge" class="level4">
 <h4 class="anchored" data-anchor-id="예-3.2-ridge">(예 3.2) ridge</h4>
-<p>원하는 <span class="math inline">\(\lambda\)</span>값을 <code>glmnet</code> 수식에 맞춰 변환</p>
+<p>L2-penality의 경우 교재의 <span class="math inline">\(\lambda\)</span>값을 그대로 사용</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>ridge_lambda <span class="ot">&lt;-</span> lambda <span class="sc">/</span> N</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>ridge_lambda <span class="ot">&lt;-</span> lambda</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>ridge regression</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>ridge <span class="ot">&lt;-</span> <span class="fu">glmnet</span>(</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  std_x, y, <span class="at">alpha =</span> <span class="dv">0</span>, <span class="at">lambda =</span> ridge_lambda, <span class="at">standardize =</span> <span class="cn">FALSE</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p><span class="math inline">\(\lambda\)</span>값에 따른 회귀계수 변화</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>ridge_coef <span class="ot">&lt;-</span> <span class="fu">predict</span>(ridge, <span class="at">s =</span> ridge_lambda, <span class="at">type =</span> <span class="st">"coefficients"</span>)</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(ridge_coef, <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> ridge_lambda) {</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># estimate Lasso regression</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  ridge <span class="ot">&lt;-</span> <span class="fu">penalized</span>(y, std_x, <span class="at">lambda2 =</span> i, <span class="at">trace =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># print coefficients</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">round</span>(<span class="fu">coef</span>(ridge), <span class="dv">4</span>))</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>3 x 4 sparse Matrix of class "dgCMatrix"
-              s1   s2   s3   s4
-(Intercept) 0.00 0.00 0.00 0.00
-x1          2.02 1.70 1.51 1.37
-x2          0.13 0.36 0.46 0.52</code></pre>
+<pre><code>(Intercept)          x1          x2 
+     0.0000      2.0201      0.1339 
+(Intercept)          x1          x2 
+     0.0000      1.5071      0.4638 
+(Intercept)          x1          x2 
+     0.0000      1.2688      0.5477 
+(Intercept)          x1          x2 
+     0.0000      1.1177      0.5667 </code></pre>
 </div>
 </div>
 

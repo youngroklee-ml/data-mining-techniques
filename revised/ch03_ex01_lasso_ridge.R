@@ -3,7 +3,7 @@
 # ch3.2 Ridge
 
 # load library
-library(glmnet)
+library(penalized)
 
 # read csv file
 dat1 <- read.csv("data/ch3_dat1.csv")
@@ -17,34 +17,27 @@ std_x <- scale(x)
 
 # ex3.1
 
-# list lambda values and transform based on glmnet's formulation
-# See section - Linear Regression: family = "gaussian"
-#     on https://glmnet.stanford.edu/articles/glmnet.html 
+# list lambda values and transform for penalized()
 lambda <- seq(0, 3, by = 1)
-N <- length(y) # number of observations in training data
-lasso_lambda <- lambda / (2 * N)
+lasso_lambda <- lambda / 2
 
-# estimate Lasso regression
-# input variables are already standardized; so set standardize = FALSE
-lasso <- glmnet(
-  std_x, y, alpha = 1, lambda = lasso_lambda, standardize = FALSE
-)
+# for each value of lambda
+for (i in lasso_lambda) {
+  # estimate Lasso regression
+  lasso <- penalized(y, std_x, lambda1 = i, trace = FALSE)
+  # print coefficients
+  print(round(coef(lasso), 4))
+}
 
-# coefficients
-lasso_coef <- predict(lasso, s = lasso_lambda, type = "coefficients")
-round(lasso_coef, 2)
 
 # ex3.2
 
-# transform lambda base don glmnet's formulation
-ridge_lambda <- lambda / N
+ridge_lambda <- lambda
 
-# estimate ridge regression
-# input variables are already standardized; so set standardize = FALSE
-ridge <- glmnet(
-  std_x, y, alpha = 0, lambda = ridge_lambda, standardize = FALSE
-)
-
-# coefficients
-ridge_coef <- predict(ridge, s = ridge_lambda, type = "coefficients")
-round(ridge_coef, 2)
+# for each value of lambda
+for (i in ridge_lambda) {
+  # estimate Lasso regression
+  ridge <- penalized(y, std_x, lambda2 = i, trace = FALSE)
+  # print coefficients
+  print(round(coef(ridge), 4))
+}

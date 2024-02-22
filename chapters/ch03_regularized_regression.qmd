@@ -5,7 +5,7 @@
 #### 패키지 로드
 
 ```{r}
-library(glmnet)
+library(penalized)
 ```
 
 
@@ -25,50 +25,41 @@ std_x <- scale(x)
 
 #### (예 3.1) Lasso
 
-원하는 $\lambda$값을 `glmnet` 수식에 맞춰 변환
+교재의 $\lambda$값을 `penalized()` 함수 인자로 사용하기 위해 변환
 
 ```{r}
 lambda <- seq(0, 3, by = 1)
-N <- length(y) # number of observations in training data
-lasso_lambda <- lambda / (2 * N)
+lasso_lambda <- lambda / 2
 ```
 
 Lasso regression
 
 ```{r}
-lasso <- glmnet(
-  std_x, y, alpha = 1, lambda = lasso_lambda, standardize = FALSE
-)
-```
-
-$\lambda$값에 따른 회귀계수 변화
-
-```{r}
-lasso_coef <- predict(lasso, s = lasso_lambda, type = "coefficients")
-round(lasso_coef, 2)
+for (i in lasso_lambda) {
+  # estimate Lasso regression
+  lasso <- penalized(y, std_x, lambda1 = i, trace = FALSE)
+  # print coefficients
+  print(round(coef(lasso), 4))
+}
 ```
 
 
 #### (예 3.2) ridge
 
-원하는 $\lambda$값을 `glmnet` 수식에 맞춰 변환
+L2-penality의 경우 교재의 $\lambda$값을 그대로 사용
 
 ```{r}
-ridge_lambda <- lambda / N
+ridge_lambda <- lambda
 ```
 
 ridge regression
 
 ```{r}
-ridge <- glmnet(
-  std_x, y, alpha = 0, lambda = ridge_lambda, standardize = FALSE
-)
-```
-
-$\lambda$값에 따른 회귀계수 변화
-
-```{r}
-ridge_coef <- predict(ridge, s = ridge_lambda, type = "coefficients")
-round(ridge_coef, 2)
+for (i in ridge_lambda) {
+  # estimate Lasso regression
+  ridge <- penalized(y, std_x, lambda2 = i, trace = FALSE)
+  # print coefficients
+  print(round(coef(ridge), 4))
+}
 ```
 

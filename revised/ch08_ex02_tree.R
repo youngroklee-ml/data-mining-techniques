@@ -1,3 +1,7 @@
+# ch08_ex02_tree.R
+# ch8.2 Growing (splitting)
+# ch8.3 Pruning
+
 # load package
 library(rpart)
 library(yardstick)

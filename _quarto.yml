@@ -17,6 +17,7 @@ book:
         - chapters/ch05_classification.qmd
         - chapters/ch06_logistic_regression.qmd
         - chapters/ch07_da.qmd
+        - chapters/ch08_tree.qmd
         - chapters/ch09_svm.qmd
     - part: "군집분석"
       chapters:

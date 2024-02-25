@@ -1,0 +1,152 @@
+# 8장 트리기반 기법
+
+## (예 8.2 - 8.7)
+
+#### 패키지 로드
+
+```{r}
+library(rpart)
+library(yardstick)
+```
+
+
+#### 데이터 로드
+
+```{r}
+df_train <- read.csv("data/ch8_dat1.csv")
+df_train$class <- factor(df_train$class, levels = c(1, 2))
+
+df_test <- read.csv("data/ch8_dat2.csv")
+df_test$class <- factor(df_test$class, levels = c(1, 2))
+```
+
+
+#### (예 8.2)
+
+One-level tree (sometime called decision stump)
+
+```{r}
+control_depth1 <- rpart.control(
+  minsplit = 2, # attempt split when two or more observations are in a node
+  cp = 0, # attempt split even if does not decrease misclassification cost
+  xval = 0, # no cross-validation
+  maxdepth = 1 # make only one split from root node
+)
+
+tree_depth1 <- rpart(
+  class ~ x1 + x2,
+  data = df_train,
+  control = control_depth1
+)
+
+print(tree_depth1)
+```
+
+
+#### (예 8.3)
+
+Two-levels decision tree
+
+```{r}
+control_depth2 <- rpart.control(
+  minsplit = 2, # attempt split when two or more observations are in a node
+  cp = 0, # attempt split even if does not decrease misclassification cost
+  xval = 0, # no cross-validation
+  maxdepth = 2 # make only one split from root node
+)
+
+tree_depth2 <- rpart(
+  class ~ x1 + x2,
+  data = df_train,
+  control = control_depth2
+)
+
+print(tree_depth2)
+```
+
+
+최대 트리
+
+```{r}
+control_maximal <- rpart.control(
+  minsplit = 2, # attempt split when two or more observations are in a node
+  cp = 0, # attempt split even if does not decrease misclassification cost
+  xval = 0 # no cross-validation
+)
+
+tree_maximal <- rpart(
+  class ~ x1 + x2,
+  data = df_train,
+  control = control_maximal
+)
+
+print(tree_maximal)
+```
+
+
+
+#### (예 8.4)
+
+- `rel error`: Root 노드만 지닌 트리에 비해, 각 단계별 분지된 트리의 상대적 오분류비용
+- `nsplit`: 해당 트리까지의 분지 횟수
+
+```{r}
+# "rel error" is R(T)/R(Root), where Root means a tree with no split
+# "nsplit" means a number of splits made to produce tree T
+printcp(tree_maximal)
+```
+
+#### (예 8.5 - 8.6)
+
+- `T1`: 최대 트리
+
+```{r}
+T1 <- tree_maximal
+print(T1)
+```
+
+- `T2`: 첫 번째 가지치기된 트리
+
+```{r}
+T2 <- snip.rpart(T1, toss = 7) # node number corresponding to t5 in the book
+print(T2)
+```
+
+- `T3`: 두 번째 가지치기된 트리
+
+```{r}
+T3 <- snip.rpart(T2, toss = 3) 
+print(T3)
+```
+
+#### (예 8.7)
+
+테스트 표본에 대한 분류오류율
+
+```{r}
+predict(T1, df_test, type = "class")
+1 - accuracy_vec(df_test$class, predict(T1, df_test, type = "class"))
+
+predict(T2, df_test, type = "class")
+1 - accuracy_vec(df_test$class, predict(T2, df_test, type = "class"))
+
+predict(T3, df_test, type = "class")
+1 - accuracy_vec(df_test$class, predict(T3, df_test, type = "class"))
+```
+
+
+
+#### OPTIONAL: `{rpart}`에서의 가지치기
+
+`{rpart}`의 함수 `prune()`은 인자 `cp`가 주어졌을 때 다음과 같이 크기가 조정된(scaled) 비용-복잡도 척도를 최소화하는 가지치기를 수행한다.
+
+$$
+\frac{R(T)}{R(Root)} + \text{cp} \times |T|
+$$
+
+여기에서 $R(Root)$는 분지가 전혀 없이 뿌리 노드만 존재하는 트리의 오분류 비용이다.
+
+```{r}
+prune(tree_maximal, cp = 0.15)
+```
+

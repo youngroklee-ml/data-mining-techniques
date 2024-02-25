@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>데이터마이닝 기법과 응용: R 예제 - 16장 추천시스템</title>
+<title>데이터마이닝 기법과 응용: R 예제 - 8장 트리기반 기법</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -64,7 +64,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../chapters/ch15_association_rule.html" rel="prev">
+<link href="../chapters/ch09_svm.html" rel="next">
+<link href="../chapters/ch07_da.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -102,6 +103,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -114,7 +144,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/ch15_association_rule.html">연관규칙</a></li><li class="breadcrumb-item"><a href="../chapters/ch16_recommender_system.html"><span class="chapter-title">16장 추천시스템</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/ch05_classification.html">분류분석</a></li><li class="breadcrumb-item"><a href="../chapters/ch08_tree.html"><span class="chapter-title">8장 트리기반 기법</span></a></li></ol></nav>
         <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -195,7 +225,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../chapters/ch08_tree.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">8장 트리기반 기법</span></a>
+  <a href="../chapters/ch08_tree.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">8장 트리기반 기법</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -252,7 +282,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../chapters/ch16_recommender_system.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">16장 추천시스템</span></a>
+  <a href="../chapters/ch16_recommender_system.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">16장 추천시스템</span></a>
   </div>
 </li>
       </ul>
@@ -267,18 +297,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#예-16.2" id="toc-예-16.2" class="nav-link active" data-scroll-target="#예-16.2">(예 16.2)</a></li>
-  <li><a href="#예-16.3" id="toc-예-16.3" class="nav-link" data-scroll-target="#예-16.3">(예 16.3)</a></li>
-  <li><a href="#예-16.4" id="toc-예-16.4" class="nav-link" data-scroll-target="#예-16.4">(예 16.4)</a></li>
+  <li><a href="#예-8.2---8.7" id="toc-예-8.2---8.7" class="nav-link active" data-scroll-target="#예-8.2---8.7">(예 8.2 - 8.7)</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/ch15_association_rule.html">연관규칙</a></li><li class="breadcrumb-item"><a href="../chapters/ch16_recommender_system.html"><span class="chapter-title">16장 추천시스템</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../chapters/ch05_classification.html">분류분석</a></li><li class="breadcrumb-item"><a href="../chapters/ch08_tree.html"><span class="chapter-title">8장 트리기반 기법</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-title">16장 추천시스템</span></h1>
+<h1 class="title"><span class="chapter-title">8장 트리기반 기법</span></h1>
 </div>
 
 
@@ -295,227 +323,267 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="예-16.2" class="level2">
-<h2 class="anchored" data-anchor-id="예-16.2">(예 16.2)</h2>
-<section id="데이터-로드" class="level4">
-<h4 class="anchored" data-anchor-id="데이터-로드">데이터 로드</h4>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/ch16_content.csv"</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>user_weights <span class="ot">&lt;-</span> <span class="fu">as.vector</span>(df[, <span class="dv">2</span>])</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>doc_weights <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(df[, <span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>)])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="유용도-산출" class="level4">
-<h4 class="anchored" data-anchor-id="유용도-산출">유용도 산출</h4>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>numerator <span class="ot">&lt;-</span> <span class="fu">t</span>(user_weights) <span class="sc">%*%</span> doc_weights</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>denominator <span class="ot">&lt;-</span> <span class="fu">norm</span>(user_weights, <span class="at">type =</span> <span class="st">"2"</span>) <span class="sc">*</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">apply</span>(doc_weights, <span class="dv">2</span>, norm, <span class="at">type =</span> <span class="st">"2"</span>)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>utility <span class="ot">&lt;-</span> numerator <span class="sc">/</span> denominator</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(utility, <span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>       doc1   doc2   doc3   doc4   doc5   doc6
-[1,] 0.6595 0.8409 0.9189 0.4478 0.9717 0.3728</code></pre>
-</div>
-</div>
-</section>
-</section>
-<section id="예-16.3" class="level2">
-<h2 class="anchored" data-anchor-id="예-16.3">(예 16.3)</h2>
+<section id="예-8.2---8.7" class="level2">
+<h2 class="anchored" data-anchor-id="예-8.2---8.7">(예 8.2 - 8.7)</h2>
 <section id="패키지-로드" class="level4">
 <h4 class="anchored" data-anchor-id="패키지-로드">패키지 로드</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"recommenderlab"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Loading required package: Matrix</code></pre>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rpart)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(yardstick)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Loading required package: arules</code></pre>
+</section>
+<section id="데이터-로드" class="level4">
+<h4 class="anchored" data-anchor-id="데이터-로드">데이터 로드</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df_train <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/ch8_dat1.csv"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>df_train<span class="sc">$</span>class <span class="ot">&lt;-</span> <span class="fu">factor</span>(df_train<span class="sc">$</span>class, <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>df_test <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/ch8_dat2.csv"</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>df_test<span class="sc">$</span>class <span class="ot">&lt;-</span> <span class="fu">factor</span>(df_test<span class="sc">$</span>class, <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell-output cell-output-stderr">
+</section>
+<section id="예-8.2" class="level4">
+<h4 class="anchored" data-anchor-id="예-8.2">(예 8.2)</h4>
+<p>One-level tree (sometime called decision stump)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>control_depth1 <span class="ot">&lt;-</span> <span class="fu">rpart.control</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">minsplit =</span> <span class="dv">2</span>, <span class="co"># attempt split when two or more observations are in a node</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">cp =</span> <span class="dv">0</span>, <span class="co"># attempt split even if does not decrease misclassification cost</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">xval =</span> <span class="dv">0</span>, <span class="co"># no cross-validation</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">maxdepth =</span> <span class="dv">1</span> <span class="co"># make only one split from root node</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>tree_depth1 <span class="ot">&lt;-</span> <span class="fu">rpart</span>(</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  class <span class="sc">~</span> x1 <span class="sc">+</span> x2,</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> df_train,</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> control_depth1</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(tree_depth1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>n= 10 
+
+node), split, n, loss, yval, (yprob)
+      * denotes terminal node
+
+1) root 10 5 1 (0.5000000 0.5000000)  
+  2) x2&gt;=5.5 3 0 1 (1.0000000 0.0000000) *
+  3) x2&lt; 5.5 7 2 2 (0.2857143 0.7142857) *</code></pre>
+</div>
+</div>
+</section>
+<section id="예-8.3" class="level4">
+<h4 class="anchored" data-anchor-id="예-8.3">(예 8.3)</h4>
+<p>Two-levels decision tree</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>control_depth2 <span class="ot">&lt;-</span> <span class="fu">rpart.control</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">minsplit =</span> <span class="dv">2</span>, <span class="co"># attempt split when two or more observations are in a node</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">cp =</span> <span class="dv">0</span>, <span class="co"># attempt split even if does not decrease misclassification cost</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">xval =</span> <span class="dv">0</span>, <span class="co"># no cross-validation</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">maxdepth =</span> <span class="dv">2</span> <span class="co"># make only one split from root node</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>tree_depth2 <span class="ot">&lt;-</span> <span class="fu">rpart</span>(</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  class <span class="sc">~</span> x1 <span class="sc">+</span> x2,</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> df_train,</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> control_depth2</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(tree_depth2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>n= 10 
+
+node), split, n, loss, yval, (yprob)
+      * denotes terminal node
+
+1) root 10 5 1 (0.5000000 0.5000000)  
+  2) x2&gt;=5.5 3 0 1 (1.0000000 0.0000000) *
+  3) x2&lt; 5.5 7 2 2 (0.2857143 0.7142857)  
+    6) x1&lt; 1.5 1 0 1 (1.0000000 0.0000000) *
+    7) x1&gt;=1.5 6 1 2 (0.1666667 0.8333333) *</code></pre>
+</div>
+</div>
+<p>최대 트리</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>control_maximal <span class="ot">&lt;-</span> <span class="fu">rpart.control</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">minsplit =</span> <span class="dv">2</span>, <span class="co"># attempt split when two or more observations are in a node</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">cp =</span> <span class="dv">0</span>, <span class="co"># attempt split even if does not decrease misclassification cost</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">xval =</span> <span class="dv">0</span> <span class="co"># no cross-validation</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>tree_maximal <span class="ot">&lt;-</span> <span class="fu">rpart</span>(</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  class <span class="sc">~</span> x1 <span class="sc">+</span> x2,</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> df_train,</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> control_maximal</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(tree_maximal)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>n= 10 
+
+node), split, n, loss, yval, (yprob)
+      * denotes terminal node
+
+ 1) root 10 5 1 (0.5000000 0.5000000)  
+   2) x2&gt;=5.5 3 0 1 (1.0000000 0.0000000) *
+   3) x2&lt; 5.5 7 2 2 (0.2857143 0.7142857)  
+     6) x1&lt; 1.5 1 0 1 (1.0000000 0.0000000) *
+     7) x1&gt;=1.5 6 1 2 (0.1666667 0.8333333)  
+      14) x2&gt;=4.5 2 1 1 (0.5000000 0.5000000)  
+        28) x1&lt; 3 1 0 1 (1.0000000 0.0000000) *
+        29) x1&gt;=3 1 0 2 (0.0000000 1.0000000) *
+      15) x2&lt; 4.5 4 0 2 (0.0000000 1.0000000) *</code></pre>
+</div>
+</div>
+</section>
+<section id="예-8.4" class="level4">
+<h4 class="anchored" data-anchor-id="예-8.4">(예 8.4)</h4>
+<ul>
+<li><code>rel error</code>: Root 노드만 지닌 트리에 비해, 각 단계별 분지된 트리의 상대적 오분류비용</li>
+<li><code>nsplit</code>: 해당 트리까지의 분지 횟수</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># "rel error" is R(T)/R(Root), where Root means a tree with no split</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># "nsplit" means a number of splits made to produce tree T</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">printcp</span>(tree_maximal)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
 <pre><code>
-Attaching package: 'arules'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following objects are masked from 'package:base':
+Classification tree:
+rpart(formula = class ~ x1 + x2, data = df_train, control = control_maximal)
 
-    abbreviate, write</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Loading required package: proxy</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Attaching package: 'proxy'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following object is masked from 'package:Matrix':
+Variables actually used in tree construction:
+[1] x1 x2
 
-    as.matrix</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following objects are masked from 'package:stats':
+Root node error: 5/10 = 0.5
 
-    as.dist, dist</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following object is masked from 'package:base':
+n= 10 
 
-    as.matrix</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Registered S3 methods overwritten by 'registry':
-  method               from 
-  print.registry_field proxy
-  print.registry_entry proxy</code></pre>
+   CP nsplit rel error
+1 0.6      0       1.0
+2 0.2      1       0.4
+3 0.1      2       0.2
+4 0.0      4       0.0</code></pre>
 </div>
 </div>
 </section>
-<section id="데이터-로드-1" class="level4">
-<h4 class="anchored" data-anchor-id="데이터-로드-1">데이터 로드</h4>
+<section id="예-8.5---8.6" class="level4">
+<h4 class="anchored" data-anchor-id="예-8.5---8.6">(예 8.5 - 8.6)</h4>
+<ul>
+<li><code>T1</code>: 최대 트리</li>
+</ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/ch16_ratings.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="평점-행렬로-변환" class="level4">
-<h4 class="anchored" data-anchor-id="평점-행렬로-변환">평점 행렬로 변환</h4>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>ratings <span class="ot">&lt;-</span> <span class="fu">as</span>(df, <span class="st">"realRatingMatrix"</span>)</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(ratings<span class="sc">@</span>data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>T1 <span class="ot">&lt;-</span> tree_maximal</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(T1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>7 x 7 sparse Matrix of class "dgCMatrix"
-  1 2 3 4 5 6 7
-1 5 . 4 . 1 0 3
-2 4 4 4 . . . 1
-3 5 4 . 1 2 . 3
-4 1 2 1 4 3 5 2
-5 0 1 . 3 5 5 .
-6 . 2 . . 4 4 2
-7 5 . . 1 . . 2</code></pre>
+<pre><code>n= 10 
+
+node), split, n, loss, yval, (yprob)
+      * denotes terminal node
+
+ 1) root 10 5 1 (0.5000000 0.5000000)  
+   2) x2&gt;=5.5 3 0 1 (1.0000000 0.0000000) *
+   3) x2&lt; 5.5 7 2 2 (0.2857143 0.7142857)  
+     6) x1&lt; 1.5 1 0 1 (1.0000000 0.0000000) *
+     7) x1&gt;=1.5 6 1 2 (0.1666667 0.8333333)  
+      14) x2&gt;=4.5 2 1 1 (0.5000000 0.5000000)  
+        28) x1&lt; 3 1 0 1 (1.0000000 0.0000000) *
+        29) x1&gt;=3 1 0 2 (0.0000000 1.0000000) *
+      15) x2&lt; 4.5 4 0 2 (0.0000000 1.0000000) *</code></pre>
 </div>
 </div>
-</section>
-<section id="목표고객-설정" class="level4">
-<h4 class="anchored" data-anchor-id="목표고객-설정">목표고객 설정</h4>
+<ul>
+<li><code>T2</code>: 첫 번째 가지치기된 트리</li>
+</ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>target <span class="ot">&lt;-</span> <span class="dv">7</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="목표고객과-각-고객간의-유사성-산출" class="level4">
-<h4 class="anchored" data-anchor-id="목표고객과-각-고객간의-유사성-산출">목표고객과 각 고객간의 유사성 산출</h4>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>centered <span class="ot">&lt;-</span> <span class="fu">normalize</span>(ratings)</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">similarity</span>(centered[<span class="sc">-</span>target], centered[target])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>T2 <span class="ot">&lt;-</span> <span class="fu">snip.rpart</span>(T1, <span class="at">toss =</span> <span class="dv">7</span>) <span class="co"># node number corresponding to t5 in the book</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(T2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>           7
-1 0.95163875
-2 0.78234196
-3 0.98038446
-4 0.06238169
-5 0.07346149
-6 1.00000000</code></pre>
+<pre><code>n= 10 
+
+node), split, n, loss, yval, (yprob)
+      * denotes terminal node
+
+1) root 10 5 1 (0.5000000 0.5000000)  
+  2) x2&gt;=5.5 3 0 1 (1.0000000 0.0000000) *
+  3) x2&lt; 5.5 7 2 2 (0.2857143 0.7142857)  
+    6) x1&lt; 1.5 1 0 1 (1.0000000 0.0000000) *
+    7) x1&gt;=1.5 6 1 2 (0.1666667 0.8333333) *</code></pre>
 </div>
 </div>
-</section>
-<section id="협업-필터링-추천-시스템-생성" class="level4">
-<h4 class="anchored" data-anchor-id="협업-필터링-추천-시스템-생성">협업 필터링 추천 시스템 생성</h4>
+<ul>
+<li><code>T3</code>: 두 번째 가지치기된 트리</li>
+</ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>rec <span class="ot">&lt;-</span> <span class="fu">Recommender</span>(ratings, <span class="at">method =</span> <span class="st">"UBCF"</span>)</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>rec</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>T3 <span class="ot">&lt;-</span> <span class="fu">snip.rpart</span>(T2, <span class="at">toss =</span> <span class="dv">3</span>) </span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(T3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Recommender of type 'UBCF' for 'realRatingMatrix' 
-learned using 7 users.</code></pre>
+<pre><code>n= 10 
+
+node), split, n, loss, yval, (yprob)
+      * denotes terminal node
+
+1) root 10 5 1 (0.5000000 0.5000000)  
+  2) x2&gt;=5.5 3 0 1 (1.0000000 0.0000000) *
+  3) x2&lt; 5.5 7 2 2 (0.2857143 0.7142857) *</code></pre>
 </div>
 </div>
 </section>
-<section id="평점-추정" class="level4">
-<h4 class="anchored" data-anchor-id="평점-추정">평점 추정</h4>
+<section id="예-8.7" class="level4">
+<h4 class="anchored" data-anchor-id="예-8.7">(예 8.7)</h4>
+<p>테스트 표본에 대한 분류오류율</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>predicted <span class="ot">&lt;-</span> <span class="fu">predict</span>(rec, ratings[target], <span class="at">type =</span> <span class="st">"ratings"</span>)</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(predicted<span class="sc">@</span>data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(T1, df_test, <span class="at">type =</span> <span class="st">"class"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>1 x 7 sparse Matrix of class "dgCMatrix"
-  1        2        3 4        5        6 7
-7 . 2.804412 3.680394 . 2.238142 2.110424 .</code></pre>
+<pre><code>1 2 3 4 5 6 
+1 1 2 2 1 1 
+Levels: 1 2</code></pre>
 </div>
-</div>
-</section>
-<section id="상위-n-추천" class="level4">
-<h4 class="anchored" data-anchor-id="상위-n-추천">상위-N 추천</h4>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>recommended <span class="ot">&lt;-</span> <span class="fu">predict</span>(rec, ratings[target], <span class="at">n =</span> <span class="dv">2</span>)</span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(recommended<span class="sc">@</span>items)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="sc">-</span> <span class="fu">accuracy_vec</span>(df_test<span class="sc">$</span>class, <span class="fu">predict</span>(T1, df_test, <span class="at">type =</span> <span class="st">"class"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>$`0`
-[1] 3 2</code></pre>
+<pre><code>[1] 0.1666667</code></pre>
 </div>
-</div>
-</section>
-</section>
-<section id="예-16.4" class="level2">
-<h2 class="anchored" data-anchor-id="예-16.4">(예 16.4)</h2>
-<section id="패키지-로드-1" class="level4">
-<h4 class="anchored" data-anchor-id="패키지-로드-1">패키지 로드</h4>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"recommenderlab"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="데이터-로드-2" class="level4">
-<h4 class="anchored" data-anchor-id="데이터-로드-2">데이터 로드</h4>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/ch16_purchase.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="시장바구니-데이터-행렬로-변환" class="level4">
-<h4 class="anchored" data-anchor-id="시장바구니-데이터-행렬로-변환">시장바구니 데이터 행렬로 변환</h4>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>purchases <span class="ot">&lt;-</span> <span class="fu">as</span>(df, <span class="st">"binaryRatingMatrix"</span>)</span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>mat <span class="ot">&lt;-</span> <span class="fu">as</span>(purchases<span class="sc">@</span>data, <span class="st">"matrix"</span>)</span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>mat</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(T2, df_test, <span class="at">type =</span> <span class="st">"class"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>      1     2     3     4     5     6     7
-1  TRUE FALSE  TRUE FALSE  TRUE FALSE  TRUE
-2  TRUE  TRUE  TRUE FALSE FALSE FALSE  TRUE
-3  TRUE  TRUE FALSE  TRUE  TRUE FALSE  TRUE
-4  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE
-5 FALSE  TRUE FALSE  TRUE  TRUE  TRUE FALSE
-6 FALSE  TRUE FALSE FALSE  TRUE  TRUE  TRUE
-7  TRUE FALSE FALSE  TRUE FALSE FALSE  TRUE</code></pre>
+<pre><code>1 2 3 4 5 6 
+1 1 2 2 1 1 
+Levels: 1 2</code></pre>
 </div>
-</div>
-</section>
-<section id="목표고객-설정-1" class="level4">
-<h4 class="anchored" data-anchor-id="목표고객-설정-1">목표고객 설정</h4>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>target <span class="ot">&lt;-</span> <span class="dv">7</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="목표고객과-각-고객간의-유사성-산출-1" class="level4">
-<h4 class="anchored" data-anchor-id="목표고객과-각-고객간의-유사성-산출-1">목표고객과 각 고객간의 유사성 산출</h4>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">&lt;-</span> <span class="fu">similarity</span>(purchases[<span class="sc">-</span>target], purchases[target], <span class="at">method =</span> <span class="st">"jaccard"</span>)</span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(sim, <span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="sc">-</span> <span class="fu">accuracy_vec</span>(df_test<span class="sc">$</span>class, <span class="fu">predict</span>(T2, df_test, <span class="at">type =</span> <span class="st">"class"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>       7
-1 0.4000
-2 0.4000
-3 0.6000
-4 0.5000
-5 0.1667
-6 0.1667</code></pre>
+<pre><code>[1] 0.1666667</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(T3, df_test, <span class="at">type =</span> <span class="st">"class"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>1 2 3 4 5 6 
+2 2 2 2 1 2 
+Levels: 1 2</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="sc">-</span> <span class="fu">accuracy_vec</span>(df_test<span class="sc">$</span>class, <span class="fu">predict</span>(T3, df_test, <span class="at">type =</span> <span class="st">"class"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.3333333</code></pre>
 </div>
 </div>
 </section>
-<section id="평점-추정-1" class="level4">
-<h4 class="anchored" data-anchor-id="평점-추정-1">평점 추정</h4>
+<section id="optional-rpart에서의-가지치기" class="level4">
+<h4 class="anchored" data-anchor-id="optional-rpart에서의-가지치기">OPTIONAL: <code>{rpart}</code>에서의 가지치기</h4>
+<p><code>{rpart}</code>의 함수 <code>prune()</code>은 인자 <code>cp</code>가 주어졌을 때 다음과 같이 크기가 조정된(scaled) 비용-복잡도 척도를 최소화하는 가지치기를 수행한다.</p>
+<p><span class="math display">\[
+\frac{R(T)}{R(Root)} + \text{cp} \times |T|
+\]</span></p>
+<p>여기에서 <span class="math inline">\(R(Root)\)</span>는 분지가 전혀 없이 뿌리 노드만 존재하는 트리의 오분류 비용이다.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>target_items <span class="ot">&lt;-</span> <span class="sc">!</span>mat[target, ]</span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>predicted <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">sum</span>(sim) <span class="sc">*</span></span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">t</span>(sim) <span class="sc">%*%</span> <span class="fu">as</span>(purchases[<span class="sc">-</span>target], <span class="st">"matrix"</span>)[, target_items]</span>
-<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(predicted, <span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">prune</span>(tree_maximal, <span class="at">cp =</span> <span class="fl">0.15</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>       2      3     5      6
-7 0.8209 0.5821 0.597 0.3731</code></pre>
+<pre><code>n= 10 
+
+node), split, n, loss, yval, (yprob)
+      * denotes terminal node
+
+1) root 10 5 1 (0.5000000 0.5000000)  
+  2) x2&gt;=5.5 3 0 1 (1.0000000 0.0000000) *
+  3) x2&lt; 5.5 7 2 2 (0.2857143 0.7142857)  
+    6) x1&lt; 1.5 1 0 1 (1.0000000 0.0000000) *
+    7) x1&gt;=1.5 6 1 2 (0.1666667 0.8333333) *</code></pre>
 </div>
 </div>
 
@@ -913,11 +981,14 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../chapters/ch15_association_rule.html" class="pagination-link" aria-label="15장 연관규칙">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">15장 연관규칙</span></span>
+      <a href="../chapters/ch07_da.html" class="pagination-link" aria-label="7장 판별분석">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">7장 판별분석</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="../chapters/ch09_svm.html" class="pagination-link" aria-label="9장 서포트 벡터 머신">
+        <span class="nav-page-text"><span class="chapter-title">9장 서포트 벡터 머신</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->

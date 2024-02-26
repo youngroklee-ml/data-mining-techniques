@@ -329,6 +329,17 @@
     ]
   },
   {
+    "objectID": "chapters/ch09_svm.html#예-9.8",
+    "href": "chapters/ch09_svm.html#예-9.8",
+    "title": "9장 서포트 벡터 머신",
+    "section": "(예 9.8)",
+    "text": "(예 9.8)\n\n패키지 로드\n\nlibrary(kernlab)\nlibrary(yardstick)\n\n\n\n데이터 로드\n파일 읽기\n\ndat &lt;- read.csv(\"data/breast-cancer-wisconsin.csv\")\ndat$class &lt;- factor(dat$class)\n\nID 변수 제외\n\ndat &lt;- dat[, -1]\n\n결측값 존재 객체 제외\n\ndat &lt;- na.omit(dat)\n\n학습표본 / 테스트 표본 분리\n\ntrain_idx &lt;- 1:455\ntrain_dat &lt;- dat[train_idx, ]\ntest_dat &lt;- dat[-train_idx, ]\n\n\nSVM (가우시안 커널, \\(\\sigma = 1\\), \\(C = 10\\))\n모형 학습\n\nmodel &lt;- ksvm(\n  class ~ .,\n  data = train_dat,\n  kernel = \"rbfdot\",\n  kpar = list(sigma = 1),\n  C = 10\n)\n\nprint(model)\n\nSupport Vector Machine object of class \"ksvm\" \n\nSV type: C-svc  (classification) \n parameter : cost C = 10 \n\nGaussian Radial Basis kernel function. \n Hyperparameter : sigma =  1 \n\nNumber of Support Vectors : 234 \n\nObjective Function Value : -55.0808 \nTraining error : 0 \n\n\n학습표본 예측 성능\n\ntrain_dat$pred_class &lt;- predict(model, train_dat)\nconf_mat(train_dat, truth = \"class\", estimate = \"pred_class\")\n\n          Truth\nPrediction   2   4\n         2 268   0\n         4   0 187\n\n\n테스트 표본 예측 성능\n\ntest_dat$pred_class &lt;- predict(model, test_dat)\nconf_mat(test_dat, truth = \"class\", estimate = \"pred_class\")\n\n          Truth\nPrediction   2   4\n         2 172   0\n         4   4  52\n\n\n\n\nSVM (가우시안 커널, \\(\\sigma = 0.1\\), \\(C = 10\\))\n모형 학습\n\n# remove pred_class variable\ntrain_dat$pred_class &lt;- NULL\n\nmodel &lt;- ksvm(\n  class ~ .,\n  data = train_dat,\n  kernel = \"rbfdot\",\n  kpar = list(sigma = 0.1),\n  C = 10\n)\n\nprint(model)\n\nSupport Vector Machine object of class \"ksvm\" \n\nSV type: C-svc  (classification) \n parameter : cost C = 10 \n\nGaussian Radial Basis kernel function. \n Hyperparameter : sigma =  0.1 \n\nNumber of Support Vectors : 69 \n\nObjective Function Value : -256.0523 \nTraining error : 0.017582 \n\n\n테스트 표본 예측 성능\n\ntest_dat$pred_class &lt;- predict(model, test_dat)\nconf_mat(test_dat, truth = \"class\", estimate = \"pred_class\")\n\n          Truth\nPrediction   2   4\n         2 175   2\n         4   1  50",
+    "crumbs": [
+      "분류분석",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>9장 서포트 벡터 머신</span>"
+    ]
+  },
+  {
     "objectID": "chapters/ch11_cluster.html",
     "href": "chapters/ch11_cluster.html",
     "title": "11장 군집분석 개요",

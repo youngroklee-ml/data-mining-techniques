@@ -1,55 +1,191 @@
 # 11장 군집분석 개요
 
-## (예 11.1)
+## (예 11.1, 11.3)
 
-데이터 읽기
+#### 데이터 읽기
 
 ```{r}
 dat1 <- read.csv("data/ch11_dat1.csv")
-
 dat2 <- dat1[, -1]
 ```
 
+
+#### (예 11.1)
 
 유클리디안 거리
 
 ```{r}
 D1 <- dist(dat2)
-D1 <- round(D1, 2)
-D1
+round(D1, 2)
 ```
 
-각 변수의 평균
+행렬로 변환
 
 ```{r}
-mean_vector <- colMeans(dat2)
-mean_vector
+D1_mat <- as.matrix(D1)
+round(D1_mat, 2)
 ```
 
-
-각 변수의 표준편차
+2번째 객체와 4번째 객체 간 거리
 
 ```{r}
-cov_matrix <- cov(dat2)
-sqrt(cov_matrix)
+D1_mat[2, 4]
+```
+
+2번째 객체와 5번째 객체 간 거리
+
+```{r}
+D1_mat[2, 5]
 ```
 
 
-## (예 11.3)
+데이터 표준화
+
+```{r}
+std_dat2 <- scale(dat2)
+attr(std_dat2, "scaled:center") # mean
+attr(std_dat2, "scaled:scale") # standard deviation
+```
+
+표준화된 유클리디안 거리
+
+```{r}
+std_D1 <- dist(std_dat2)
+std_D1_mat <- as.matrix(std_D1)
+round(std_D1_mat, 2)
+```
+
+2번째 객체와 4번째 객체 간 거리
+
+```{r}
+std_D1_mat[2, 4]
+```
+
+2번째 객체와 5번째 객체 간 거리
+
+```{r}
+std_D1_mat[2, 5]
+```
+
+
+
+#### (예 11.3)
 
 상관계수
 
 ```{r}
-row_cor <- cor(t(dat2), use = "pairwise.complete.obs", method = "pearson")
-row_cor
+row_cor <- cor(t(dat2))
+round(row_cor, 2)
 ```
 
 
-표준화한 후 상관계수
+1번째 객체와 6번째 객체 간 상관계수
 
 ```{r}
-s_dat2 <- scale(dat2)
-row_cor_s <- cor(t(s_dat2), use = "pairwise.complete.obs", method = "pearson")
-row_cor_s
+row_cor[1, 6]
+```
+
+1번째 객체와 8번째 객체 간 상관계수
+
+```{r}
+row_cor[1, 8]
+```
+
+
+표준화 이후 상관계수
+
+```{r}
+std_row_cor <- cor(t(std_dat2))
+round(std_row_cor, 2)
+```
+
+표준화 이후 1번째 객체와 6번째 객체 간 상관계수
+
+```{r}
+std_row_cor[1, 6]
+```
+
+표준화 이후 1번째 객체와 8번째 객체 간 상관계수
+
+```{r}
+std_row_cor[1, 8]
+```
+
+
+#### OPTIONAL: 민코프스키 거리 (p = 3)
+
+```{r}
+std_D2 <- dist(std_dat2, method = "minkowski", p = 3)
+round(std_D2, 2)
+```
+
+
+
+
+## (예 11.2)
+
+#### 데이터 로드
+
+```{r}
+x <- c(3, 4)
+origin <- c(0, 0)
+```
+
+
+#### 거리 계산
+
+유클리디안 거리
+
+```{r}
+dist(rbind(x, origin))
+```
+
+표준 유클리디안 거리 (s1 = 1, s2 = 2)
+
+```{r}
+dist(rbind(x / c(1, 2), origin / c(1, 2)))
+```
+
+표준 유클리디안 거리 (s1 = 1, s2 = 0.5)
+
+```{r}
+dist(rbind(x / c(1, 0.5), origin / c(1, 0.5)))
+```
+
+마할라노비스 거리 (s1 = 1, s2 = 2, r = 0.8)
+ 
+```{r}
+cov_mat <- matrix(c(1^2, 0.8 * 1 * 2, 0.8 * 1 * 2, 2^2), nrow = 2)
+sqrt(mahalanobis(x, center = origin, cov_mat))
+```
+
+마할라노비스 거리 (s1 = 1, s2 = 2, r = -0.8)
+
+```{r}
+cov_mat <- matrix(c(1^2, -0.8 * 1 * 2, -0.8 * 1 * 2, 2^2), nrow = 2)
+sqrt(mahalanobis(x, center = origin, cov_mat))
+```
+
+
+## (예 11.4)
+
+#### 데이터 로드
+
+```{r}
+df <- read.csv("data/ch11_dat2.csv")
+```
+
+#### Jaccard 유사성 척도 계산
+
+```{r}
+jaccard_sim <- dist(df, method = "binary")
+jaccard_sim
+jaccard_sim_mat <- as.matrix(jaccard_sim)
+```
+
+1번째 객체와 2번째 객체 간 유사성
+
+```{r}
+jaccard_sim_mat[1, 2]
 ```
 

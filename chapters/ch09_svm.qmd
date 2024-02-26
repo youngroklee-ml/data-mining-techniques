@@ -421,3 +421,101 @@ for (i in seq_along(Cs)) {
 }
 ```
 
+
+## (예 9.8)
+
+#### 패키지 로드
+
+```{r}
+library(kernlab)
+library(yardstick)
+```
+
+#### 데이터 로드
+
+파일 읽기
+
+```{r}
+dat <- read.csv("data/breast-cancer-wisconsin.csv")
+dat$class <- factor(dat$class)
+```
+
+ID 변수 제외
+
+```{r}
+dat <- dat[, -1]
+```
+
+결측값 존재 객체 제외
+
+```{r}
+dat <- na.omit(dat)
+```
+
+학습표본 / 테스트 표본 분리
+
+```{r}
+train_idx <- 1:455
+train_dat <- dat[train_idx, ]
+test_dat <- dat[-train_idx, ]
+```
+
+
+##### SVM (가우시안 커널, $\sigma = 1$, $C = 10$)
+
+모형 학습
+
+```{r}
+model <- ksvm(
+  class ~ .,
+  data = train_dat,
+  kernel = "rbfdot",
+  kpar = list(sigma = 1),
+  C = 10
+)
+
+print(model)
+```
+
+
+학습표본 예측 성능
+
+```{r}
+train_dat$pred_class <- predict(model, train_dat)
+conf_mat(train_dat, truth = "class", estimate = "pred_class")
+```
+
+테스트 표본 예측 성능
+
+```{r}
+test_dat$pred_class <- predict(model, test_dat)
+conf_mat(test_dat, truth = "class", estimate = "pred_class")
+```
+
+
+##### SVM (가우시안 커널, $\sigma = 0.1$, $C = 10$)
+
+모형 학습
+
+```{r}
+# remove pred_class variable
+train_dat$pred_class <- NULL
+
+model <- ksvm(
+  class ~ .,
+  data = train_dat,
+  kernel = "rbfdot",
+  kpar = list(sigma = 0.1),
+  C = 10
+)
+
+print(model)
+```
+
+테스트 표본 예측 성능
+
+```{r}
+test_dat$pred_class <- predict(model, test_dat)
+conf_mat(test_dat, truth = "class", estimate = "pred_class")
+```
+

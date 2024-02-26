@@ -40,15 +40,10 @@ std_D1_mat[2, 4]
 std_D1_mat[2, 5]
 
 
-# OPTIONAL: standardized Minkowski distance with p = 3;
-std_D2 <- dist(std_dat2, method = "minkowski", p = 3)
-round(std_D2, 2)
-
-
 # ex11.3
 
 # correlation measure between samples
-row_cor <- cor(t(dat2), use = "pairwise.complete.obs", method = "pearson")
+row_cor <- cor(t(dat2))
 round(row_cor, 2)
 
 # correlation between O1 and O6
@@ -59,7 +54,7 @@ row_cor[1, 8]
 
 
 # scaled data : correlation measure between samples
-std_row_cor <- cor(t(std_dat2), use = "pairwise.complete.obs", method = "pearson")
+std_row_cor <- cor(t(std_dat2))
 round(std_row_cor, 2)
 
 # correlation between O1 and O6 after standardization
@@ -67,3 +62,10 @@ std_row_cor[1, 6]
 
 # correlation between O1 and O8 after standardization
 std_row_cor[1, 8]
+
+
+
+
+# OPTIONAL: standardized Minkowski distance with p = 3
+std_D2 <- dist(std_dat2, method = "minkowski", p = 3)
+round(std_D2, 2)

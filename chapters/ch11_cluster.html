@@ -268,8 +268,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#예-11.1" id="toc-예-11.1" class="nav-link active" data-scroll-target="#예-11.1">(예 11.1)</a></li>
-  <li><a href="#예-11.3" id="toc-예-11.3" class="nav-link" data-scroll-target="#예-11.3">(예 11.3)</a></li>
+  <li><a href="#예-11.1-11.3" id="toc-예-11.1-11.3" class="nav-link active" data-scroll-target="#예-11.1-11.3">(예 11.1, 11.3)</a></li>
+  <li><a href="#예-11.2" id="toc-예-11.2" class="nav-link" data-scroll-target="#예-11.2">(예 11.2)</a></li>
+  <li><a href="#예-11.4" id="toc-예-11.4" class="nav-link" data-scroll-target="#예-11.4">(예 11.4)</a></li>
   </ul>
 </nav>
     </div>
@@ -295,19 +296,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="예-11.1" class="level2">
-<h2 class="anchored" data-anchor-id="예-11.1">(예 11.1)</h2>
-<p>데이터 읽기</p>
+<section id="예-11.1-11.3" class="level2">
+<h2 class="anchored" data-anchor-id="예-11.1-11.3">(예 11.1, 11.3)</h2>
+<section id="데이터-읽기" class="level4">
+<h4 class="anchored" data-anchor-id="데이터-읽기">데이터 읽기</h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>dat1 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/ch11_dat1.csv"</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>dat2 <span class="ot">&lt;-</span> dat1[, <span class="sc">-</span><span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>dat2 <span class="ot">&lt;-</span> dat1[, <span class="sc">-</span><span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</section>
+<section id="예-11.1" class="level4">
+<h4 class="anchored" data-anchor-id="예-11.1">(예 11.1)</h4>
 <p>유클리디안 거리</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>D1 <span class="ot">&lt;-</span> <span class="fu">dist</span>(dat2)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>D1 <span class="ot">&lt;-</span> <span class="fu">round</span>(D1, <span class="dv">2</span>)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>D1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(D1, <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       1     2     3     4     5     6     7     8     9
 2   8.31                                                
@@ -321,93 +324,256 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 10 24.37 17.75 11.75 11.66 17.03 17.49 11.49  5.74 10.05</code></pre>
 </div>
 </div>
-<p>각 변수의 평균</p>
+<p>행렬로 변환</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>mean_vector <span class="ot">&lt;-</span> <span class="fu">colMeans</span>(dat2)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>mean_vector</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>D1_mat <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(D1)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(D1_mat, <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       1     2     3     4     5     6     7     8     9    10
+1   0.00  8.31 24.74 16.91 15.17 10.10 27.17 27.87 33.03 24.37
+2   8.31  0.00 16.76  9.11  9.43  3.00 19.05 20.35 25.57 17.75
+3  24.74 16.76  0.00  7.87 12.08 16.55  3.16 10.05 14.53 11.75
+4  16.91  9.11  7.87  0.00  6.48  9.49 10.39 13.15 18.57 11.66
+5  15.17  9.43 12.08  6.48  0.00 11.31 15.17 19.10 24.52 17.03
+6  10.10  3.00 16.55  9.49 11.31  0.00 18.49 19.52 24.52 17.49
+7  27.17 19.05  3.16 10.39 15.17 18.49  0.00  8.31 12.04 11.49
+8  27.87 20.35 10.05 13.15 19.10 19.52  8.31  0.00  5.48  5.74
+9  33.03 25.57 14.53 18.57 24.52 24.52 12.04  5.48  0.00 10.05
+10 24.37 17.75 11.75 11.66 17.03 17.49 11.49  5.74 10.05  0.00</code></pre>
+</div>
+</div>
+<p>2번째 객체와 4번째 객체 간 거리</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>D1_mat[<span class="dv">2</span>, <span class="dv">4</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 9.110434</code></pre>
+</div>
+</div>
+<p>2번째 객체와 5번째 객체 간 거리</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>D1_mat[<span class="dv">2</span>, <span class="dv">5</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 9.433981</code></pre>
+</div>
+</div>
+<p>데이터 표준화</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>std_dat2 <span class="ot">&lt;-</span> <span class="fu">scale</span>(dat2)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">attr</span>(std_dat2, <span class="st">"scaled:center"</span>) <span class="co"># mean</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  X1   X2   X3 
 36.8  8.5  7.8 </code></pre>
 </div>
-</div>
-<p>각 변수의 표준편차</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>cov_matrix <span class="ot">&lt;-</span> <span class="fu">cov</span>(dat2)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sqrt</span>(cov_matrix)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in sqrt(cov_matrix): NaNs produced</code></pre>
-</div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">attr</span>(std_dat2, <span class="st">"scaled:scale"</span>) <span class="co"># standard deviation</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>         X1       X2       X3
-X1 9.738811      NaN      NaN
-X2      NaN 4.478343 1.490712
-X3      NaN 1.490712 4.661902</code></pre>
+<pre><code>      X1       X2       X3 
+9.738811 4.478343 4.661902 </code></pre>
+</div>
+</div>
+<p>표준화된 유클리디안 거리</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>std_D1 <span class="ot">&lt;-</span> <span class="fu">dist</span>(std_dat2)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>std_D1_mat <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(std_D1)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(std_D1_mat, <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      1    2    3    4    5    6    7    8    9   10
+1  0.00 0.96 3.35 2.30 2.71 1.07 3.46 3.43 4.02 3.42
+2  0.96 0.00 2.47 1.45 2.04 0.53 2.56 2.76 3.38 2.93
+3  3.35 2.47 0.00 1.07 1.27 2.77 0.38 2.10 2.70 2.60
+4  2.30 1.45 1.07 0.00 1.05 1.82 1.20 1.95 2.65 2.29
+5  2.71 2.04 1.27 1.05 0.00 2.48 1.62 2.85 3.54 3.10
+6  1.07 0.53 2.77 1.82 2.48 0.00 2.81 2.91 3.47 3.14
+7  3.46 2.56 0.38 1.20 1.62 2.81 0.00 1.84 2.40 2.43
+8  3.43 2.76 2.10 1.95 2.85 2.91 1.84 0.00 0.71 0.80
+9  4.02 3.38 2.70 2.65 3.54 3.47 2.40 0.71 0.00 1.05
+10 3.42 2.93 2.60 2.29 3.10 3.14 2.43 0.80 1.05 0.00</code></pre>
+</div>
+</div>
+<p>2번째 객체와 4번째 객체 간 거리</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>std_D1_mat[<span class="dv">2</span>, <span class="dv">4</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1.454543</code></pre>
+</div>
+</div>
+<p>2번째 객체와 5번째 객체 간 거리</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>std_D1_mat[<span class="dv">2</span>, <span class="dv">5</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2.035148</code></pre>
 </div>
 </div>
 </section>
-<section id="예-11.3" class="level2">
-<h2 class="anchored" data-anchor-id="예-11.3">(예 11.3)</h2>
+<section id="예-11.3" class="level4">
+<h4 class="anchored" data-anchor-id="예-11.3">(예 11.3)</h4>
 <p>상관계수</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>row_cor <span class="ot">&lt;-</span> <span class="fu">cor</span>(<span class="fu">t</span>(dat2), <span class="at">use =</span> <span class="st">"pairwise.complete.obs"</span>, <span class="at">method =</span> <span class="st">"pearson"</span>)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>row_cor</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>row_cor <span class="ot">&lt;-</span> <span class="fu">cor</span>(<span class="fu">t</span>(dat2))</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(row_cor, <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>           [,1]      [,2]      [,3]      [,4]      [,5]      [,6]      [,7]
- [1,] 1.0000000 0.9347195 0.6828741 0.7600371 0.5771595 0.9673518 0.7144034
- [2,] 0.9347195 1.0000000 0.8979182 0.9413798 0.8297018 0.9942708 0.9164427
- [3,] 0.6828741 0.8979182 1.0000000 0.9937702 0.9907060 0.8457246 0.9990286
- [4,] 0.7600371 0.9413798 0.9937702 1.0000000 0.9693748 0.8999271 0.9977160
- [5,] 0.5771595 0.8297018 0.9907060 0.9693748 1.0000000 0.7652812 0.9837496
- [6,] 0.9673518 0.9942708 0.8457246 0.8999271 0.7652812 1.0000000 0.8684181
- [7,] 0.7144034 0.9164427 0.9990286 0.9977160 0.9837496 0.8684181 1.0000000
- [8,] 0.8099343 0.9655028 0.9815576 0.9967479 0.9464324 0.9321377 0.9890283
- [9,] 0.8219949 0.9707253 0.9773556 0.9948498 0.9394895 0.9394895 0.9857309
-[10,] 0.8089800 0.9650783 0.9818670 0.9968776 0.9469560 0.9315479 0.9892671
-           [,8]      [,9]     [,10]
- [1,] 0.8099343 0.8219949 0.8089800
- [2,] 0.9655028 0.9707253 0.9650783
- [3,] 0.9815576 0.9773556 0.9818670
- [4,] 0.9967479 0.9948498 0.9968776
- [5,] 0.9464324 0.9394895 0.9469560
- [6,] 0.9321377 0.9394895 0.9315479
- [7,] 0.9890283 0.9857309 0.9892671
- [8,] 1.0000000 0.9997823 0.9999987
- [9,] 0.9997823 1.0000000 0.9997471
-[10,] 0.9999987 0.9997471 1.0000000</code></pre>
+<pre><code>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
+ [1,] 1.00 0.93 0.68 0.76 0.58 0.97 0.71 0.81 0.82  0.81
+ [2,] 0.93 1.00 0.90 0.94 0.83 0.99 0.92 0.97 0.97  0.97
+ [3,] 0.68 0.90 1.00 0.99 0.99 0.85 1.00 0.98 0.98  0.98
+ [4,] 0.76 0.94 0.99 1.00 0.97 0.90 1.00 1.00 0.99  1.00
+ [5,] 0.58 0.83 0.99 0.97 1.00 0.77 0.98 0.95 0.94  0.95
+ [6,] 0.97 0.99 0.85 0.90 0.77 1.00 0.87 0.93 0.94  0.93
+ [7,] 0.71 0.92 1.00 1.00 0.98 0.87 1.00 0.99 0.99  0.99
+ [8,] 0.81 0.97 0.98 1.00 0.95 0.93 0.99 1.00 1.00  1.00
+ [9,] 0.82 0.97 0.98 0.99 0.94 0.94 0.99 1.00 1.00  1.00
+[10,] 0.81 0.97 0.98 1.00 0.95 0.93 0.99 1.00 1.00  1.00</code></pre>
 </div>
 </div>
-<p>표준화한 후 상관계수</p>
+<p>1번째 객체와 6번째 객체 간 상관계수</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>s_dat2 <span class="ot">&lt;-</span> <span class="fu">scale</span>(dat2)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>row_cor_s <span class="ot">&lt;-</span> <span class="fu">cor</span>(<span class="fu">t</span>(s_dat2), <span class="at">use =</span> <span class="st">"pairwise.complete.obs"</span>, <span class="at">method =</span> <span class="st">"pearson"</span>)</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>row_cor_s</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>row_cor[<span class="dv">1</span>, <span class="dv">6</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>            [,1]       [,2]        [,3]        [,4]       [,5]        [,6]
- [1,]  1.0000000  0.9999315 -0.67406561  0.16745765  0.1015587  0.97213475
- [2,]  0.9999315  1.0000000 -0.66537519  0.17898338  0.1131937  0.96932487
- [3,] -0.6740656 -0.6653752  1.00000000  0.61536345  0.6663950 -0.82844400
- [4,]  0.1674577  0.1789834  0.61536345  1.00000000  0.9977886 -0.06832112
- [5,]  0.1015587  0.1131937  0.66639497  0.99778861  1.0000000 -0.13448190
- [6,]  0.9721348  0.9693249 -0.82844400 -0.06832112 -0.1344819  1.00000000
- [7,] -0.8797846 -0.8741613  0.94417672  0.32133338  0.3835649 -0.96670729
- [8,] -0.8006556 -0.8076120  0.09713788 -0.72474074 -0.6773407 -0.63789659
- [9,] -0.7482030 -0.7559160  0.01425163 -0.77939352 -0.7360260 -0.57182171
-[10,] -0.7956097 -0.8026447  0.08879897 -0.73048596 -0.6834783 -0.63142435
-            [,7]        [,8]        [,9]       [,10]
- [1,] -0.8797846 -0.80065556 -0.74820299 -0.79560974
- [2,] -0.8741613 -0.80761196 -0.75591598 -0.80264471
- [3,]  0.9441767  0.09713788  0.01425163  0.08879897
- [4,]  0.3213334 -0.72474074 -0.77939352 -0.73048596
- [5,]  0.3835649 -0.67734074 -0.73602598 -0.68347830
- [6,] -0.9667073 -0.63789659 -0.57182171 -0.63142435
- [7,]  1.0000000  0.41959679  0.34286201  0.41197990
- [8,]  0.4195968  1.00000000  0.99655423  0.99996493
- [9,]  0.3428620  0.99655423  1.00000000  0.99721394
-[10,]  0.4119799  0.99996493  0.99721394  1.00000000</code></pre>
+<pre><code>[1] 0.9673518</code></pre>
+</div>
+</div>
+<p>1번째 객체와 8번째 객체 간 상관계수</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>row_cor[<span class="dv">1</span>, <span class="dv">8</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.8099343</code></pre>
+</div>
+</div>
+<p>표준화 이후 상관계수</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>std_row_cor <span class="ot">&lt;-</span> <span class="fu">cor</span>(<span class="fu">t</span>(std_dat2))</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(std_row_cor, <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       [,1]  [,2]  [,3]  [,4]  [,5]  [,6]  [,7]  [,8]  [,9] [,10]
+ [1,]  1.00  1.00 -0.67  0.17  0.10  0.97 -0.88 -0.80 -0.75 -0.80
+ [2,]  1.00  1.00 -0.67  0.18  0.11  0.97 -0.87 -0.81 -0.76 -0.80
+ [3,] -0.67 -0.67  1.00  0.62  0.67 -0.83  0.94  0.10  0.01  0.09
+ [4,]  0.17  0.18  0.62  1.00  1.00 -0.07  0.32 -0.72 -0.78 -0.73
+ [5,]  0.10  0.11  0.67  1.00  1.00 -0.13  0.38 -0.68 -0.74 -0.68
+ [6,]  0.97  0.97 -0.83 -0.07 -0.13  1.00 -0.97 -0.64 -0.57 -0.63
+ [7,] -0.88 -0.87  0.94  0.32  0.38 -0.97  1.00  0.42  0.34  0.41
+ [8,] -0.80 -0.81  0.10 -0.72 -0.68 -0.64  0.42  1.00  1.00  1.00
+ [9,] -0.75 -0.76  0.01 -0.78 -0.74 -0.57  0.34  1.00  1.00  1.00
+[10,] -0.80 -0.80  0.09 -0.73 -0.68 -0.63  0.41  1.00  1.00  1.00</code></pre>
+</div>
+</div>
+<p>표준화 이후 1번째 객체와 6번째 객체 간 상관계수</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>std_row_cor[<span class="dv">1</span>, <span class="dv">6</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.9721348</code></pre>
+</div>
+</div>
+<p>표준화 이후 1번째 객체와 8번째 객체 간 상관계수</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>std_row_cor[<span class="dv">1</span>, <span class="dv">8</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -0.8006556</code></pre>
+</div>
+</div>
+</section>
+<section id="optional-민코프스키-거리-p-3" class="level4">
+<h4 class="anchored" data-anchor-id="optional-민코프스키-거리-p-3">OPTIONAL: 민코프스키 거리 (p = 3)</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>std_D2 <span class="ot">&lt;-</span> <span class="fu">dist</span>(std_dat2, <span class="at">method =</span> <span class="st">"minkowski"</span>, <span class="at">p =</span> <span class="dv">3</span>)</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(std_D2, <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      1    2    3    4    5    6    7    8    9
+2  0.87                                        
+3  2.81 2.06                                   
+4  1.93 1.24 0.91                              
+5  2.33 1.81 1.24 0.95                         
+6  1.03 0.46 2.34 1.62 2.21                    
+7  2.95 2.16 0.34 1.08 1.55 2.37               
+8  3.07 2.40 2.02 1.65 2.51 2.60 1.79          
+9  3.57 2.90 2.51 2.25 3.10 3.03 2.27 0.62     
+10 3.01 2.57 2.49 2.01 2.80 2.88 2.28 0.67 1.03</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="예-11.2" class="level2">
+<h2 class="anchored" data-anchor-id="예-11.2">(예 11.2)</h2>
+<section id="데이터-로드" class="level4">
+<h4 class="anchored" data-anchor-id="데이터-로드">데이터 로드</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">4</span>)</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>origin <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="거리-계산" class="level4">
+<h4 class="anchored" data-anchor-id="거리-계산">거리 계산</h4>
+<p>유클리디안 거리</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dist</span>(<span class="fu">rbind</span>(x, origin))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       x
+origin 5</code></pre>
+</div>
+</div>
+<p>표준 유클리디안 거리 (s1 = 1, s2 = 2)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dist</span>(<span class="fu">rbind</span>(x <span class="sc">/</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), origin <span class="sc">/</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         1
+2 3.605551</code></pre>
+</div>
+</div>
+<p>표준 유클리디안 거리 (s1 = 1, s2 = 0.5)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dist</span>(<span class="fu">rbind</span>(x <span class="sc">/</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">0.5</span>), origin <span class="sc">/</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">0.5</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         1
+2 8.544004</code></pre>
+</div>
+</div>
+<p>마할라노비스 거리 (s1 = 1, s2 = 2, r = 0.8)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>cov_mat <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span><span class="sc">^</span><span class="dv">2</span>, <span class="fl">0.8</span> <span class="sc">*</span> <span class="dv">1</span> <span class="sc">*</span> <span class="dv">2</span>, <span class="fl">0.8</span> <span class="sc">*</span> <span class="dv">1</span> <span class="sc">*</span> <span class="dv">2</span>, <span class="dv">2</span><span class="sc">^</span><span class="dv">2</span>), <span class="at">nrow =</span> <span class="dv">2</span>)</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sqrt</span>(<span class="fu">mahalanobis</span>(x, <span class="at">center =</span> origin, cov_mat))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3.073181</code></pre>
+</div>
+</div>
+<p>마할라노비스 거리 (s1 = 1, s2 = 2, r = -0.8)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>cov_mat <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span><span class="sc">^</span><span class="dv">2</span>, <span class="sc">-</span><span class="fl">0.8</span> <span class="sc">*</span> <span class="dv">1</span> <span class="sc">*</span> <span class="dv">2</span>, <span class="sc">-</span><span class="fl">0.8</span> <span class="sc">*</span> <span class="dv">1</span> <span class="sc">*</span> <span class="dv">2</span>, <span class="dv">2</span><span class="sc">^</span><span class="dv">2</span>), <span class="at">nrow =</span> <span class="dv">2</span>)</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sqrt</span>(<span class="fu">mahalanobis</span>(x, <span class="at">center =</span> origin, cov_mat))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 7.923243</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="예-11.4" class="level2">
+<h2 class="anchored" data-anchor-id="예-11.4">(예 11.4)</h2>
+<section id="데이터-로드-1" class="level4">
+<h4 class="anchored" data-anchor-id="데이터-로드-1">데이터 로드</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/ch11_dat2.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="jaccard-유사성-척도-계산" class="level4">
+<h4 class="anchored" data-anchor-id="jaccard-유사성-척도-계산">Jaccard 유사성 척도 계산</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>jaccard_sim <span class="ot">&lt;-</span> <span class="fu">dist</span>(df, <span class="at">method =</span> <span class="st">"binary"</span>)</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>jaccard_sim</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    1   2
+2 0.5    
+3 0.8 1.0</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>jaccard_sim_mat <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(jaccard_sim)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>1번째 객체와 2번째 객체 간 유사성</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>jaccard_sim_mat[<span class="dv">1</span>, <span class="dv">2</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.5</code></pre>
 </div>
 </div>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

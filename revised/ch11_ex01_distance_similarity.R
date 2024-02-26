@@ -40,7 +40,7 @@ std_D1_mat[2, 4]
 std_D1_mat[2, 5]
 
 
-# OPTIONAL: standardized Minkowski distance with p = 3; 
+# OPTIONAL: standardized Minkowski distance with p = 3;
 std_D2 <- dist(std_dat2, method = "minkowski", p = 3)
 round(std_D2, 2)
 
@@ -67,5 +67,3 @@ std_row_cor[1, 6]
 
 # correlation between O1 and O8 after standardization
 std_row_cor[1, 8]
-
-

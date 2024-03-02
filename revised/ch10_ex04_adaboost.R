@@ -13,11 +13,12 @@ dat$X2 <- factor(dat$X2)
 dat$X3 <- factor(dat$X3)
 dat$Y <- factor(dat$Y)
 
+# create training data
 X <- model.matrix(Y ~ . - 1, dat) # create predictor variable matrix
 y <- ifelse(dat$Y == "yes", 1, -1)
 
 # estimate AdaBoost model
-# with 2 trees
+# with 3 trees
 fit <- adaboost(X, y, tree_depth = 1, n_rounds = 3)
 
 # plot each score tree

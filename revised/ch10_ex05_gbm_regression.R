@@ -1,4 +1,4 @@
-# ch10_ex06_gbm.R
+# ch10_ex05_gbm_regression.R
 # Ch10.5 Gradient boosting
 
 # ex10.5
@@ -11,9 +11,17 @@ library(rpart.plot)
 # load data
 dat <- read.csv("data/ch10_dat3.csv")
 
-# initial model
-dat.m <- dat
-dat.m$pred <- mean(dat$Y)
+# use {gbm} package
+gbm_fit <- gbm(
+  Y ~ X,
+  data = dat,
+  distribution = "gaussian",
+  n.trees = 5,
+  interaction.depth = 1,
+  n.minobsinnode = 1,
+  shrinkage = 1, # step size = 1
+  bag.fraction = 1 # no subsampling of training data
+)
 
 # prediction for new data
 dat.p <- data.frame(
@@ -21,7 +29,20 @@ dat.p <- data.frame(
   pred = mean(dat$Y)
 )
 
-# gradient boosting
+plot(dat$X, dat$Y,
+     pch = 16, xlab = "X", ylab = "Y",
+     main = paste0("Observed vs Prediction: {gbm} package")
+)
+lines(dat.p$X, predict(gbm_fit, newdata = dat.p), col = "red")
+
+
+# implement gradient boosting from scratch
+
+# initial model
+dat.m <- dat
+dat.m$pred <- mean(dat$Y)
+
+
 iter <- 5
 
 for (i in 1:iter) {
@@ -69,20 +90,3 @@ plot(dat$X, dat$Y,
 lines(dat.p$X, dat.p$pred, col = "red")
 
 
-# use {gbm} package
-gbm_fit <- gbm(
-  Y ~ X,
-  data = dat,
-  distribution = "gaussian",
-  n.trees = 5,
-  interaction.depth = 1,
-  n.minobsinnode = 1,
-  shrinkage = 1, # step size = 1
-  bag.fraction = 1 # no subsampling of training data
-)
-
-plot(dat$X, dat$Y,
-  pch = 16, xlab = "X", ylab = "Y",
-  main = paste0("Observed vs Prediction: {gbm} package")
-)
-lines(dat.p$X, predict(gbm_fit, newdata = dat.p), col = "red")

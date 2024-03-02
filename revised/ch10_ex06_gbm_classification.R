@@ -6,6 +6,7 @@
 # load package
 library(gbm)
 library(yardstick)
+library(ggplot2)
 
 # load data
 dat <- read.csv("data/ch8_dat1.csv")

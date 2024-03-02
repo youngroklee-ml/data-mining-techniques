@@ -2745,6 +2745,17 @@
       ],
       "Hash": "b3d390424f41d04174cccf84d49676c2"
     },
+    "rpart.plot": {
+      "Package": "rpart.plot",
+      "Version": "3.1.1",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "R",
+        "rpart"
+      ],
+      "Hash": "3281d3200bbcff53781d7d40d78f3590"
+    },
     "rprojroot": {
       "Package": "rprojroot",
       "Version": "2.0.4",

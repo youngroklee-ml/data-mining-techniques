@@ -24,30 +24,29 @@ gbm_fit <- gbm(
 )
 
 # prediction for new data
-dat.p <- data.frame(
-  X = seq(min(dat$X), max(dat$X), length = 1000),
-  pred = mean(dat$Y)
+dat_p <- data.frame(
+  X = seq(min(dat$X), max(dat$X), length = 1000)
 )
 
 plot(dat$X, dat$Y,
      pch = 16, xlab = "X", ylab = "Y",
      main = paste0("Observed vs Prediction: {gbm} package")
 )
-lines(dat.p$X, predict(gbm_fit, newdata = dat.p), col = "red")
+lines(dat_p$X, predict(gbm_fit, newdata = dat_p), col = "red")
 
 
 # implement gradient boosting from scratch
 
 # initial model
-dat.m <- dat
-dat.m$pred <- mean(dat$Y)
-
+dat_m <- dat
+dat_m$pred <- mean(dat$Y)
+dat_p$pred <- mean(dat$Y)
 
 iter <- 5
 
 for (i in 1:iter) {
   # negative gradients
-  dat.m$ngrad <- dat$Y - dat.m$pred
+  dat_m$ngrad <- dat$Y - dat_m$pred
 
   # plot layout
   layout(matrix(c(1, 2, 3, 3), nrow = 2, byrow = TRUE))
@@ -57,10 +56,10 @@ for (i in 1:iter) {
     pch = 16, xlab = "X", ylab = "Y",
     main = paste0("Observed vs Prediction: Iteration ", i)
   )
-  lines(dat.p$X, dat.p$pred, col = "red")
+  lines(dat_p$X, dat_p$pred, col = "red")
 
   # plot residuals
-  plot(dat.m$X, dat.m$ngrad,
+  plot(dat_m$X, dat_m$ngrad,
     pch = 16, xlab = "X", ylab = "Residual",
     main = paste0("Residual: Iteration ", i)
   )
@@ -69,7 +68,7 @@ for (i in 1:iter) {
   # fit C to negative gradients
   fit <- rpart(
     ngrad ~ X,
-    data = dat.m,
+    data = dat_m,
     control = rpart.control(maxdepth = 1)
   )
 
@@ -77,8 +76,8 @@ for (i in 1:iter) {
   rpart.plot(fit, main = paste0("Residual estimation: Iteration ", i))
 
   # update prediction
-  dat.m$pred <- dat.m$pred + predict(fit, newdata = dat.m)
-  dat.p$pred <- dat.p$pred + predict(fit, newdata = dat.p)
+  dat_m$pred <- dat_m$pred + predict(fit, newdata = dat_m)
+  dat_p$pred <- dat_p$pred + predict(fit, newdata = dat_p)
 }
 
 # plot final prediction
@@ -87,6 +86,6 @@ plot(dat$X, dat$Y,
   pch = 16, xlab = "X", ylab = "Y",
   main = paste0("Observed vs Prediction: Final")
 )
-lines(dat.p$X, dat.p$pred, col = "red")
+lines(dat_p$X, dat_p$pred, col = "red")
 
 

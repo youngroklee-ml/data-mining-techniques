@@ -49,13 +49,13 @@
     },
     "DiagrammeR": {
       "Package": "DiagrammeR",
-      "Version": "1.0.11",
+      "Version": "1.0.10",
       "Source": "Repository",
       "Repository": "RSPM",
       "Requirements": [
         "R",
         "RColorBrewer",
-        "cli",
+        "downloader",
         "dplyr",
         "glue",
         "htmltools",
@@ -70,10 +70,10 @@
         "stringr",
         "tibble",
         "tidyr",
-        "viridisLite",
+        "viridis",
         "visNetwork"
       ],
-      "Hash": "584c1e1cbb6f9b6c3b0f4ef0ad960966"
+      "Hash": "f3de4a4878163a4629a528bbcc6e655d"
     },
     "FactoMineR": {
       "Package": "FactoMineR",
@@ -917,6 +917,17 @@
       ],
       "Hash": "451e5edf411987991ab6a5410c45011f"
     },
+    "downloader": {
+      "Package": "downloader",
+      "Version": "0.4",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "digest",
+        "utils"
+      ],
+      "Hash": "f4f2a915e0dedbdf016a83b63477349f"
+    },
     "dplyr": {
       "Package": "dplyr",
       "Version": "1.1.4",
@@ -1647,9 +1658,9 @@
     },
     "igraph": {
       "Package": "igraph",
-      "Version": "2.0.2",
+      "Version": "1.6.0",
       "Source": "Repository",
-      "Repository": "RSPM",
+      "Repository": "CRAN",
       "Requirements": [
         "Matrix",
         "R",
@@ -1663,10 +1674,9 @@
         "pkgconfig",
         "rlang",
         "stats",
-        "utils",
-        "vctrs"
+        "utils"
       ],
-      "Hash": "e3baa015afa83d9f1b748db5a2aedb5a"
+      "Hash": "eef74fe28b747e52288ea9e1d3600034"
     },
     "ipred": {
       "Package": "ipred",

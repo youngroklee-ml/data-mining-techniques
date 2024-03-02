@@ -24,6 +24,14 @@ jobs:
         with:
           r-version: '4.3.2'
           use-public-rspm: true
+          
+      - name: Install R package dependencies
+        uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          cache-version: 2
+          extra-packages: |
+            any::igraph
+          needs: check
 
       - name: Setup renv and install packages
         uses: r-lib/actions/setup-renv@v2

@@ -113,6 +113,21 @@
       ],
       "Hash": "7a29697b75e027767a53fde6c903eca7"
     },
+    "JOUSBoost": {
+      "Package": "JOUSBoost",
+      "Version": "2.1.0",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "R",
+        "Rcpp",
+        "doParallel",
+        "foreach",
+        "rpart",
+        "stats"
+      ],
+      "Hash": "ef9888157c5a6ab7900713078792ba68"
+    },
     "KernSmooth": {
       "Package": "KernSmooth",
       "Version": "2.23-22",
@@ -887,6 +902,20 @@
         "stats"
       ],
       "Hash": "fd6209a5ad74d6791b54c6bbb3c324f6"
+    },
+    "doParallel": {
+      "Package": "doParallel",
+      "Version": "1.0.17",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "R",
+        "foreach",
+        "iterators",
+        "parallel",
+        "utils"
+      ],
+      "Hash": "451e5edf411987991ab6a5410c45011f"
     },
     "dplyr": {
       "Package": "dplyr",

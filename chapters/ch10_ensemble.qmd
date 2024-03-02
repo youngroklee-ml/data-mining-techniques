@@ -1,0 +1,369 @@
+# 10장 앙상블 기법
+
+## (예 10.2 - 10.3)
+
+#### 패키지 로드
+
+```{r}
+library(randomForestSRC)
+library(yardstick)
+```
+
+
+#### 데이터 로드
+
+```{r}
+dat <- read.csv("data/ch10_dat1.csv")
+dat$X1 <- factor(dat$X1)
+dat$X2 <- factor(dat$X2)
+dat$X3 <- factor(dat$X3)
+dat$Y <- factor(dat$Y)
+```
+
+
+#### 예 10.2
+
+랜덤 포레스트 학습
+
+- 트리 수: 4
+- 각 분지 당 고려 변수 수: 2
+
+```{r}
+set.seed(5678)
+rf <- rfsrc(
+  Y ~ .,
+  data = dat,
+  ntree = 4, # 4 trees
+  mtry = 2, # 2 candidate variables at each split
+  samptype = "swr" # sampling with replacement
+)
+```
+
+각 트리에 사용된 학습 데이터
+
+```{r}
+matrix(
+  rf$forest$nativeArrayTNDS$tnRMBR,
+  ncol = 4
+)
+```
+
+학습된 트리
+
+```{r}
+plot(get.tree(rf, 1))
+plot(get.tree(rf, 2))
+plot(get.tree(rf, 3))
+plot(get.tree(rf, 4))
+```
+
+
+#### 예 10.3
+
+Out-of-bag(OOB) 예측: 확률
+
+```{r}
+rf$predicted.oob
+```
+
+OOB 예측: 범주
+
+```{r}
+rf$class.oob
+```
+
+OOB 예측 성능: 정오분류표
+
+```{r}
+results <- cbind(dat, pred_class = rf$class.oob)
+cm <- conf_mat(results, truth = "Y", estimate = "pred_class")
+cm
+```
+
+OOB 예측 성능: 여러 척도
+
+```{r}
+summary(cm)
+```
+
+
+## (예 10.4)
+
+#### 패키지 로드
+
+```{r}
+library(JOUSBoost)
+library(rpart)
+library(rpart.plot)
+```
+
+
+#### 데이터 로드
+
+```{r}
+dat <- read.csv("data/ch10_dat1.csv")
+dat$X1 <- factor(dat$X1)
+dat$X2 <- factor(dat$X2)
+dat$X3 <- factor(dat$X3)
+dat$Y <- factor(dat$Y)
+```
+
+
+#### 학습 데이터 변환
+
+- 예측변수 $\mathbf{x} \in \mathbb{R}^d$
+- 범주 $y \in {1, -1}$
+
+```{r}
+X <- model.matrix(Y ~ . - 1, dat) # create predictor variable matrix
+y <- ifelse(dat$Y == "yes", 1, -1)
+```
+
+#### 아다부스트 학습
+
+- 트리 수: 3
+- 트리 당 분지 수: 1
+
+```{r}
+fit <- adaboost(X, y, tree_depth = 1, n_rounds = 3)
+```
+
+
+#### 학습된 트리
+
+```{r}
+for (i in seq_along(fit$trees)) {
+  rpart.plot(fit$trees[[i]], roundint = FALSE)
+}
+```
+
+
+#### 각 트리에 적용되는 가중치 ($\alpha$)
+
+```{r}
+fit$alphas
+```
+
+
+#### 예측
+
+확률: $P(y = 1 | x)$
+
+```{r}
+posterior1 <- predict(fit, X = X, type = "prob")
+round(posterior1, 2)
+```
+
+범주: $y \in {1, -1}$
+
+```{r}
+pred_class <- predict(fit, X = X, type = "response")
+pred_class
+```
+
+예측성능 - 정오분류표
+
+```{r}
+fit$confusion_matrix
+```
+
+
+## (예 10.5)
+
+#### 패키지 로드
+
+```{r}
+library(gbm)
+library(rpart)
+library(rpart.plot)
+```
+
+#### 데이터 로드
+
+```{r}
+dat <- read.csv("data/ch10_dat3.csv")
+```
+
+
+#### Approach 1: `{gbm}` 패키지 사용
+
+모형 학습
+
+- 트리 수: 5
+- 트리 당 분지 수: 1
+- 트리 당 가중치 $alpha$: 1
+
+```{r}
+gbm_fit <- gbm(
+  Y ~ X,
+  data = dat,
+  distribution = "gaussian",
+  n.trees = 5,
+  interaction.depth = 1,
+  n.minobsinnode = 1,
+  shrinkage = 1, # step size = 1
+  bag.fraction = 1 # no subsampling of training data
+)
+```
+
+모형에 기반한 예측
+
+```{r}
+dat_p <- data.frame(
+  X = seq(min(dat$X), max(dat$X), length = 1000)
+)
+
+plot(dat$X, dat$Y,
+     pch = 16, xlab = "X", ylab = "Y",
+     main = paste0("Observed vs Prediction: {gbm} package")
+)
+lines(dat_p$X, predict(gbm_fit, newdata = dat_p), col = "red")
+```
+
+
+#### Approach 2: `{rpart}`와 loop 사용
+
+```{r}
+# initial model
+dat_m <- dat
+dat_m$pred <- mean(dat$Y)
+dat_p$pred <- mean(dat$Y)
+
+iter <- 5
+
+for (i in 1:iter) {
+  # negative gradients
+  dat_m$ngrad <- dat$Y - dat_m$pred
+
+  # plot layout
+  layout(matrix(c(1, 2, 3, 3), nrow = 2, byrow = TRUE))
+
+  # plot observed point and prediction
+  plot(dat$X, dat$Y,
+    pch = 16, xlab = "X", ylab = "Y",
+    main = paste0("Observed vs Prediction: Iteration ", i)
+  )
+  lines(dat_p$X, dat_p$pred, col = "red")
+
+  # plot residuals
+  plot(dat_m$X, dat_m$ngrad,
+    pch = 16, xlab = "X", ylab = "Residual",
+    main = paste0("Residual: Iteration ", i)
+  )
+
+
+  # fit C to negative gradients
+  fit <- rpart(
+    ngrad ~ X,
+    data = dat_m,
+    control = rpart.control(maxdepth = 1)
+  )
+
+  # plot tree
+  rpart.plot(fit, main = paste0("Residual estimation: Iteration ", i))
+
+  # update prediction
+  dat_m$pred <- dat_m$pred + predict(fit, newdata = dat_m)
+  dat_p$pred <- dat_p$pred + predict(fit, newdata = dat_p)
+}
+
+# plot final prediction
+par(mfrow = c(1, 1))
+plot(dat$X, dat$Y,
+  pch = 16, xlab = "X", ylab = "Y",
+  main = paste0("Observed vs Prediction: Final")
+)
+lines(dat_p$X, dat_p$pred, col = "red")
+```
+
+
+## (예 10.6)
+
+#### 패키지 로드
+
+```{r}
+library(gbm)
+library(yardstick)
+library(ggplot2)
+```
+
+
+#### 데이터 로드
+
+```{r}
+dat <- read.csv("data/ch8_dat1.csv")
+dat$class <- dat$class - 1 # set class to be 0 or 1
+```
+
+#### Baseline: 평균 기반 추정
+
+모형 평가: ROC curve, AUC
+
+```{r}
+result0 <- data.frame(
+  class = factor(dat$class, levels = c(1, 0)),
+  posterior1 = rep(0.5, nrow(dat))
+)
+roc_auc(result0, truth = "class", posterior1)
+autoplot(roc_curve(result0, truth = "class", posterior1))
+```
+
+
+#### 트리 1개
+
+모형 추정
+
+```{r}
+fit1 <- gbm(
+  class ~ x1 + x2,
+  data = dat,
+  distribution = "bernoulli",
+  n.trees = 1,
+  interaction.depth = 1,
+  n.minobsinnode = 1,
+  shrinkage = 1, # step size = 1
+  bag.fraction = 1 # no subsampling of training data
+)
+```
+
+모형 평가: ROC curve, AUC
+
+```{r}
+result1 <- data.frame(
+  class = factor(dat$class, levels = c(1, 0)),
+  posterior1 = predict(fit1, type = "response")
+)
+roc_auc(result1, truth = "class", posterior1)
+autoplot(roc_curve(result1, truth = "class", posterior1))
+```
+
+
+#### 트리 2개
+
+모형 추정
+
+```{r}
+fit2 <- gbm(
+  class ~ x1 + x2,
+  data = dat,
+  distribution = "bernoulli",
+  n.trees = 2,
+  interaction.depth = 1,
+  n.minobsinnode = 1,
+  shrinkage = 1, # step size = 1
+  bag.fraction = 1 # no subsampling of training data
+)
+```
+
+
+모형 평가: ROC curve, AUC
+
+```{r}
+result2 <- data.frame(
+  class = factor(dat$class, levels = c(1, 0)),
+  posterior1 = predict(fit2, type = "response")
+)
+roc_auc(result2, truth = "class", posterior1)
+autoplot(roc_curve(result2, truth = "class", posterior1))
+```
+

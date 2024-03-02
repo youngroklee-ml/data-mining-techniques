@@ -19,6 +19,7 @@ book:
         - chapters/ch07_da.qmd
         - chapters/ch08_tree.qmd
         - chapters/ch09_svm.qmd
+        - chapters/ch10_ensemble.qmd
     - part: "군집분석"
       chapters:
         - chapters/ch11_cluster.qmd

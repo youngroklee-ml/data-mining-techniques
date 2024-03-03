@@ -11,7 +11,7 @@ dat3
 x <- as.matrix(dat3[, 1:3])
 
 
-# PCA(center=T->mean=0, scale.=T->variance=1)
+# PCA with centering and without scaling
 pca_fit <- prcomp(x, center = TRUE, scale. = FALSE)
 pca_fit
 
@@ -31,7 +31,3 @@ lm_fit <- lm(y ~ PC1 + PC2, data = dat4)
 summary(lm_fit)
 anova(lm_fit)
 
-# compare linear regression with original variable
-lm_fit <- lm(y ~ x1 + x2 + x3 - 1, data = dat3)
-summary(lm_fit)
-anova(lm_fit)

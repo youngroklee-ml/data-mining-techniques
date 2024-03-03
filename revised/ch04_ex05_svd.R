@@ -15,8 +15,8 @@ x <- matrix(
   nrow = 3,
   byrow = TRUE
 )
-print(x)
 
+print(x)
 
 # ex4-5
 
@@ -24,20 +24,17 @@ print(x)
 n <- dim(x)[1]
 k <- dim(x)[2]
 
-# singular decomposition of x
+# singular value decomposition of x
 s <- svd(x, nu = n, nv = k)
 diag(s$d, nrow = n, ncol = k)
 s$u
 s$v
 
 # verify Theorem 4.8
-all.equal(
-  x, 
-  s$u %*% diag(s$d, nrow = n, ncol = k) %*% t(s$v)
-)
+all.equal(x, s$u %*% diag(s$d, nrow = n, ncol = k) %*% t(s$v))
 
-# x'x
-xtx <- t(x) %*% x
+# singular value decomposition of x'x
+xtx <- t(x) %*% x # or `crossprod(x)`
 print(xtx)
 n_xtx <- dim(xtx)[1]
 k_xtx <- dim(xtx)[2]
@@ -46,7 +43,7 @@ diag(s_xtx$d, nrow = n_xtx, ncol = k_xtx)
 s_xtx$u
 s_xtx$v
 
-# check (x'x)*eigenvector[,2]=eigenvalue[2]*eigenvector[,2]
+# verify that SVD produces eigenvalue and eigenvector
 xtx %*% s_xtx$v[, 2]
 s_xtx$v[, 2] * s_xtx$d[2]
 
@@ -56,16 +53,11 @@ s_xtx$v[, 2] * s_xtx$d[2]
 # rank of matrix x
 r <- rankMatrix(x)
 
-# singular decomposition of x
+# singular value decomposition of x
 s <- svd(x, nu = r, nv = r)
 diag(s$d[1:r])
 s$u
 s$v
 
 # verify Theorem 4.9
-all.equal(
-  x, 
-  s$u %*% diag(s$d[1:r]) %*% t(s$v)
-)
-
-
+all.equal(x, s$u %*% diag(s$d[1:r]) %*% t(s$v))

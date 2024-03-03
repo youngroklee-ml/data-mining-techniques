@@ -13,7 +13,7 @@ x <- as.matrix(dat2[, 2:6])
 # correlation matrix
 round(cor(x), 3)
 
-# principal component analysis
+# principal component analysis with centering and scaling
 pca_fit <- prcomp(x, center = TRUE, scale. = TRUE)
 pca_fit
 
@@ -28,6 +28,8 @@ screeplot(pca_fit, type = "lines", main = "scree plot")
 rate_var <- pca_var / sum(pca_var)
 rate_var
 categories <- c("PC1", "PC2", "PC3", "PC4", "PC5")
-barplot(rate_var, names.arg = categories, cex.axis = 1, 
-        ylab = "Variance proportion explained by PC", 
-        col = "blue", space = 0.5, width = 1, ylim = c(0, 1))
+barplot(rate_var,
+  names.arg = categories, cex.axis = 1,
+  ylab = "Variance proportion explained by PC",
+  col = "blue", space = 0.5, width = 1, ylim = c(0, 1)
+)

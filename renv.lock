@@ -2305,6 +2305,20 @@
       ],
       "Hash": "903d68319ae9923fb2e2ee7fa8230b91"
     },
+    "pls": {
+      "Package": "pls",
+      "Version": "2.8-3",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "R",
+        "grDevices",
+        "graphics",
+        "methods",
+        "stats"
+      ],
+      "Hash": "d7bb9f426c05cd90878b502bf152db49"
+    },
     "plyr": {
       "Package": "plyr",
       "Version": "1.8.9",

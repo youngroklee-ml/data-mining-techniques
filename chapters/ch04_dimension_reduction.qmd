@@ -1,0 +1,318 @@
+# 4장 차원축소
+
+## (예 4.5, 4.7)
+
+#### 패키지 로드
+
+```{r}
+library(Matrix)
+```
+
+
+#### 데이터 로드
+
+```{r}
+x <- matrix(
+  c(
+    1, 2, 3, 2,
+    -1, 0, -1, -1,
+    0, -2, -2, -1
+  ),
+  nrow = 3,
+  byrow = TRUE
+)
+
+print(x)
+```
+
+#### (예 4.5)
+
+행렬 차원
+
+```{r}
+n <- dim(x)[1]
+k <- dim(x)[2]
+```
+
+특이치 분해
+
+```{r}
+s <- svd(x, nu = n, nv = k)
+diag(s$d, nrow = n, ncol = k)
+s$u
+s$v
+```
+
+행렬 복원 확인
+
+```{r}
+all.equal(x, s$u %*% diag(s$d, nrow = n, ncol = k) %*% t(s$v))
+```
+
+
+제곱합-교차곱 행렬에 대한 특이치 분해
+
+```{r}
+xtx <- t(x) %*% x
+print(xtx)
+n_xtx <- dim(xtx)[1]
+k_xtx <- dim(xtx)[2]
+s_xtx <- svd(xtx, nu = n_xtx, nv = k_xtx)
+diag(s_xtx$d, nrow = n_xtx, ncol = k_xtx)
+s_xtx$u
+s_xtx$v
+```
+
+고유값-고유벡터 확인
+
+```{r}
+xtx %*% s_xtx$v[, 2]
+s_xtx$v[, 2] * s_xtx$d[2]
+```
+
+
+#### (예 4.7)
+
+행렬의 rank
+
+```{r}
+r <- rankMatrix(x)
+```
+
+특이치 분해
+
+```{r}
+# singular value decomposition of x
+s <- svd(x, nu = r, nv = r)
+diag(s$d[1:r])
+s$u
+s$v
+```
+
+행렬 복원 확인
+
+```{r}
+all.equal(x, s$u %*% diag(s$d[1:r]) %*% t(s$v))
+```
+
+
+
+## (예 4.6 - 4.7)
+
+#### 패키지 로드
+
+```{r}
+library(Matrix)
+```
+
+#### 데이터 로드
+
+```{r}
+dat1 <- read.csv(file = "data/ch4_dat1.csv")
+x <- as.matrix(dat1)
+```
+
+#### (예 4.6)
+
+행렬 차원
+
+```{r}
+n <- dim(x)[1]
+k <- dim(x)[2]
+```
+
+특이치 분해
+
+```{r}
+s <- svd(x, nu = n, nv = k)
+diag(s$d, nrow = n, ncol = k)
+s$u
+s$v
+```
+
+
+#### (예 4.7)
+
+행렬 rank
+
+```{r}
+r <- rankMatrix(x)
+```
+
+특이치 분해
+
+```{r}
+s <- svd(x, nu = r, nv = r)
+diag(s$d[1:r])
+s$u
+s$v
+```
+
+
+## (예 4.12)
+
+#### 데이터 로드
+
+```{r}
+dat2 <- read.csv("data/ch4_dat2.csv", fileEncoding = "euc-kr")
+x <- as.matrix(dat2[, 2:6])
+```
+
+#### 상관계수행렬
+
+```{r}
+round(cor(x), 3)
+```
+
+#### 주성분분석
+
+```{r}
+pca_fit <- prcomp(x, center = TRUE, scale. = TRUE)
+pca_fit
+```
+
+#### 상관계수행렬 고유치
+
+```{r}
+pca_var <- pca_fit$sdev^2
+pca_var
+```
+
+#### 고유치 스크리 도표
+
+```{r}
+screeplot(pca_fit, type = "lines", main = "scree plot")
+```
+
+
+#### 고유치별 기여율 도표
+
+```{r}
+rate_var <- pca_var / sum(pca_var)
+rate_var
+categories <- c("PC1", "PC2", "PC3", "PC4", "PC5")
+barplot(rate_var,
+  names.arg = categories, cex.axis = 1,
+  ylab = "Variance proportion explained by PC",
+  col = "blue", space = 0.5, width = 1, ylim = c(0, 1)
+)
+```
+
+
+## (예 4.14)
+
+#### 데이터 로드
+
+```{r}
+dat3 <- read.csv(file = "data/ch4_dat3.csv")
+dat3
+x <- as.matrix(dat3[, 1:3])
+```
+
+#### 주성분분석
+
+```{r}
+pca_fit <- prcomp(x, center = TRUE, scale. = FALSE)
+pca_fit
+```
+
+#### 표본 분산-공분산 행렬의 고유치
+
+```{r}
+pca_var <- pca_fit$sdev^2
+pca_var
+```
+
+#### 주성분 스코어
+
+```{r}
+PRC <- predict(pca_fit, x)
+PRC
+```
+
+#### 주성분 회귀분석
+
+학습데이터 생성
+
+```{r}
+dat4 <- as.data.frame(cbind(PRC, y = dat3$y))
+```
+
+모형 추정
+
+```{r}
+lm_fit <- lm(y ~ PC1 + PC2, data = dat4)
+summary(lm_fit)
+anova(lm_fit)
+```
+
+
+## (예 4.16 - 4.17)
+
+#### 패키지 로드
+
+```{r}
+library(pls)
+```
+
+#### 데이터 로드
+
+```{r}
+dat3 <- read.csv(file = "data/ch4_dat3.csv")
+```
+
+#### (예 4.16)
+
+PLS 모형 추정
+
+```{r}
+pls_fit <- plsr(y ~ ., ncomp = 2, data = dat3)
+```
+
+잠재변수행렬 (T)
+
+```{r}
+scores(pls_fit)
+```
+
+X-로딩 행렬 (P)
+
+```{r}
+loadings(pls_fit)
+```
+
+가중치행렬 (W)
+
+```{r}
+loading.weights(pls_fit)
+```
+
+y-로딩 벡터 (b)
+
+```{r}
+Yloadings(pls_fit)
+```
+
+$\beta_{PLS}$
+
+```{r}
+coef(pls_fit, intercept = TRUE)
+```
+
+
+#### (예 4.17)
+
+학습데이터 생성
+
+```{r}
+dat4 <- as.data.frame(cbind(scores(pls_fit), y = dat3$y))
+```
+
+모형 추정
+
+```{r}
+lm_fit <- lm(y ~ ., data = dat4)
+summary(lm_fit)
+anova(lm_fit)
+```
+

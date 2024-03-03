@@ -12,6 +12,7 @@ book:
       chapters:
         - chapters/ch02_regression.qmd
         - chapters/ch03_regularized_regression.qmd
+        - chapters/ch04_dimension_reduction.qmd
     - part: "분류분석"
       chapters: 
         - chapters/ch05_classification.qmd

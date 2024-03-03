@@ -4,7 +4,7 @@
 # ex4-14
 
 # read csv file, centered data
-dat3<-read.csv(file="data/ch4_dat4.csv")
+dat3<-read.csv(file="data/ch4_dat3.csv")
 dat3
 
 # PCA(center=T->mean=0, scale.=T->variance=1)

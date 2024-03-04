@@ -2,7 +2,6 @@
 # ch9.3 nonlinear SVM
 
 # ex9.3 kernel
-
 # load package
 library(kernlab)
 

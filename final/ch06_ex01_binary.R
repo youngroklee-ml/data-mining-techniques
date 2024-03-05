@@ -17,10 +17,14 @@ bin.fit <- glm(
 )
 
 # regression coefficients with significance tests
-summary(bin.fit)
+tbl <- summary(bin.fit)
 
 # odds ratio
-exp(coef(bin.fit))
+odds <- exp(coef(bin.fit))
+
+# summary table with odds ratio
+tbl$coefficients <- cbind(tbl$coefficients, "Odds Ratio" = odds)
+tbl
 
 # logit(P)
 logit <- predict(bin.fit, newdata = dat1, type = "link")
@@ -32,7 +36,7 @@ pred.prob
 
 # predicted class
 pred.class <- factor(
-  ifelse(pred.prob > .5, "Excellent", "Average"), 
+  ifelse(pred.prob > .5, "Excellent", "Average"),
   levels = c("Average", "Excellent")
 )
 pred.class
@@ -48,8 +52,8 @@ conf_mat(results, truth = "Class", estimate = "pred_class")
 # ex6.3
 # estimate with complementary log-log(gompit) link function
 gompit.fit <- glm(
-  Class ~ Break + Sleep + Circle, 
-  data = dat1, 
+  Class ~ Break + Sleep + Circle,
+  data = dat1,
   family = binomial("cloglog")
 )
 
@@ -57,8 +61,8 @@ summary(gompit.fit)
 
 # estimate with probit(normit) link function
 normit.fit <- glm(
-  Class ~ Break + Sleep + Circle, 
-  data = dat1, 
+  Class ~ Break + Sleep + Circle,
+  data = dat1,
   family = binomial("probit")
 )
 

@@ -1094,29 +1094,35 @@ Support vectors:</code></pre>
 <div class="sourceCode cell-code" id="cb142"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb142-1"><a href="#cb142-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/breast-cancer-wisconsin.csv"</span>)</span>
 <span id="cb142-2"><a href="#cb142-2" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>class <span class="ot">&lt;-</span> <span class="fu">factor</span>(dat<span class="sc">$</span>class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>ID 변수 제외</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb143"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb143-1"><a href="#cb143-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> dat[, <span class="sc">-</span><span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>결측값 존재 객체 제외</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb143"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb143-1"><a href="#cb143-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb144"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb144-1"><a href="#cb144-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>학습표본 / 테스트 표본 분리</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb144"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb144-1"><a href="#cb144-1" aria-hidden="true" tabindex="-1"></a>train_idx <span class="ot">&lt;-</span> <span class="fu">which</span>(dat<span class="sc">$</span>X1 <span class="sc">%%</span> <span class="dv">3</span> <span class="sc">&lt;</span> <span class="dv">2</span>)</span>
-<span id="cb144-2"><a href="#cb144-2" aria-hidden="true" tabindex="-1"></a>train_dat <span class="ot">&lt;-</span> dat[train_idx, ]</span>
-<span id="cb144-3"><a href="#cb144-3" aria-hidden="true" tabindex="-1"></a>test_dat <span class="ot">&lt;-</span> dat[<span class="sc">-</span>train_idx, ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb145"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb145-1"><a href="#cb145-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">578925</span>)</span>
+<span id="cb145-2"><a href="#cb145-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(dat)</span>
+<span id="cb145-3"><a href="#cb145-3" aria-hidden="true" tabindex="-1"></a>train_idx <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span>n, <span class="at">size =</span> n <span class="sc">*</span> <span class="dv">2</span> <span class="sc">/</span> <span class="dv">3</span>, <span class="at">replace =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb145-4"><a href="#cb145-4" aria-hidden="true" tabindex="-1"></a>train_dat <span class="ot">&lt;-</span> dat[train_idx, ]</span>
+<span id="cb145-5"><a href="#cb145-5" aria-hidden="true" tabindex="-1"></a>test_dat <span class="ot">&lt;-</span> dat[<span class="sc">-</span>train_idx, ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<section id="svm-가우시안-커널-sigma-1-c-10" class="level5">
-<h5 class="anchored" data-anchor-id="svm-가우시안-커널-sigma-1-c-10">SVM (가우시안 커널, <span class="math inline">\(\sigma = 1\)</span>, <span class="math inline">\(C = 10\)</span>)</h5>
+<section id="svm-가우시안-커널-sigma-0.5-c-10" class="level5">
+<h5 class="anchored" data-anchor-id="svm-가우시안-커널-sigma-0.5-c-10">SVM (가우시안 커널, <span class="math inline">\(\sigma = 0.5\)</span>, <span class="math inline">\(C = 10\)</span>)</h5>
 <p>모형 학습</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb145"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb145-1"><a href="#cb145-1" aria-hidden="true" tabindex="-1"></a>model1 <span class="ot">&lt;-</span> <span class="fu">ksvm</span>(</span>
-<span id="cb145-2"><a href="#cb145-2" aria-hidden="true" tabindex="-1"></a>  class <span class="sc">~</span> . <span class="sc">-</span> X1,</span>
-<span id="cb145-3"><a href="#cb145-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> train_dat,</span>
-<span id="cb145-4"><a href="#cb145-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">kernel =</span> <span class="st">"rbfdot"</span>,</span>
-<span id="cb145-5"><a href="#cb145-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">kpar =</span> <span class="fu">list</span>(<span class="at">sigma =</span> <span class="dv">1</span>),</span>
-<span id="cb145-6"><a href="#cb145-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">C =</span> <span class="dv">10</span></span>
-<span id="cb145-7"><a href="#cb145-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb145-8"><a href="#cb145-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb145-9"><a href="#cb145-9" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(model1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb146"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb146-1"><a href="#cb146-1" aria-hidden="true" tabindex="-1"></a>model1 <span class="ot">&lt;-</span> <span class="fu">ksvm</span>(</span>
+<span id="cb146-2"><a href="#cb146-2" aria-hidden="true" tabindex="-1"></a>  class <span class="sc">~</span> .,</span>
+<span id="cb146-3"><a href="#cb146-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> train_dat,</span>
+<span id="cb146-4"><a href="#cb146-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">kernel =</span> <span class="st">"rbfdot"</span>,</span>
+<span id="cb146-5"><a href="#cb146-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">kpar =</span> <span class="fu">list</span>(<span class="at">sigma =</span> <span class="fl">0.5</span>),</span>
+<span id="cb146-6"><a href="#cb146-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">C =</span> <span class="dv">10</span></span>
+<span id="cb146-7"><a href="#cb146-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb146-8"><a href="#cb146-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb146-9"><a href="#cb146-9" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(model1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Support Vector Machine object of class "ksvm" 
 
@@ -1124,40 +1130,40 @@ SV type: C-svc  (classification)
  parameter : cost C = 10 
 
 Gaussian Radial Basis kernel function. 
- Hyperparameter : sigma =  1 
+ Hyperparameter : sigma =  0.5 
 
-Number of Support Vectors : 206 
+Number of Support Vectors : 166 
 
-Objective Function Value : -49.7701 
+Objective Function Value : -50.5681 
 Training error : 0 </code></pre>
 </div>
 </div>
 <p>학습표본 정오분류표</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb147"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb147-1"><a href="#cb147-1" aria-hidden="true" tabindex="-1"></a>train_results1 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb147-2"><a href="#cb147-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">class =</span> train_dat<span class="sc">$</span>class,</span>
-<span id="cb147-3"><a href="#cb147-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">pred_class =</span> <span class="fu">predict</span>(model1, train_dat)</span>
-<span id="cb147-4"><a href="#cb147-4" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb147-5"><a href="#cb147-5" aria-hidden="true" tabindex="-1"></a><span class="fu">conf_mat</span>(train_results1, <span class="at">truth =</span> <span class="st">"class"</span>, <span class="at">estimate =</span> <span class="st">"pred_class"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb148"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb148-1"><a href="#cb148-1" aria-hidden="true" tabindex="-1"></a>train_results1 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb148-2"><a href="#cb148-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">class =</span> train_dat<span class="sc">$</span>class,</span>
+<span id="cb148-3"><a href="#cb148-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">pred_class =</span> <span class="fu">predict</span>(model1, train_dat)</span>
+<span id="cb148-4"><a href="#cb148-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb148-5"><a href="#cb148-5" aria-hidden="true" tabindex="-1"></a><span class="fu">conf_mat</span>(train_results1, <span class="at">truth =</span> <span class="st">"class"</span>, <span class="at">estimate =</span> <span class="st">"pred_class"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>          Truth
 Prediction   2   4
-         2 298   0
-         4   0 157</code></pre>
+         2 289   0
+         4   0 166</code></pre>
 </div>
 </div>
 <p>테스트 표본 정오분류표</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb149"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb149-1"><a href="#cb149-1" aria-hidden="true" tabindex="-1"></a>test_results1 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb149-2"><a href="#cb149-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">class =</span> test_dat<span class="sc">$</span>class,</span>
-<span id="cb149-3"><a href="#cb149-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">pred_class =</span> <span class="fu">predict</span>(model1, test_dat)</span>
-<span id="cb149-4"><a href="#cb149-4" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb149-5"><a href="#cb149-5" aria-hidden="true" tabindex="-1"></a><span class="fu">conf_mat</span>(test_results1, <span class="at">truth =</span> <span class="st">"class"</span>, <span class="at">estimate =</span> <span class="st">"pred_class"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb150"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb150-1"><a href="#cb150-1" aria-hidden="true" tabindex="-1"></a>test_results1 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb150-2"><a href="#cb150-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">class =</span> test_dat<span class="sc">$</span>class,</span>
+<span id="cb150-3"><a href="#cb150-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">pred_class =</span> <span class="fu">predict</span>(model1, test_dat)</span>
+<span id="cb150-4"><a href="#cb150-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb150-5"><a href="#cb150-5" aria-hidden="true" tabindex="-1"></a><span class="fu">conf_mat</span>(test_results1, <span class="at">truth =</span> <span class="st">"class"</span>, <span class="at">estimate =</span> <span class="st">"pred_class"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>          Truth
 Prediction   2   4
-         2 141   2
-         4   5  80</code></pre>
+         2 148   1
+         4   7  72</code></pre>
 </div>
 </div>
 </section>
@@ -1165,15 +1171,15 @@ Prediction   2   4
 <h5 class="anchored" data-anchor-id="svm-가우시안-커널-sigma-2-c-10">SVM (가우시안 커널, <span class="math inline">\(\sigma = 2\)</span>, <span class="math inline">\(C = 10\)</span>)</h5>
 <p>모형 학습</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb151"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb151-1"><a href="#cb151-1" aria-hidden="true" tabindex="-1"></a>model2 <span class="ot">&lt;-</span> <span class="fu">ksvm</span>(</span>
-<span id="cb151-2"><a href="#cb151-2" aria-hidden="true" tabindex="-1"></a>  class <span class="sc">~</span> . <span class="sc">-</span> X1,</span>
-<span id="cb151-3"><a href="#cb151-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> train_dat,</span>
-<span id="cb151-4"><a href="#cb151-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">kernel =</span> <span class="st">"rbfdot"</span>,</span>
-<span id="cb151-5"><a href="#cb151-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">kpar =</span> <span class="fu">list</span>(<span class="at">sigma =</span> <span class="dv">2</span>),</span>
-<span id="cb151-6"><a href="#cb151-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">C =</span> <span class="dv">10</span></span>
-<span id="cb151-7"><a href="#cb151-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb151-8"><a href="#cb151-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb151-9"><a href="#cb151-9" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(model2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb152"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb152-1"><a href="#cb152-1" aria-hidden="true" tabindex="-1"></a>model2 <span class="ot">&lt;-</span> <span class="fu">ksvm</span>(</span>
+<span id="cb152-2"><a href="#cb152-2" aria-hidden="true" tabindex="-1"></a>  class <span class="sc">~</span> .,</span>
+<span id="cb152-3"><a href="#cb152-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> train_dat,</span>
+<span id="cb152-4"><a href="#cb152-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">kernel =</span> <span class="st">"rbfdot"</span>,</span>
+<span id="cb152-5"><a href="#cb152-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">kpar =</span> <span class="fu">list</span>(<span class="at">sigma =</span> <span class="dv">2</span>),</span>
+<span id="cb152-6"><a href="#cb152-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">C =</span> <span class="dv">10</span></span>
+<span id="cb152-7"><a href="#cb152-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb152-8"><a href="#cb152-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb152-9"><a href="#cb152-9" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(model2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Support Vector Machine object of class "ksvm" 
 
@@ -1183,38 +1189,38 @@ SV type: C-svc  (classification)
 Gaussian Radial Basis kernel function. 
  Hyperparameter : sigma =  2 
 
-Number of Support Vectors : 240 
+Number of Support Vectors : 242 
 
-Objective Function Value : -66.1847 
+Objective Function Value : -63.7536 
 Training error : 0 </code></pre>
 </div>
 </div>
 <p>학습표본 정오분류표</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb153"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb153-1"><a href="#cb153-1" aria-hidden="true" tabindex="-1"></a>train_results2 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb153-2"><a href="#cb153-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">class =</span> train_dat<span class="sc">$</span>class,</span>
-<span id="cb153-3"><a href="#cb153-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">pred_class =</span> <span class="fu">predict</span>(model2, train_dat)</span>
-<span id="cb153-4"><a href="#cb153-4" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb153-5"><a href="#cb153-5" aria-hidden="true" tabindex="-1"></a><span class="fu">conf_mat</span>(train_results2, <span class="at">truth =</span> <span class="st">"class"</span>, <span class="at">estimate =</span> <span class="st">"pred_class"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb154"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb154-1"><a href="#cb154-1" aria-hidden="true" tabindex="-1"></a>train_results2 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb154-2"><a href="#cb154-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">class =</span> train_dat<span class="sc">$</span>class,</span>
+<span id="cb154-3"><a href="#cb154-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">pred_class =</span> <span class="fu">predict</span>(model2, train_dat)</span>
+<span id="cb154-4"><a href="#cb154-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb154-5"><a href="#cb154-5" aria-hidden="true" tabindex="-1"></a><span class="fu">conf_mat</span>(train_results2, <span class="at">truth =</span> <span class="st">"class"</span>, <span class="at">estimate =</span> <span class="st">"pred_class"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>          Truth
 Prediction   2   4
-         2 298   0
-         4   0 157</code></pre>
+         2 289   0
+         4   0 166</code></pre>
 </div>
 </div>
 <p>테스트 표본 정오분류표</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb155"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb155-1"><a href="#cb155-1" aria-hidden="true" tabindex="-1"></a>test_results2 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb155-2"><a href="#cb155-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">class =</span> test_dat<span class="sc">$</span>class,</span>
-<span id="cb155-3"><a href="#cb155-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">pred_class =</span> <span class="fu">predict</span>(model2, test_dat)</span>
-<span id="cb155-4"><a href="#cb155-4" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb155-5"><a href="#cb155-5" aria-hidden="true" tabindex="-1"></a><span class="fu">conf_mat</span>(test_results2, <span class="at">truth =</span> <span class="st">"class"</span>, <span class="at">estimate =</span> <span class="st">"pred_class"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb156"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb156-1"><a href="#cb156-1" aria-hidden="true" tabindex="-1"></a>test_results2 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb156-2"><a href="#cb156-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">class =</span> test_dat<span class="sc">$</span>class,</span>
+<span id="cb156-3"><a href="#cb156-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">pred_class =</span> <span class="fu">predict</span>(model2, test_dat)</span>
+<span id="cb156-4"><a href="#cb156-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb156-5"><a href="#cb156-5" aria-hidden="true" tabindex="-1"></a><span class="fu">conf_mat</span>(test_results2, <span class="at">truth =</span> <span class="st">"class"</span>, <span class="at">estimate =</span> <span class="st">"pred_class"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>          Truth
 Prediction   2   4
-         2 137   0
-         4   9  82</code></pre>
+         2 143   0
+         4  12  73</code></pre>
 </div>
 </div>
 

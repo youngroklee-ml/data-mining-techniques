@@ -2,22 +2,24 @@
 # ch9.1 linear SVM - separable
 
 # ex9.1
-
 # load package
 library(kernlab)
 
 # load data
 dat <- read.csv("data/ch9_dat1.csv")
 dat$class <- factor(dat$class)
-dat
 
 # SVM training
 model <- ksvm(
   class ~ x1 + x2,
   data = dat,
   scaled = FALSE,
-  kernel = "vanilladot"
+  kernel = "vanilladot",
+  C = Inf # must be separable
 )
+
+# summary
+print(model)
 
 # support vectors
 model@alphaindex[[1]]

@@ -440,6 +440,13 @@ dat <- read.csv("data/breast-cancer-wisconsin.csv")
 dat$class <- factor(dat$class)
 ```
 
+ID 변수 제외
+
+```{r}
+dat <- dat[, -1]
+```
+
+
 결측값 존재 객체 제외
 
 ```{r}
@@ -449,22 +456,24 @@ dat <- na.omit(dat)
 학습표본 / 테스트 표본 분리
 
 ```{r}
-train_idx <- which(dat$X1 %% 3 < 2)
+set.seed(578925)
+n <- nrow(dat)
+train_idx <- sample(1:n, size = n * 2 / 3, replace = FALSE)
 train_dat <- dat[train_idx, ]
 test_dat <- dat[-train_idx, ]
 ```
 
 
-##### SVM (가우시안 커널, $\sigma = 1$, $C = 10$)
+##### SVM (가우시안 커널, $\sigma = 0.5$, $C = 10$)
 
 모형 학습
 
 ```{r}
 model1 <- ksvm(
-  class ~ . - X1,
+  class ~ .,
   data = train_dat,
   kernel = "rbfdot",
-  kpar = list(sigma = 1),
+  kpar = list(sigma = 0.5),
   C = 10
 )
 
@@ -500,7 +509,7 @@ conf_mat(test_results1, truth = "class", estimate = "pred_class")
 
 ```{r}
 model2 <- ksvm(
-  class ~ . - X1,
+  class ~ .,
   data = train_dat,
   kernel = "rbfdot",
   kpar = list(sigma = 2),

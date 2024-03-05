@@ -11,22 +11,26 @@ library(yardstick)
 dat <- read.csv("data/breast-cancer-wisconsin.csv")
 dat$class <- factor(dat$class)
 
+# remove ID column (X1)
+dat <- dat[, -1]
+
 # remove observations with missing value:
 # there are 16 observations with missing values in X7
 dat <- na.omit(dat)
 
-# split train/test data
-train_idx <- which(dat$X1 %% 3 < 2)
+# split train data and test data
+set.seed(578925)
+n <- nrow(dat)
+train_idx <- sample(1:n, size = n * 2 / 3, replace = FALSE)
 train_dat <- dat[train_idx, ]
 test_dat <- dat[-train_idx, ]
 
-# train SVM with Gaussian kernel with sigma = 1
-# exclude X1 from predictors
+# train SVM with Gaussian kernel with sigma = 0.5
 model1 <- ksvm(
-  class ~ . - X1,
+  class ~ .,
   data = train_dat,
   kernel = "rbfdot",
-  kpar = list(sigma = 1),
+  kpar = list(sigma = 0.5),
   C = 10
 )
 
@@ -48,9 +52,8 @@ conf_mat(test_results1, truth = "class", estimate = "pred_class")
 
 
 # train SVM with Gaussian kernel with sigma = 2
-# exclude X1 from predictors
 model2 <- ksvm(
-  class ~ . - X1,
+  class ~ .,
   data = train_dat,
   kernel = "rbfdot",
   kpar = list(sigma = 2),

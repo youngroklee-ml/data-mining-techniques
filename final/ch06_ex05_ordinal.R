@@ -70,24 +70,3 @@ results
 
 # confusion matrix
 conf_mat(results, truth = "Y", estimate = "pred_class")
-
-
-# comparison with baseline-category logit model
-# to see that adjacent-categories logit model
-# is equivalent to baseline-category logit model
-
-# baseline-category logit model
-# there would be a warning to note that
-# class variable data is ordinal, not nominal
-nom.fit <- vglm(
-  Y ~ N + L,
-  data = dat3,
-  family = multinomial(refLevel = 1)
-)
-
-# regression coefficients with significance tests
-#
-# please note that integer label after variable name
-# does not represent actual class label
-# but represent relative class order after excluding reference class
-summary(nom.fit, HDEtest = FALSE)

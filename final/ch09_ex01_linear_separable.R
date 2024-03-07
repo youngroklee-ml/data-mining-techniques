@@ -38,6 +38,3 @@ w
 # hyperplane's intercept b
 # Note that we placed minus(-) sign
 -model@b
-
-# visualize
-plot(model, data = dat)

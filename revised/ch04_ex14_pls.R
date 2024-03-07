@@ -1,4 +1,4 @@
-# ch04_ex16_pls.R
+# ch04_ex14_pls.R
 # ch4.9 Partial least squares with a single response variable
 
 # load package
@@ -7,7 +7,7 @@ library(pls)
 # read csv file, centered data
 dat3 <- read.csv(file = "data/ch4_dat3.csv")
 
-# ex4-16
+# ex4-14
 
 # estimate PLS model
 pls_fit <- plsr(y ~ ., ncomp = 2, data = dat3)
@@ -27,7 +27,7 @@ Yloadings(pls_fit)
 # beta-pls
 coef(pls_fit, intercept = TRUE)
 
-# ex4-17
+# ex4-15
 
 # create training data with components
 dat4 <- as.data.frame(cbind(scores(pls_fit), y = dat3$y))

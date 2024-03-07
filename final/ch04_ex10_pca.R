@@ -1,7 +1,7 @@
-# ch04_ex12_pca.R
+# ch04_ex10_pca.R
 # ch4.5 principal component - proportion of variance
 
-# ex4.12
+# ex4.10
 
 # load data
 # specify `fileEncoding` argument if needed

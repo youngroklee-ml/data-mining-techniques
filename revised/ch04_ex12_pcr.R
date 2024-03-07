@@ -1,7 +1,7 @@
-# ch04_ex14_pcr.R
+# ch04_ex12_pcr.R
 # ch4.7 Principle Component Regression
 
-# ex4-14
+# ex4-12
 
 # read csv file, centered data
 dat3 <- read.csv(file = "data/ch4_dat3.csv")

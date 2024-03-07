@@ -5,18 +5,10 @@
 library(Matrix)
 
 # load data
-# centered matrix
-x <- matrix(
-  c(
-    1, 2, 3, 2,
-    -1, 0, -1, -1,
-    0, -2, -2, -1
-  ),
-  nrow = 3,
-  byrow = TRUE
-)
+dat1 <- read.csv(file = "data/ch4_dat1.csv")
 
-print(x)
+# define as matrix
+x <- as.matrix(dat1)
 
 # ex4-5
 
@@ -30,25 +22,6 @@ diag(s$d, nrow = n, ncol = k)
 s$u
 s$v
 
-# verify Theorem 4.8
-all.equal(x, s$u %*% diag(s$d, nrow = n, ncol = k) %*% t(s$v))
-
-# singular value decomposition of x'x
-xtx <- t(x) %*% x # or `crossprod(x)`
-print(xtx)
-n_xtx <- dim(xtx)[1]
-k_xtx <- dim(xtx)[2]
-s_xtx <- svd(xtx, nu = n_xtx, nv = k_xtx)
-diag(s_xtx$d, nrow = n_xtx, ncol = k_xtx)
-s_xtx$u
-s_xtx$v
-
-# verify that SVD produces eigenvalue and eigenvector
-xtx %*% s_xtx$v[, 2]
-s_xtx$v[, 2] * s_xtx$d[2]
-
-
-# ex4-7
 
 # rank of matrix x
 r <- rankMatrix(x)
@@ -58,6 +31,3 @@ s <- svd(x, nu = r, nv = r)
 diag(s$d[1:r])
 s$u
 s$v
-
-# verify Theorem 4.9
-all.equal(x, s$u %*% diag(s$d[1:r]) %*% t(s$v))

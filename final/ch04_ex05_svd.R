@@ -1,63 +1,32 @@
 # ch04_ex05_svd.R
 # ch4.3 Matrix decomposition
-
-# load package
-library(Matrix)
-
-# load data
-# centered matrix
-x <- matrix(
-  c(
-    1, 2, 3, 2,
-    -1, 0, -1, -1,
-    0, -2, -2, -1
-  ),
-  nrow = 3,
-  byrow = TRUE
-)
-
-print(x)
+# ch4.4 Principal component score
 
 # ex4-5
-
-# dimension of x
-n <- dim(x)[1]
-k <- dim(x)[2]
+# load data
+dat1 <- read.csv(file = "data/ch4_dat1.csv")
+dat1
+# define as matrix
+x <- as.matrix(dat1)
 
 # singular value decomposition of x
-s <- svd(x, nu = n, nv = k)
-diag(s$d, nrow = n, ncol = k)
+s <- svd(x)
+diag(s$d)
 s$u
 s$v
 
-# verify Theorem 4.8
-all.equal(x, s$u %*% diag(s$d, nrow = n, ncol = k) %*% t(s$v))
-
-# singular value decomposition of x'x
-xtx <- t(x) %*% x # or `crossprod(x)`
-print(xtx)
-n_xtx <- dim(xtx)[1]
-k_xtx <- dim(xtx)[2]
-s_xtx <- svd(xtx, nu = n_xtx, nv = k_xtx)
-diag(s_xtx$d, nrow = n_xtx, ncol = k_xtx)
-s_xtx$u
-s_xtx$v
-
-# verify that SVD produces eigenvalue and eigenvector
-xtx %*% s_xtx$v[, 2]
-s_xtx$v[, 2] * s_xtx$d[2]
-
+# ex4-6
+# covariance matrix of x
+cov(x)
+svd(cov(x))
+# correlation matrix of x
+cor(x)
+svd(cor(x))
 
 # ex4-7
+# principal component T=xp
+x %*% s$v
 
-# rank of matrix x
-r <- rankMatrix(x)
-
-# singular value decomposition of x
-s <- svd(x, nu = r, nv = r)
-diag(s$d[1:r])
-s$u
-s$v
-
-# verify Theorem 4.9
-all.equal(x, s$u %*% diag(s$d[1:r]) %*% t(s$v))
+# ex4-8
+# eigenvalue & eigenvector of x'x
+eigen(t(x) %*% x)

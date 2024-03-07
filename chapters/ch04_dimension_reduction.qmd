@@ -1,55 +1,61 @@
 # 4장 차원축소 회귀분석
 
-## (예 4.6 - 4.7)
-
-#### 패키지 로드
-
-```{r}
-library(Matrix)
-```
+## (예 4.5 - 4.8)
 
 #### 데이터 로드
 
 ```{r}
 dat1 <- read.csv(file = "data/ch4_dat1.csv")
+dat1
 x <- as.matrix(dat1)
 ```
 
-#### (예 4.6)
-
-행렬 차원
-
-```{r}
-n <- dim(x)[1]
-k <- dim(x)[2]
-```
+#### (예 4.5)
 
 특이치 분해
 
 ```{r}
-s <- svd(x, nu = n, nv = k)
-diag(s$d, nrow = n, ncol = k)
+s <- svd(x)
+diag(s$d)
 s$u
 s$v
+```
+
+
+#### (예 4.6)
+
+분산-공분산 행렬의 특이치 분해
+
+```{r}
+cov(x)
+svd(cov(x))
+```
+
+상관계수 행렬의 특이치 분해
+
+```{r}
+cor(x)
+svd(cor(x))
 ```
 
 
 #### (예 4.7)
 
-행렬 rank
+주성분 스코어
 
 ```{r}
-r <- rankMatrix(x)
+x %*% s$v
 ```
 
-특이치 분해
+
+#### (예 4.8)
+
+제곱합-교차곱 행렬의 고유치 및 고유벡터
 
 ```{r}
-s <- svd(x, nu = r, nv = r)
-diag(s$d[1:r])
-s$u
-s$v
+eigen(t(x) %*% x)
 ```
+
 
 
 ## (예 4.12)

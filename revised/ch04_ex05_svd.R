@@ -1,4 +1,4 @@
-# ch04_ex06_svd.R
+# ch04_ex05_svd.R
 # ch4.3 Matrix decomposition
 
 # load package
@@ -10,7 +10,7 @@ dat1 <- read.csv(file = "data/ch4_dat1.csv")
 # define as matrix
 x <- as.matrix(dat1)
 
-# ex4-6
+# ex4-5
 
 # dimension of x
 n <- dim(x)[1]
@@ -22,8 +22,6 @@ diag(s$d, nrow = n, ncol = k)
 s$u
 s$v
 
-
-# ex4-7
 
 # rank of matrix x
 r <- rankMatrix(x)

@@ -24,6 +24,3 @@ print(model)
 
 # misclassified objects
 which(model@ymatrix != as.integer(model@fitted))
-
-# visualize
-plot(model, data = dat)

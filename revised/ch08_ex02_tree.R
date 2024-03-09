@@ -84,7 +84,7 @@ T2 <- snip.rpart(T1, toss = 7)
 print(T2)
 
 # the second pruning:
-# nude number 3 is corresponding to t2 in the book
+# node number 3 is corresponding to t2 in the book
 T3 <- snip.rpart(T2, toss = 3) 
 print(T3)
 

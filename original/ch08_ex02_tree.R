@@ -70,7 +70,7 @@ T1 <- tree_maximal
 T2 <- snip.rpart(T1, toss = 7) # node number corresponding to t5 in the book
 print(T2)
 
-T3 <- snip.rpart(T2, toss = 3) # nude number corresponding to t2 in the book
+T3 <- snip.rpart(T2, toss = 3) # node number corresponding to t2 in the book
 print(T3)
 
 # ex8.7

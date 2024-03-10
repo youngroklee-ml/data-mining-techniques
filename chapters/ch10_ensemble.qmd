@@ -367,3 +367,53 @@ roc_auc(result2, truth = "class", posterior1)
 autoplot(roc_curve(result2, truth = "class", posterior1))
 ```
 
+
+#### 부연설명
+
+위 코드에서 사용한 `{gbm}` 패키지의 결과는 교재의 예 10.6 결과와는 다소 다르다. 이는 `{gbm}`에서 스코어를 업데이트할 때 기존 추정 확률값에 기반하여 gradient에 multiplier를 적용하기 때문이다. 아래에 교재와 비교하여 다른 점을 간략히 설명한다. 자세한 내용은 [패키지 문서](https://cran.r-project.org/web/packages/gbm/vignettes/gbm.pdf)를 참고하자.
+
+우선, 범주 0에 대한 스코어 $F_t^{(0)}(\mathbf{x}_i)$는 언제나 0인 상수로 간주한다.
+
+$$
+F_t^{(0)}(\mathbf{x}_i) = 0, \forall t
+$$
+
+범주 1에 대한 초기 스코어 $F_1^{(1)}(\mathbf{x}_i)$는 0으로 한다.
+
+$$
+F_1^{(1)}(\mathbf{x}_i) = 0
+$$
+
+$i$번째 객체가 범주 1에 속할 확률은 반복 $t$에서 아래와 같이 추정된다.
+
+$$
+P_t^{(1)}(\mathbf{x}_i) = \frac{\exp\left(F_t^{(1)}(\mathbf{x}_i)\right)}{1 + \exp\left(F_t^{(1)}(\mathbf{x}_i)\right)}
+$$
+
+
+이때 손실함수에 대한 negative gradient는 아래와 같이 간단하게 정리된다.
+
+$$
+z_i = y_{1i} - P_t^{(1)}(\mathbf{x}_i)
+$$
+
+이 $z_i$를 타겟변수로 하고 $\mathbf{x}_i$를 입력변수로 하여 $E[z_i \, | \, \mathbf{x}_i]$를 추정하는 트리 $T_t$를 학습한다. 이때 $A_{tl}$을 $T_t$의 $l$번째 leaf node에 속하는 객체의 집합이라 하자.
+
+스코어를 업데이트할 수치 $C_{t}^{(1)}(\mathbf{x}_i)$는 $P_t^{(1)}$을 고려하여 아래와 같이 계산된다. 
+
+$$
+C_{t}^{(1)}(\mathbf{x}_i) = \sum_{l} \mathbb{I}(i \in A_{tl})  \frac{\sum_{j \in A_{tl}} z_j}{\sum_{j \in A_{tl}} P_t^{(1)}(\mathbf{x}_j) \left(1 - P_t^{(1)}(\mathbf{x}_j)\right)}
+$$
+
+위 수식에서 $\mathbb{I}(x)$는 $x$값이 참일 때 1, 거짓일 때 0의 값을 갖는 함수이다. 위 수식에서 객체 $i$가 속한 leaf node에 함께 속한 모든 객체들의 $P_t^{(1)}$값이 고려되어 업데이트 수치가 결정됨을 유의하자.
+
+이후 아래와 같이 스코어를 업데이트하고 과정을 반복한다.
+
+$$
+F_{t+1}^{(1)}(\mathbf{x}_i) = F_{t}^{(1)}(\mathbf{x}_i) + C_{t}^{(1)}(\mathbf{x}_i)
+$$
+
+
+
+
+

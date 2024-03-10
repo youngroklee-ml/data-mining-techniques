@@ -789,6 +789,36 @@ y    -1 1
 <p><img src="ch10_ensemble_files/figure-html/unnamed-chunk-30-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
+</section>
+<section id="부연설명" class="level4">
+<h4 class="anchored" data-anchor-id="부연설명">부연설명</h4>
+<p>위 코드에서 사용한 <code>{gbm}</code> 패키지의 결과는 교재의 예 10.6 결과와는 다소 다르다. 이는 <code>{gbm}</code>에서 스코어를 업데이트할 때 기존 추정 확률값에 기반하여 gradient에 multiplier를 적용하기 때문이다. 아래에 교재와 비교하여 다른 점을 간략히 설명한다. 자세한 내용은 <a href="https://cran.r-project.org/web/packages/gbm/vignettes/gbm.pdf">패키지 문서</a>를 참고하자.</p>
+<p>우선, 범주 0에 대한 스코어 <span class="math inline">\(F_t^{(0)}(\mathbf{x}_i)\)</span>는 언제나 0인 상수로 간주한다.</p>
+<p><span class="math display">\[
+F_t^{(0)}(\mathbf{x}_i) = 0, \forall t
+\]</span></p>
+<p>범주 1에 대한 초기 스코어 <span class="math inline">\(F_1^{(1)}(\mathbf{x}_i)\)</span>는 0으로 한다.</p>
+<p><span class="math display">\[
+F_1^{(1)}(\mathbf{x}_i) = 0
+\]</span></p>
+<p><span class="math inline">\(i\)</span>번째 객체가 범주 1에 속할 확률은 반복 <span class="math inline">\(t\)</span>에서 아래와 같이 추정된다.</p>
+<p><span class="math display">\[
+P_t^{(1)}(\mathbf{x}_i) = \frac{\exp\left(F_t^{(1)}(\mathbf{x}_i)\right)}{1 + \exp\left(F_t^{(1)}(\mathbf{x}_i)\right)}
+\]</span></p>
+<p>이때 손실함수에 대한 negative gradient는 아래와 같이 간단하게 정리된다.</p>
+<p><span class="math display">\[
+z_i = y_{1i} - P_t^{(1)}(\mathbf{x}_i)
+\]</span></p>
+<p>이 <span class="math inline">\(z_i\)</span>를 타겟변수로 하고 <span class="math inline">\(\mathbf{x}_i\)</span>를 입력변수로 하여 <span class="math inline">\(E[z_i \, | \, \mathbf{x}_i]\)</span>를 추정하는 트리 <span class="math inline">\(T_t\)</span>를 학습한다. 이때 <span class="math inline">\(A_{tl}\)</span>을 <span class="math inline">\(T_t\)</span>의 <span class="math inline">\(l\)</span>번째 leaf node에 속하는 객체의 집합이라 하자.</p>
+<p>스코어를 업데이트할 수치 <span class="math inline">\(C_{t}^{(1)}(\mathbf{x}_i)\)</span>는 <span class="math inline">\(P_t^{(1)}\)</span>을 고려하여 아래와 같이 계산된다.</p>
+<p><span class="math display">\[
+C_{t}^{(1)}(\mathbf{x}_i) = \sum_{l} \mathbb{I}(i \in A_{tl})  \frac{\sum_{j \in A_{tl}} z_j}{\sum_{j \in A_{tl}} P_t^{(1)}(\mathbf{x}_j) \left(1 - P_t^{(1)}(\mathbf{x}_j)\right)}
+\]</span></p>
+<p>위 수식에서 <span class="math inline">\(\mathbb{I}(x)\)</span>는 <span class="math inline">\(x\)</span>값이 참일 때 1, 거짓일 때 0의 값을 갖는 함수이다. 위 수식에서 객체 <span class="math inline">\(i\)</span>가 속한 leaf node에 함께 속한 모든 객체들의 <span class="math inline">\(P_t^{(1)}\)</span>값이 고려되어 업데이트 수치가 결정됨을 유의하자.</p>
+<p>이후 아래와 같이 스코어를 업데이트하고 과정을 반복한다.</p>
+<p><span class="math display">\[
+F_{t+1}^{(1)}(\mathbf{x}_i) = F_{t}^{(1)}(\mathbf{x}_i) + C_{t}^{(1)}(\mathbf{x}_i)
+\]</span></p>
 
 
 </section>

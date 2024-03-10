@@ -7,8 +7,8 @@ library("olsrr")
 library("car")
 
 # read csv file
-# Hitters Baseball data Player.csv (Baseball player salary) data from Kaggle
-dat_ba <- read.csv("data/Player.csv")
+# Hitters (Baseball player salary) data from Kaggle
+dat_ba <- read.csv("data/Hitters.csv")
 
 # multiple regression
 lm_model <- lm(Salary ~ Hits + Walks + CRuns + HmRun + CWalks, data = dat_ba)

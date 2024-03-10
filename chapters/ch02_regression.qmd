@@ -88,7 +88,7 @@ library("car")
 #### 데이터 로드
 
 ```{r}
-dat_ba <- read.csv("data/Player.csv")
+dat_ba <- read.csv("data/Hitters.csv")
 ```
 
 #### 다중 회귀모형 추정

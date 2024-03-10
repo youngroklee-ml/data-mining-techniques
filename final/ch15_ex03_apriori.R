@@ -1,5 +1,5 @@
 # ch15_ex03_apriori.R
-# ch15.2 association rule mining
+# ch15.3 association rule mining
 
 # load required packages
 library(arules)

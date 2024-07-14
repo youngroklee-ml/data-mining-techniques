@@ -556,12 +556,12 @@ origin 5</code></pre>
 <section id="jaccard-유사성-척도-계산" class="level4">
 <h4 class="anchored" data-anchor-id="jaccard-유사성-척도-계산">Jaccard 유사성 척도 계산</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>jaccard_sim <span class="ot">&lt;-</span> <span class="fu">dist</span>(df, <span class="at">method =</span> <span class="st">"binary"</span>)</span>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>jaccard_sim <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> <span class="fu">dist</span>(df, <span class="at">method =</span> <span class="st">"binary"</span>)</span>
 <span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>jaccard_sim</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    1   2
 2 0.5    
-3 0.8 1.0</code></pre>
+3 0.2 0.0</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>jaccard_sim_mat <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(jaccard_sim)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>

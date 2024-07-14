@@ -178,7 +178,7 @@ df <- read.csv("data/ch11_dat2.csv")
 #### Jaccard 유사성 척도 계산
 
 ```{r}
-jaccard_sim <- dist(df, method = "binary")
+jaccard_sim <- 1 - dist(df, method = "binary")
 jaccard_sim
 jaccard_sim_mat <- as.matrix(jaccard_sim)
 ```

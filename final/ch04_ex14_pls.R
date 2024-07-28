@@ -25,7 +25,7 @@ loading.weights(pls_fit)
 Yloadings(pls_fit)
 
 # beta-pls
-coef(pls_fit, intercept = TRUE)
+coef(pls_fit)
 
 # ex4-15
 
@@ -33,6 +33,7 @@ coef(pls_fit, intercept = TRUE)
 dat4 <- as.data.frame(cbind(scores(pls_fit), y = dat3$y))
 
 # linear regression by using latent variables
-lm_fit <- lm(y ~ ., data = dat4)
+# without intercept due to mean-centered response variable
+lm_fit <- lm(y ~ 0 + ., data = dat4)
 summary(lm_fit)
 anova(lm_fit)

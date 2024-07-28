@@ -31,6 +31,6 @@ PRC
 dat4 <- as.data.frame(cbind(PRC, y = dat3$y))
 
 # Principal component regression
-lm_fit <- lm(y ~ PC1 + PC2, data = dat4)
+lm_fit <- lm(y ~ 0 + PC1 + PC2, data = dat4)
 summary(lm_fit)
 anova(lm_fit)

@@ -15,13 +15,10 @@ pca_fit <- prcomp(dat3[, 1:3], center = TRUE, scale. = FALSE)
 pca_fit
 
 # eigenvalue of cov(x)
-pca_var <- pca_fit$sdev^2
-pca_var
+pca_fit$sdev^2
 
-# same as above : eigenvalue of cov(x)
-x <- as.matrix(dat3[, 1:3])
-cov(x)
-svd(cov(x))
+# eigenvalue of x'x
+pca_fit$sdev^2 * (nrow(x) - 1)
 
 # principal component score
 PRC <- predict(pca_fit, dat3[, 1:3])

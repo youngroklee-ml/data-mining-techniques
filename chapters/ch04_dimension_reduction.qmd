@@ -128,9 +128,15 @@ pca_fit
 #### 표본 분산-공분산 행렬의 고유치
 
 ```{r}
-pca_var <- pca_fit$sdev^2
-pca_var
+pca_fit$sdev^2
 ```
+
+#### 제곱합-교차곱 행렬 $X ^\top X$ 의 고유치
+
+```{r}
+pca_fit$sdev^2 * (nrow(x) - 1)
+```
+
 
 #### 주성분 스코어
 

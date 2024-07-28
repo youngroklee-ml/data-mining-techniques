@@ -501,7 +501,7 @@ X5 -0.44778451  0.08636803  0.8881182665  0.003668418 -0.05711464</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>categories <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"PC1"</span>, <span class="st">"PC2"</span>, <span class="st">"PC3"</span>, <span class="st">"PC4"</span>, <span class="st">"PC5"</span>)</span>
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">barplot</span>(rate_var,</span>
-<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">names.arg =</span> categories, <span class="at">cex.axis =</span> <span class="dv">1</span>,</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">names.arg =</span> categories,</span>
 <span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">"Variance proportion explained by PC"</span>,</span>
 <span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">col =</span> <span class="st">"blue"</span>, <span class="at">space =</span> <span class="fl">0.5</span>, <span class="at">width =</span> <span class="dv">1</span>, <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)</span>
 <span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -581,38 +581,37 @@ x3 -0.9249194 -0.3787911 -0.03227211</code></pre>
 </div>
 <p>모형 추정</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>lm_fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> PC1 <span class="sc">+</span> PC2, <span class="at">data =</span> dat4)</span>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>lm_fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> <span class="dv">0</span> <span class="sc">+</span> PC1 <span class="sc">+</span> PC2, <span class="at">data =</span> dat4)</span>
 <span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm_fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
-lm(formula = y ~ PC1 + PC2, data = dat4)
+lm(formula = y ~ 0 + PC1 + PC2, data = dat4)
 
 Residuals:
      1      2      3      4      5      6 
 -6.754  4.591  6.951 -2.574 -8.394  6.179 
 
 Coefficients:
-              Estimate Std. Error t value Pr(&gt;|t|)  
-(Intercept) -5.017e-15  3.577e+00   0.000   1.0000  
-PC1          2.919e+00  5.297e-01   5.510   0.0118 *
-PC2         -2.539e+00  2.355e+00  -1.078   0.3598  
+    Estimate Std. Error t value Pr(&gt;|t|)   
+PC1   2.9188     0.4588   6.362  0.00313 **
+PC2  -2.5392     2.0391  -1.245  0.28101   
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 8.761 on 3 degrees of freedom
-Multiple R-squared:  0.9131,    Adjusted R-squared:  0.8552 
-F-statistic: 15.76 on 2 and 3 DF,  p-value: 0.02562</code></pre>
+Residual standard error: 7.588 on 4 degrees of freedom
+Multiple R-squared:  0.9131,    Adjusted R-squared:  0.8697 
+F-statistic: 21.02 on 2 and 4 DF,  p-value: 0.007551</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(lm_fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Analysis of Variance Table
 
 Response: y
-          Df  Sum Sq Mean Sq F value  Pr(&gt;F)  
-PC1        1 2330.45 2330.45 30.3601 0.01177 *
-PC2        1   89.27   89.27  1.1629 0.35984  
-Residuals  3  230.28   76.76                  
+          Df  Sum Sq Mean Sq F value   Pr(&gt;F)   
+PC1        1 2330.45 2330.45 40.4802 0.003128 **
+PC2        1   89.27   89.27  1.5506 0.281013   
+Residuals  4  230.28   57.57                    
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>

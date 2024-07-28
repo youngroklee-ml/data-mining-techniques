@@ -724,15 +724,14 @@ Cumulative Var  8.568 14.772</code></pre>
 </div>
 <p><span class="math inline">\(\beta_{PLS}\)</span></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(pls_fit, <span class="at">intercept =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(pls_fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>, , 2 comps
 
-                    y
-(Intercept)  0.000000
-x1           2.475395
-x2           2.523238
-x3          -1.704636</code></pre>
+           y
+x1  2.475395
+x2  2.523238
+x3 -1.704636</code></pre>
 </div>
 </div>
 </section>
@@ -744,38 +743,37 @@ x3          -1.704636</code></pre>
 </div>
 <p>모형 추정</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>lm_fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> ., <span class="at">data =</span> dat4)</span>
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>lm_fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> <span class="dv">0</span> <span class="sc">+</span> ., <span class="at">data =</span> dat4)</span>
 <span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm_fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
-lm(formula = y ~ ., data = dat4)
+lm(formula = y ~ 0 + ., data = dat4)
 
 Residuals:
      1      2      3      4      5      6 
 -6.481  4.453  6.819 -2.522 -8.520  6.252 
 
 Coefficients:
-              Estimate Std. Error t value Pr(&gt;|t|)  
-(Intercept) -6.085e-15  3.546e+00   0.000   1.0000  
-`Comp 1`     2.927e+00  5.257e-01   5.568   0.0114 *
-`Comp 2`     2.491e+00  2.358e+00   1.056   0.3684  
+         Estimate Std. Error t value Pr(&gt;|t|)   
+`Comp 1`   2.9272     0.4553    6.43  0.00301 **
+`Comp 2`   2.4908     2.0423    1.22  0.28961   
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
-Residual standard error: 8.686 on 3 degrees of freedom
-Multiple R-squared:  0.9146,    Adjusted R-squared:  0.8576 
-F-statistic: 16.06 on 2 and 3 DF,  p-value: 0.02497</code></pre>
+Residual standard error: 7.523 on 4 degrees of freedom
+Multiple R-squared:  0.9146,    Adjusted R-squared:  0.8719 
+F-statistic: 21.41 on 2 and 4 DF,  p-value: 0.007297</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(lm_fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Analysis of Variance Table
 
 Response: y
-          Df  Sum Sq Mean Sq F value  Pr(&gt;F)  
-`Comp 1`   1 2339.46 2339.46 31.0046 0.01143 *
-`Comp 2`   1   84.18   84.18  1.1156 0.36841  
-Residuals  3  226.37   75.46                  
+          Df  Sum Sq Mean Sq F value   Pr(&gt;F)   
+`Comp 1`   1 2339.46 2339.46 41.3394 0.003009 **
+`Comp 2`   1   84.18   84.18  1.4874 0.289609   
+Residuals  4  226.37   56.59                    
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
